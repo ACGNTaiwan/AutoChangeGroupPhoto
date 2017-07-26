@@ -72,7 +72,7 @@ bot.getMe().then((me) => {
         initData(chatId);
 
         switch (regex[1]) {
-        case 'setInterval':
+        case 'setinterval':
             if (msg.text.split(' ').length === 2 && msg.text.split(' ')[1] >= 0.5) {
                 data[chatId].interval = Number(msg.text.split(' ')[1]);
                 bot.sendMessage(chatId, '已設定變更間隔為' + data[chatId].interval + '小時');
