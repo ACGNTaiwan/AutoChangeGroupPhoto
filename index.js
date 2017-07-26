@@ -73,13 +73,17 @@ bot.getMe().then((me) => {
 
         switch (regex[1]) {
         case 'setinterval':
-            if (msg.text.split(' ').length === 2 && msg.text.split(' ')[1] >= 0.5) {
-                data[chatId].interval = Number(msg.text.split(' ')[1]);
-                bot.sendMessage(chatId, '已設定變更間隔為' + data[chatId].interval + '小時');
-                saveData();
-            } else {
-                bot.sendMessage(chatId, '無效的數值');
-            }
+            bot.getChatAdministrators(chatId).then((members) => {
+                if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) return;
+
+                if (msg.text.split(' ').length === 2 && msg.text.split(' ')[1] >= 0.5) {
+                    data[chatId].interval = Number(msg.text.split(' ')[1]);
+                    bot.sendMessage(chatId, '已設定變更間隔為' + data[chatId].interval + '小時');
+                    saveData();
+                } else {
+                    bot.sendMessage(chatId, '無效的數值');
+                }
+            });
             break;
         case 'queue':
             bot.sendMessage(chatId, data[chatId].queue.length);
