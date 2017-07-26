@@ -1,0 +1,37 @@
+{
+  "name": "auto_change_group_photo",
+  "version": "1.0.0",
+  "description": "Auto change telegram group photo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "eslint --fix *.js",
+    "precommit": "npm run eslint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/james58899/AutoChangeGroupPhoto.git"
+  },
+  "keywords": [
+    "telegram",
+    "group",
+    "photo"
+  ],
+  "author": "james58899",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/james58899/AutoChangeGroupPhoto/issues"
+  },
+  "homepage": "https://github.com/james58899/AutoChangeGroupPhoto#readme",
+  "dependencies": {
+    "moment": "^2.18.1",
+    "node-schedule": "^1.2.3",
+    "node-telegram-bot-api": "github:yagop/node-telegram-bot-api",
+    "request": "^2.81.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-config-google": "^0.9.1",
+    "husky": "^0.14.3"
+  }
+}
