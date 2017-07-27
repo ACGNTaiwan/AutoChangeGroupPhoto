@@ -71,10 +71,10 @@ bot.getMe().then((me) => {
         const chatId = msg.chat.id;
         initData(chatId);
 
-        switch (regex[1]) {
-        case 'setinterval':
-            bot.getChatAdministrators(chatId).then((members) => {
-                if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) return;
+        bot.getChatAdministrators(chatId).then((members) => {
+            switch (regex[1]) {
+            case 'setinterval':
+                if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
 
                 if (msg.text.split(' ').length === 2 && msg.text.split(' ')[1] >= 0.5) {
                     data[chatId].interval = Number(msg.text.split(' ')[1]);
@@ -83,11 +83,18 @@ bot.getMe().then((me) => {
                 } else {
                     bot.sendMessage(chatId, '無效的數值');
                 }
-            });
-            break;
-        case 'queue':
-            bot.sendMessage(chatId, data[chatId].queue.length);
-        }
+                break;
+            case 'queue':
+                bot.sendMessage(chatId, data[chatId].queue.length);
+                break;
+            case 'next':
+                if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
+                if (data[chatId].queue.length > 0) {
+                    bot.getFileLink(data[chatId].queue.shift()).then((link) => bot.setChatPhoto(chatId, request(link)));
+                    data[chatId].last = +moment();
+                }
+            }
+        });
     });
 
     bot.onText(/#群組圖片/ig, (msg) => {
