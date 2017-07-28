@@ -60,6 +60,7 @@ const doUpdate = () => {
         if (data[id].queue.length > 0 && (!data[id].last || moment(data[id].last).add(data[id].interval, 'h').isBefore(moment()))) {
             bot.getFileLink(data[id].queue.shift()).then((link) => bot.setChatPhoto(id, request(link)));
             data[id].last = +moment();
+            saveData();
         }
     }
 };
@@ -100,7 +101,7 @@ bot.getMe().then((me) => {
                 }
                 break;
             case 'votenext':
-                //TODO
+                // TODO
                 break;
             }
         });
