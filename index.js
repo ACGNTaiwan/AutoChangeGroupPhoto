@@ -27,28 +27,32 @@ const initData = (chatId) => {
     }
 };
 
-const addToQueue = (chatId, id) => {
-    bot.getChat(chatId).then((info) => {
-        if (info.type === 'private') {
-            bot.sendMessage(chatId, 'I can\'t change your photo!');
-            return;
-        } else if (info.type === 'group' && info.all_members_are_administrators) {
-            bot.sendMessage(chatId, 'I can\'t change group photo if all members are admin!');
-            return;
-        }
-
-        initData(chatId);
-        if (data[chatId].queue.indexOf(id) === -1) data[chatId].queue.push(id);
-        saveData();
-    });
-};
-
 const addPhoto = (msg) => {
-    if (msg.photo) {
-        addToQueue(msg.chat.id, msg.photo.pop().file_id);
-    } else if (msg.document && msg.document.thumb) {
-        addToQueue(msg.chat.id, msg.document.file_id);
+    const chatId = msg.chat.id;
+    let fileId;
+
+    if (msg.chat.type === 'private') {
+        bot.sendMessage(chatId, 'I can\'t change your photo!');
+        return;
+    } else if (msg.chat.type === 'group' && msg.chat.all_members_are_administrators) {
+        bot.sendMessage(chatId, 'I can\'t change group photo if all members are admin!');
+        return;
     }
+
+    if (msg.photo) {
+        fileId = msg.photo.pop().file_id;
+    } else if (msg.document && msg.document.thumb) {
+        fileId = msg.document.file_id;
+    }
+
+    initData(chatId);
+    if (data[chatId].queue.indexOf(fileId) === -1) {
+        data[chatId].queue.push(fileId);
+        bot.sendMessage(chatId, '已加入序列', {reply_to_message_id: msg.message_id});
+    } else {
+        bot.sendMessage(chatId, '已在序列中', {reply_to_message_id: msg.message_id});
+    }
+    saveData();
 };
 
 const doUpdate = () => {
@@ -74,6 +78,7 @@ bot.getMe().then((me) => {
         bot.getChatAdministrators(chatId).then((members) => {
             switch (regex[1]) {
             case 'setinterval':
+                if (msg.text.split(' ').length === 1) bot.sendMessage(chatId, '目前設定值為' + data[chatId].interval + '小時');
                 if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
 
                 if (msg.text.split(' ').length === 2 && msg.text.split(' ')[1] >= 0.5) {
@@ -93,6 +98,10 @@ bot.getMe().then((me) => {
                     bot.getFileLink(data[chatId].queue.shift()).then((link) => bot.setChatPhoto(chatId, request(link)));
                     data[chatId].last = +moment();
                 }
+                break;
+            case 'votenext':
+                //TODO
+                break;
             }
         });
     });
