@@ -95,12 +95,6 @@ bot.getMe().then((me) => {
                     bot.sendMessage(chatId, '無效的數值');
                 }
                 break;
-            case 'queue':
-                bot.sendMessage(chatId,
-                    '等待的圖片數：' + data[chatId].queue.length +
-                    '\n下次換圖時間：' + moment(data[chatId].last).add(data[chatId].interval, 'h').format('LLL')
-                );
-                break;
             case 'next':
                 if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
                 if (data[chatId].queue.length > 0) {
@@ -108,9 +102,21 @@ bot.getMe().then((me) => {
                     data[chatId].last = +moment();
                 }
                 break;
-            case 'votenext':
-                // TODO
+            // TODO
+            // case 'setloop':
+            //     if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
+            //     if (msg.text.split(' ').length === 1) bot.sendMessage(chatId, '目前')
+            // case 'block':
+            //     if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
+            case 'queue':
+                bot.sendMessage(chatId,
+                    '等待的圖片數：' + data[chatId].queue.length +
+                    '\n下次換圖時間：' + moment(data[chatId].last).add(data[chatId].interval, 'h').format('LLL')
+                );
                 break;
+            // TODO
+            // case 'votenext':
+            //     break;
             }
         });
     });
