@@ -14,6 +14,8 @@ try {
     data = {};
 }
 
+moment.locale('zh-tw');
+
 const saveData = () => {
     fs.writeFile('data.json', JSON.stringify(data), () => {});
 };
@@ -56,10 +58,10 @@ const addPhoto = (msg) => {
 };
 
 const doUpdate = () => {
-    for (const id in data) {
-        if (data[id].queue.length > 0 && (!data[id].last || moment(data[id].last).add(data[id].interval, 'h').isBefore(moment()))) {
-            bot.getFileLink(data[id].queue.shift()).then((link) => bot.setChatPhoto(id, request(link)));
-            data[id].last = +moment();
+    for (const chatId in data) {
+        if (data[chatId].queue.length > 0 && (!data[chatId].last || moment(data[chatId].last).add(data[chatId].interval, 'h').isBefore(moment()))) {
+            bot.getFileLink(data[chatId].queue.shift()).then((link) => bot.setChatPhoto(chatId, request(link)));
+            data[chatId].last = +moment();
             saveData();
         }
     }
@@ -79,7 +81,10 @@ bot.getMe().then((me) => {
         bot.getChatAdministrators(chatId).then((members) => {
             switch (regex[1]) {
             case 'setinterval':
-                if (msg.text.split(' ').length === 1) bot.sendMessage(chatId, '目前設定值為' + data[chatId].interval + '小時');
+                if (msg.text.split(' ').length === 1) {
+                    bot.sendMessage(chatId, '目前設定值為' + data[chatId].interval + '小時');
+                    break;
+                }
                 if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
 
                 if (msg.text.split(' ').length === 2 && msg.text.split(' ')[1] >= 0.5) {
@@ -91,7 +96,10 @@ bot.getMe().then((me) => {
                 }
                 break;
             case 'queue':
-                bot.sendMessage(chatId, data[chatId].queue.length);
+                bot.sendMessage(chatId,
+                    '等待的圖片數：' + data[chatId].queue.length +
+                    '\n下次換圖時間：' + moment(data[chatId].last).add(data[chatId].interval, 'h').format('LLL')
+                );
                 break;
             case 'next':
                 if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
