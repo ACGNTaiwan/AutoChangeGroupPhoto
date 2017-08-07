@@ -121,7 +121,7 @@ bot.getMe().then((me) => {
         });
     });
 
-    bot.onText(/#群組圖片/ig, (msg) => {
+    bot.onText(/(#群組圖片|#群组图片)/ig, (msg) => {
         if (msg.reply_to_message && (msg.reply_to_message.photo||msg.reply_to_message.document)) {
             addPhoto(msg.reply_to_message);
         }
