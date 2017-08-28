@@ -4,7 +4,6 @@ const request = require('request');
 const schedule = require('node-schedule');
 const moment = require('moment');
 const config = require('./config.json');
-
 const bot = new TelegramBot(config.token, {polling: {interval: 0, params: {timeout: 60}}});
 
 let data;
@@ -40,27 +39,41 @@ const addPhoto = (msg) => {
         bot.sendMessage(chatId, 'I can\'t change group photo if all members are admin!');
         return;
     }
-
-    if (msg.photo) {
+    if (msg.text){
+            let tempimg=(msg.text).match(new RegExp('http?://.+\.(jpg|png)'));
+            if(tempimg[0]!==undefined){
+                fileId=tempimg[0];
+            }else{
+                bot.sendMessage(chatId, '并没有找到图片链接', {reply_to_message_id: msg.message_id});
+                return;
+            }
+    }else if (msg.photo) {
         fileId = msg.photo.pop().file_id;
     } else if (msg.document && msg.document.thumb) {
         fileId = msg.document.file_id;
     }
-
-    initData(chatId);
-    if (data[chatId].queue.indexOf(fileId) === -1) {
-        data[chatId].queue.push(fileId);
-        bot.sendMessage(chatId, '已加入序列', {reply_to_message_id: msg.message_id});
-    } else {
-        bot.sendMessage(chatId, '已在序列中', {reply_to_message_id: msg.message_id});
+    if(fileId!==undefined){
+        initData(chatId);
+        if (data[chatId].queue.indexOf(fileId) === -1) {
+            data[chatId].queue.push(fileId);
+            bot.sendMessage(chatId, '已加入序列', {reply_to_message_id: msg.message_id});
+        } else {
+            bot.sendMessage(chatId, '已在序列中', {reply_to_message_id: msg.message_id});
+        }
+        saveData();
+            
     }
-    saveData();
 };
 
 const doUpdate = () => {
     for (const chatId in data) {
         if (data[chatId].queue.length > 0 && (!data[chatId].last || moment(data[chatId].last).add(data[chatId].interval, 'h').isBefore(moment()))) {
-            bot.getFileLink(data[chatId].queue.shift()).then((link) => bot.setChatPhoto(chatId, request(link)));
+            let img=data[chatId].queue.shift();
+            console.log(img);
+            if(img.indexOf('http')>-1)
+                bot.setChatPhoto(chatId, request(img));
+            else
+                bot.getFileLink(img).then((link) => bot.setChatPhoto(chatId, request(link)));
             data[chatId].last = +moment();
             saveData();
         }
@@ -122,7 +135,7 @@ bot.getMe().then((me) => {
     });
 
     bot.onText(/#群組圖片|#群组图片/ig, (msg) => {
-        if (msg.reply_to_message && (msg.reply_to_message.photo||msg.reply_to_message.document)) {
+        if (msg.reply_to_message || msg.reply_to_message.photo||msg.reply_to_message.document) {
             addPhoto(msg.reply_to_message);
         }
     });
