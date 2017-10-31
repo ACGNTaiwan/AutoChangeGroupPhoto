@@ -26,6 +26,7 @@
   },
   "homepage": "https://github.com/james58899/AutoChangeGroupPhoto#readme",
   "dependencies": {
+    "jimp": "^0.2.28",
     "js-yaml": "^3.10.0",
     "moment": "^2.18.1",
     "node-schedule": "^1.2.3",
@@ -33,6 +34,7 @@
     "request": "^2.81.0"
   },
   "devDependencies": {
+    "@types/jimp": "^0.2.1",
     "@types/js-yaml": "^3.9.1",
     "@types/node": "^7.0.29",
     "@types/node-schedule": "^1.2.1",

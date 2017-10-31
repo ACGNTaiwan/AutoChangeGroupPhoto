@@ -4,6 +4,7 @@
  */
 
 import * as fs from "fs";
+import * as jimp from "jimp";
 import * as yaml from "js-yaml";
 import * as moment from "moment";
 import * as schedule from "node-schedule";
@@ -17,12 +18,16 @@ import {
     CONFIG_FILE_PATH,
     DATA_FILE_PATH,
     GROUP_PHOTO_CAPTION,
+    IMAGE_FROM_URL_DIMENSION,
     INVALID_VALUE,
     NEED_TELEGRAM_BOT_TOKEN,
     NOW_INTERVAL,
+    QUEUE_REQUEST_TEXT,
     QUEUE_TEXT,
     REGEXP_MATCH_TAG_COMMAND,
     SET_INTERVAL,
+    URL_REQUESTED_IS_NOT_A_IMAGE,
+    URL_REQUESTED_IS_NOT_OK,
     WAITING_PHOTOS,
 } from "./consts";
 import { PhotoDataStrcture } from "./PhotoDataStrcture";
@@ -95,6 +100,76 @@ const main = async (bot: TelegramBot) => {
                 saveData();
             }
         });
+    };
+
+    const tryGetPhotoFromUrl = async (msg: TelegramBot.Message, ent: TelegramBot.MessageEntity, url: string) => {
+        request.get(url, { encoding: null }, (error, response, body) => {
+            if (error) {
+                console.error(error);
+            }
+            if (response.statusCode === 200) {
+                const buffer = Buffer.from(response.body);
+                jimp.read(buffer)
+                    .then((image) => {
+                        if (image !== undefined) {
+                            console.info(IMAGE_FROM_URL_DIMENSION(image.getMIME(), image.bitmap.width, image.bitmap.height));
+                            // send image which downloaded back to the chat for placehold a file_id
+                            bot.sendPhoto(msg.chat.id, buffer, {caption: GROUP_PHOTO_CAPTION})
+                                .then((m) => {
+                                    if (!(m instanceof Error)) {
+                                        const result = checkQueue(m);
+                                        switch (result) {
+                                            case ADDED_INTO_QUEUE:
+                                                addPhoto(m);
+                                                break;
+                                            case ALREADY_IN_QUEUE:
+                                                // if file_id already in queue, delete the image message to save the view space
+                                                await bot.deleteMessage(m.chat.id, m.message_id.toString());
+                                                // and then, send a message with URL's substr offset and length of text
+                                                // to notify it's already in queue
+                                                await bot.sendMessage(msg.chat.id,
+                                                                      `@(${ent.offset}+${ent.length}): ${url} ${ALREADY_IN_QUEUE}`,
+                                                                      {reply_to_message_id: msg.message_id},
+                                                );
+                                                break;
+                                            default:
+                                                // unspecified response, always delete the message we sent
+                                                await bot.deleteMessage(m.chat.id, m.message_id.toString());
+                                        }
+                                    }
+                                })
+                                .catch((e) => {
+                                    console.error(e);
+                                });
+                        } else {
+                            // jimp can not decode as an image, we must send a message to notify the URL is not an image
+                            await bot.sendMessage(msg.chat.id, URL_REQUESTED_IS_NOT_A_IMAGE, {reply_to_message_id: msg.message_id});
+                        }
+                    })
+                    .catch((err: Error) => {
+                        console.error("jimp error", err.message);
+                    });
+            } else {
+                // notify the URL not responsed correctly
+                await bot.sendMessage(msg.chat.id, URL_REQUESTED_IS_NOT_OK, {reply_to_message_id: msg.message_id});
+            }
+        });
+    };
+
+    const doAddPhotoByUrl = async (msg: TelegramBot.Message) => {
+        if (msg.entities) {
+            const urls: string[] = [];
+            msg.entities.map((ent, idx) => {
+                if (ent.type === "url" && msg.text !== undefined) {
+                    const url = msg.text.substr(ent.offset, ent.length);
+                    if (urls.indexOf(url) === -1) {
+                        console.info(QUEUE_REQUEST_TEXT("URL", `${msg.chat.title}(${msg.chat.id}): ${url}`));
+                        await tryGetPhotoFromUrl(msg, ent, url);
+                        urls.push(url);
+                    }
+                }
+            });
+        }
     };
 
     schedule.scheduleJob("0 * * * * *", doUpdate);
@@ -185,6 +260,8 @@ const main = async (bot: TelegramBot) => {
             if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
                 console.info(QUEUE_TEXT("Text", `${msg.chat.title}(${msg.chat.id})`));
                 addPhoto(msg.reply_to_message);
+            } else if (msg.reply_to_message && msg.reply_to_message.entities) {
+                await doAddPhotoByUrl(msg.reply_to_message);
             }
         });
 
@@ -199,6 +276,14 @@ const main = async (bot: TelegramBot) => {
             if (msg.caption && msg.caption.match(REGEXP_MATCH_TAG_COMMAND)) {
                 console.info(QUEUE_TEXT("Document", `${msg.chat.title}(${msg.chat.id})`));
                 addPhoto(msg);
+            }
+        });
+
+        bot.on("message", (msg: TelegramBot.Message) => {
+            if (msg.text !== undefined && msg.text.match(REGEXP_MATCH_TAG_COMMAND) !== null) {
+                if (msg.entities) {
+                    await doAddPhotoByUrl(msg);
+                }
             }
         });
     });
