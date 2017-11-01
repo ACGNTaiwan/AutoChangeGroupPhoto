@@ -300,27 +300,40 @@ function doCompatibleConvert(d: object): PhotoDataStrcture[] {
     return apds;
 }
 
+async function init(_config: any) {
+    if (data instanceof Object) {
+        data = doCompatibleConvert(data);
+    }
+    if (_config.token) {
+        // if has bot token, then start the main program
+        const bot = new TelegramBot(_config.token, {polling: {interval: 0, params: {timeout: 60}}});
+        await main(bot);
+    } else {
+        throw Error(NEED_TELEGRAM_BOT_TOKEN);
+    }
+}
+
 // read site data which contains chat's photo list data
 function readData(_config: any) {
-    fs.readFile(DATA_FILE_PATH, null, async (err, d) => {
-        try {
-            data = (fs.existsSync(DATA_FILE_PATH)) ?
-                yaml.load(d.toString()) :
-                fs.readFileSync(DATA_FILE_JSON_PATH).toString();
-            if (data instanceof Object) {
-                data = doCompatibleConvert(data);
+    if (fs.existsSync(DATA_FILE_PATH)) {
+        fs.readFile(DATA_FILE_PATH, null, async (err, d) => {
+            try {
+                data = yaml.load(d.toString());
+            } catch (e) {
+                data = [];
             }
-        } catch (e) {
-            data = [];
-        }
-        if (_config.token) {
-            // if has bot token, then start the main program
-            const bot = new TelegramBot(_config.token, {polling: {interval: 0, params: {timeout: 60}}});
-            await main(bot);
-        } else {
-            throw Error(NEED_TELEGRAM_BOT_TOKEN);
-        }
-    });
+            await init(_config);
+        });
+    } else {
+        fs.readFile(DATA_FILE_JSON_PATH, null, async (err, d) => {
+            try {
+                data = JSON.parse(d.toString());
+            } catch (e) {
+                data = [];
+            }
+            await init(_config);
+        });
+    }
 }
 
 // read and initial the config file
