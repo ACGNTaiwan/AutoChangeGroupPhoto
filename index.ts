@@ -290,16 +290,16 @@ function doCompatibleConvert(d: object): PhotoData.PhotoDataStrcture[] {
     Object.keys(d).map((chatId: string) => {
         const dc = (d as any)[chatId] as PhotoData.PhotoDataStrcture;
         const pds = new PhotoData.PhotoDataStrcture(Number(chatId));
-        pds.interval = dc.interval;
-        pds.last = dc.last;
-        pds.queue = dc.queue;
+        pds.interval = dc.interval ? dc.interval : 1;
+        pds.last = dc.last ? dc.last : +moment();
+        pds.queue = (dc.queue !== undefined && dc.queue.length > 0) ? dc.queue : [];
         apds.push(pds);
     });
     return apds;
 }
 
 async function init(_config: any, _data: any) {
-    if (_data instanceof Object) {
+    if (_data instanceof Object && !(_data instanceof Array)) {
         _data = doCompatibleConvert(_data);
     }
     data = PhotoData.PhotoDataStore(_data, saveData);
