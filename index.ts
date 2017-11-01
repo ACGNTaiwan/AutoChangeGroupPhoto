@@ -118,7 +118,7 @@ async function main(bot: TelegramBot) {
                                         const result = await checkQueue(m);
                                         switch (result) {
                                             case ADDED_INTO_QUEUE:
-                                                await addPhoto(m);
+                                                await bot.sendMessage(m.chat.id, result, {reply_to_message_id: msg.message_id});
                                                 break;
                                             case ALREADY_IN_QUEUE:
                                                 // if file_id already in queue, delete the image message to save the view space
