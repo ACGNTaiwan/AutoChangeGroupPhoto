@@ -289,16 +289,14 @@ async function main(bot: TelegramBot) {
 
 function doCompatibleConvert(d: object): PhotoDataStrcture[] {
     const apds: PhotoDataStrcture[] = [];
-    for (const chatId in d) {
-        if (d.hasOwnProperty(chatId)) {
-            const dc = (d as any)[chatId] as PhotoDataStrcture;
-            const pds = new PhotoDataStrcture(Number(chatId));
-            pds.interval = dc.interval;
-            pds.last = dc.last;
-            pds.queue = dc.queue;
-            apds.push(pds);
-        }
-    }
+    Object(d).keys((chatId: string) => {
+        const dc = (d as any)[chatId] as PhotoDataStrcture;
+        const pds = new PhotoDataStrcture(Number(chatId));
+        pds.interval = dc.interval;
+        pds.last = dc.last;
+        pds.queue = dc.queue;
+        apds.push(pds);
+    });
     return apds;
 }
 
