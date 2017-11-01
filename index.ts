@@ -27,13 +27,13 @@ import {
 } from "./consts";
 import { PhotoDataStrcture } from "./PhotoDataStrcture";
 
-let data: PhotoDataStrcture[];
+let data: PhotoDataStrcture[] = [];
 
 moment.locale("zh-tw");
 
 const saveData = () => fs.writeFile(DATA_FILE_PATH, yaml.safeDump(data));
 
-const getData = (chatId: number): PhotoDataStrcture => {
+function getData(chatId: number): PhotoDataStrcture {
     const chatData = data.filter((d) => d.chatId === chatId).shift();
     if (chatData instanceof PhotoDataStrcture) {
         return chatData;
@@ -43,12 +43,12 @@ const getData = (chatId: number): PhotoDataStrcture => {
         saveData();
         return d;
     }
-};
+}
 
-const main = async (bot: TelegramBot) => {
-    const checkQueue = (msg: TelegramBot.Message) => {
+async function main(bot: TelegramBot) {
+    async function checkQueue(msg: TelegramBot.Message) {
         const chatId = msg.chat.id;
-        let fileId;
+        let fileId: string;
 
         if (msg.chat.type === "private") {
             await bot.sendMessage(chatId, CAN_NOT_CHANGE_PHOTO);
@@ -58,64 +58,66 @@ const main = async (bot: TelegramBot) => {
             return CAN_NOT_CHANGE_ALL_ADMINS_PHOTO;
         }
 
-        if (msg.photo) {
-            fileId = msg.photo.pop().file_id;
+        if (msg.photo && msg.photo.length > 0) {
+            fileId = msg.photo.pop()!.file_id;
         } else if (msg.document && msg.document.thumb) {
             fileId = msg.document.file_id;
+        } else {
+            fileId = "";
         }
 
-        initData(chatId);
+        const chatData = getData(chatId);
         let result = null;
-        if (getData(chatId).queue.indexOf(fileId) === -1) {
-            getData(chatId).queue.push(fileId);
+        if (chatData.queue.indexOf(fileId) === -1) {
+            chatData.queue.push(fileId);
             result = ADDED_INTO_QUEUE;
         } else {
             result = ALREADY_IN_QUEUE;
         }
         return result;
-    };
-    const addPhoto = (msg: TelegramBot.Message) => {
+    }
+    async function addPhoto(msg: TelegramBot.Message) {
         const chatId = msg.chat.id;
-        const result = checkQueue(msg);
+        const result = await checkQueue(msg);
         if (result !== undefined) {
             await bot.sendMessage(chatId, result, {reply_to_message_id: msg.message_id});
             saveData();
         }
         return result;
-    };
+    }
 
-    const doUpdate = () => {
-        data.map((chatData) => {
+    function doUpdate() {
+        data.map(async (chatData) => {
             if (chatData.queue.length > 0 &&
                 (!chatData.last || moment(chatData.last).add(chatData.interval, "h").isBefore(moment()))
             ) {
-                await bot.getFileLink(chatData.queue.shift())
-                    .then(async (link: string) => bot.setChatPhoto(chatData.chatId, request(link)));
+                await bot.getFileLink(chatData.queue.shift()!)
+                    .then(async (link) => link instanceof Error ? null : bot.setChatPhoto(chatData.chatId, request(link)));
                 chatData.last = +moment();
                 saveData();
             }
         });
-    };
+    }
 
-    const tryGetPhotoFromUrl = async (msg: TelegramBot.Message, ent: TelegramBot.MessageEntity, url: string) => {
-        request.get(url, { encoding: null }, (error, response, body) => {
+    function tryGetPhotoFromUrl(msg: TelegramBot.Message, ent: TelegramBot.MessageEntity, url: string) {
+        request.get(url, { encoding: null }, async (error, response, body) => {
             if (error) {
                 console.error(error);
             }
             if (response.statusCode === 200) {
                 const buffer = Buffer.from(response.body);
                 jimp.read(buffer)
-                    .then((image) => {
+                    .then(async (image) => {
                         if (image !== undefined) {
                             console.info(IMAGE_FROM_URL_DIMENSION(image.getMIME(), image.bitmap.width, image.bitmap.height));
                             // send image which downloaded back to the chat for placehold a file_id
                             bot.sendPhoto(msg.chat.id, buffer, {caption: GROUP_PHOTO_CAPTION})
-                                .then((m) => {
+                                .then(async (m) => {
                                     if (!(m instanceof Error)) {
-                                        const result = checkQueue(m);
+                                        const result = await checkQueue(m);
                                         switch (result) {
                                             case ADDED_INTO_QUEUE:
-                                                addPhoto(m);
+                                                await addPhoto(m);
                                                 break;
                                             case ALREADY_IN_QUEUE:
                                                 // if file_id already in queue, delete the image message to save the view space
@@ -149,23 +151,23 @@ const main = async (bot: TelegramBot) => {
                 await bot.sendMessage(msg.chat.id, URL_REQUESTED_IS_NOT_OK, {reply_to_message_id: msg.message_id});
             }
         });
-    };
+    }
 
-    const doAddPhotoByUrl = async (msg: TelegramBot.Message) => {
+    function doAddPhotoByUrl(msg: TelegramBot.Message) {
         if (msg.entities) {
             const urls: string[] = [];
-            msg.entities.map((ent, idx) => {
+            msg.entities.map(async (ent, idx) => {
                 if (ent.type === "url" && msg.text !== undefined) {
                     const url = msg.text.substr(ent.offset, ent.length);
                     if (urls.indexOf(url) === -1) {
                         console.info(QUEUE_REQUEST_TEXT("URL", `${msg.chat.title}(${msg.chat.id}): ${url}`));
-                        await tryGetPhotoFromUrl(msg, ent, url);
+                        tryGetPhotoFromUrl(msg, ent, url);
                         urls.push(url);
                     }
                 }
             });
         }
-    };
+    }
 
     schedule.scheduleJob("0 * * * * *", doUpdate);
 
@@ -174,7 +176,7 @@ const main = async (bot: TelegramBot) => {
             return;
         }
 
-        bot.onText(/^\/(\w+)@?(\w*)/i, (msg, regex) => {
+        bot.onText(/^\/(\w+)@?(\w*)/i, async (msg, regex) => {
             if (regex) {
                 if (regex[2] && regex[2] !== me.username) {
                     return;
@@ -183,7 +185,7 @@ const main = async (bot: TelegramBot) => {
                 const chatId = msg.chat.id;
                 const chatData = getData(chatId);
 
-                await bot.getChatAdministrators(chatId).then((members) => {
+                await bot.getChatAdministrators(chatId).then(async (members) => {
                     if (members instanceof Error) {
                         return;
                     }
@@ -217,9 +219,9 @@ const main = async (bot: TelegramBot) => {
                                 }
                             }
                             if (chatData.queue.length > 0) {
-                                await bot.getFileLink(chatData.queue.shift())
+                                await bot.getFileLink(chatData.queue.shift()!)
                                     .then(
-                                        async (link) =>
+                                        async (link: string | Error) =>
                                         link instanceof Error ? Promise.resolve(true) : bot.setChatPhoto(chatId, request(link)),
                                     );
                                 chatData.last = +moment();
@@ -251,42 +253,42 @@ const main = async (bot: TelegramBot) => {
             }
         });
 
-        bot.onText(REGEXP_MATCH_TAG_COMMAND, (msg) => {
+        bot.onText(REGEXP_MATCH_TAG_COMMAND, async (msg) => {
             if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
                 console.info(QUEUE_TEXT("Text", `${msg.chat.title}(${msg.chat.id})`));
-                addPhoto(msg.reply_to_message);
+                await addPhoto(msg.reply_to_message);
             } else if (msg.reply_to_message && msg.reply_to_message.entities) {
-                await doAddPhotoByUrl(msg.reply_to_message);
+                doAddPhotoByUrl(msg.reply_to_message);
             }
         });
 
-        bot.on("photo", (msg: TelegramBot.Message) => {
+        bot.on("photo", async (msg: TelegramBot.Message) => {
             if (msg.caption && msg.caption.match(REGEXP_MATCH_TAG_COMMAND)) {
                 console.info(QUEUE_TEXT("Photo", `${msg.chat.title}(${msg.chat.id})`));
-                addPhoto(msg);
+                await addPhoto(msg);
             }
         });
 
-        bot.on("document", (msg: TelegramBot.Message) => {
+        bot.on("document", async (msg: TelegramBot.Message) => {
             if (msg.caption && msg.caption.match(REGEXP_MATCH_TAG_COMMAND)) {
                 console.info(QUEUE_TEXT("Document", `${msg.chat.title}(${msg.chat.id})`));
-                addPhoto(msg);
+                await addPhoto(msg);
             }
         });
 
-        bot.on("message", (msg: TelegramBot.Message) => {
+        bot.on("message", async (msg: TelegramBot.Message) => {
             if (msg.text !== undefined && msg.text.match(REGEXP_MATCH_TAG_COMMAND) !== null) {
                 if (msg.entities) {
-                    await doAddPhotoByUrl(msg);
+                    doAddPhotoByUrl(msg);
                 }
             }
         });
     });
-};
+}
 
 // read site data which contains chat's photo list data
-const readData = (_config: any) =>
-    fs.readFile(DATA_FILE_PATH, null, (err, d) => {
+function readData(_config: any) {
+    fs.readFile(DATA_FILE_PATH, null, async (err, d) => {
         try {
             data = yaml.load(d.toString());
         } catch (e) {
@@ -300,6 +302,7 @@ const readData = (_config: any) =>
             throw Error(NEED_TELEGRAM_BOT_TOKEN);
         }
     });
+}
 
 // read and initial the config file
 fs.readFile(CONFIG_FILE_PATH, null, (err, d) => {
