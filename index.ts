@@ -11,6 +11,7 @@ import {
     CAN_NOT_CHANGE_ALL_ADMINS_PHOTO,
     CAN_NOT_CHANGE_PHOTO,
     CONFIG_FILE_PATH,
+    DATA_FILE_JSON_PATH,
     DATA_FILE_PATH,
     GROUP_PHOTO_CAPTION,
     IMAGE_FROM_URL_DIMENSION,
@@ -286,11 +287,31 @@ async function main(bot: TelegramBot) {
     });
 }
 
+function doCompatibleConvert(d: object): PhotoDataStrcture[] {
+    const apds: PhotoDataStrcture[] = [];
+    for (const chatId in d) {
+        if (d.hasOwnProperty(chatId)) {
+            const dc = (d as any)[chatId] as PhotoDataStrcture;
+            const pds = new PhotoDataStrcture(Number(chatId));
+            pds.interval = dc.interval;
+            pds.last = dc.last;
+            pds.queue = dc.queue;
+            apds.push(pds);
+        }
+    }
+    return apds;
+}
+
 // read site data which contains chat's photo list data
 function readData(_config: any) {
     fs.readFile(DATA_FILE_PATH, null, async (err, d) => {
         try {
-            data = yaml.load(d.toString());
+            data = (fs.existsSync(DATA_FILE_PATH)) ?
+                yaml.load(d.toString()) :
+                fs.readFileSync(DATA_FILE_JSON_PATH).toString();
+            if (data instanceof Object) {
+                data = doCompatibleConvert(data);
+            }
         } catch (e) {
             data = [];
         }

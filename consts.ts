@@ -3,6 +3,7 @@ const ALREADY_IN_QUEUE = "已在序列中";
 const CAN_NOT_CHANGE_ALL_ADMINS_PHOTO = "I can't change group photo if all members are admin!";
 const CAN_NOT_CHANGE_PHOTO = "I can't change your photo!";
 const CONFIG_FILE_PATH = "./config.yaml";
+const DATA_FILE_JSON_PATH = "./data.json";
 const DATA_FILE_PATH = "./data.yaml";
 const GROUP_PHOTO_CAPTION = "#群組圖片";
 const IMAGE_FROM_URL_DIMENSION = (mime: string, w: number, h: number) =>
@@ -24,6 +25,7 @@ export {
     CAN_NOT_CHANGE_ALL_ADMINS_PHOTO,
     CAN_NOT_CHANGE_PHOTO,
     CONFIG_FILE_PATH,
+    DATA_FILE_JSON_PATH,
     DATA_FILE_PATH,
     GROUP_PHOTO_CAPTION,
     IMAGE_FROM_URL_DIMENSION,
