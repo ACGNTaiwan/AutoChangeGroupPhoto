@@ -44,7 +44,6 @@ function getData(chatId: number): PhotoData.PhotoDataStrcture {
     } else {
         const d = new PhotoData.PhotoDataStrcture(chatId);
         data.push(d);
-        saveData();
         return d;
     }
 }
@@ -85,7 +84,6 @@ async function main(bot: TelegramBot) {
         const result = await checkQueue(msg);
         if (result !== undefined) {
             await bot.sendMessage(chatId, result, {reply_to_message_id: msg.message_id});
-            saveData();
         }
         return result;
     }
@@ -98,7 +96,6 @@ async function main(bot: TelegramBot) {
                 await bot.getFileLink(chatData.queue.shift()!)
                     .then(async (link) => link instanceof Error ? null : bot.setChatPhoto(chatData.chatId, request(link)));
                 chatData.last = +moment();
-                saveData();
             }
         });
     }
@@ -210,7 +207,6 @@ async function main(bot: TelegramBot) {
                                 if (args.length > 0 && Number(args) >= 0.5) {
                                     chatData.interval = Number(args);
                                     await bot.sendMessage(chatId, SET_INTERVAL(chatData.interval.toString()));
-                                    saveData();
                                 } else {
                                     await bot.sendMessage(chatId, INVALID_VALUE);
                                 }
@@ -229,7 +225,6 @@ async function main(bot: TelegramBot) {
                                         link instanceof Error ? Promise.resolve(true) : bot.setChatPhoto(chatId, request(link)),
                                     );
                                 chatData.last = +moment();
-                                saveData();
                             }
                             break;
                         // TODO
