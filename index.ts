@@ -1,8 +1,3 @@
-/**
- * @license
- * Copyright 2017
- */
-
 import * as fs from "fs";
 import * as jimp from "jimp";
 import * as yaml from "js-yaml";

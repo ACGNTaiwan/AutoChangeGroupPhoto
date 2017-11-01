@@ -1,8 +1,3 @@
-/**
- * @license
- * Copyright 2017
- */
-
 import * as moment from "moment";
 
 class PhotoDataStrcture {

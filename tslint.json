@@ -46,9 +46,7 @@
     ],
 
     "interface-name": false,
-    "file-header": [true,
-      "Copyright \\d{4}"
-    ],
+    "file-header": [false],
     "max-classes-per-file": false,
     "max-line-length": [true, 140],
     "member-ordering": [

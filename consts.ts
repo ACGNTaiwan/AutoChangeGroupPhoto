@@ -1,8 +1,3 @@
-/**
- * @license
- * Copyright 2017
- */
-
 const ADDED_INTO_QUEUE = "已加入序列";
 const ALREADY_IN_QUEUE = "已在序列中";
 const CAN_NOT_CHANGE_ALL_ADMINS_PHOTO = "I can't change group photo if all members are admin!";
