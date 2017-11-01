@@ -47,6 +47,6 @@
     "ts-loader": "^2.1.0",
     "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
-    "typescript": "^2.3.4"
+    "typescript": "^2.6.0"
   }
 }
