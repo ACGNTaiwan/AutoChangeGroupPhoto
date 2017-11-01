@@ -289,7 +289,7 @@ async function main(bot: TelegramBot) {
 
 function doCompatibleConvert(d: object): PhotoDataStrcture[] {
     const apds: PhotoDataStrcture[] = [];
-    Object(d).keys((chatId: string) => {
+    Object.keys(d).map((chatId: string) => {
         const dc = (d as any)[chatId] as PhotoDataStrcture;
         const pds = new PhotoDataStrcture(Number(chatId));
         pds.interval = dc.interval;
