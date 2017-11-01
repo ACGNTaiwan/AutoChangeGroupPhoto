@@ -26,20 +26,23 @@ import {
     URL_REQUESTED_IS_NOT_OK,
     WAITING_PHOTOS,
 } from "./consts";
-import { PhotoDataStrcture } from "./PhotoDataStrcture";
+import * as PhotoData from "./PhotoData";
 
-let data: PhotoDataStrcture[] = [];
+let data: PhotoData.PhotoDataStrcture[];
 
 moment.locale("zh-tw");
 
-const saveData = () => fs.writeFile(DATA_FILE_PATH, yaml.safeDump(data));
+const saveData = () => {
+    const _data = JSON.parse(JSON.stringify(data)); // to prevent Proxy dump undefined
+    fs.writeFile(DATA_FILE_PATH, yaml.safeDump(_data));
+};
 
-function getData(chatId: number): PhotoDataStrcture {
+function getData(chatId: number): PhotoData.PhotoDataStrcture {
     const chatData = data.filter((d) => d.chatId === chatId).shift();
-    if (chatData instanceof PhotoDataStrcture) {
+    if (chatData instanceof PhotoData.PhotoDataStrcture) {
         return chatData;
     } else {
-        const d = new PhotoDataStrcture(chatId);
+        const d = new PhotoData.PhotoDataStrcture(chatId);
         data.push(d);
         saveData();
         return d;
@@ -287,11 +290,11 @@ async function main(bot: TelegramBot) {
     });
 }
 
-function doCompatibleConvert(d: object): PhotoDataStrcture[] {
-    const apds: PhotoDataStrcture[] = [];
+function doCompatibleConvert(d: object): PhotoData.PhotoDataStrcture[] {
+    const apds: PhotoData.PhotoDataStrcture[] = [];
     Object.keys(d).map((chatId: string) => {
-        const dc = (d as any)[chatId] as PhotoDataStrcture;
-        const pds = new PhotoDataStrcture(Number(chatId));
+        const dc = (d as any)[chatId] as PhotoData.PhotoDataStrcture;
+        const pds = new PhotoData.PhotoDataStrcture(Number(chatId));
         pds.interval = dc.interval;
         pds.last = dc.last;
         pds.queue = dc.queue;
@@ -300,10 +303,11 @@ function doCompatibleConvert(d: object): PhotoDataStrcture[] {
     return apds;
 }
 
-async function init(_config: any) {
-    if (data instanceof Object) {
-        data = doCompatibleConvert(data);
+async function init(_config: any, _data: any) {
+    if (_data instanceof Object) {
+        _data = doCompatibleConvert(_data);
     }
+    data = PhotoData.PhotoDataStore(_data, saveData);
     if (_config.token) {
         // if has bot token, then start the main program
         const bot = new TelegramBot(_config.token, {polling: {interval: 0, params: {timeout: 60}}});
@@ -315,35 +319,36 @@ async function init(_config: any) {
 
 // read site data which contains chat's photo list data
 function readData(_config: any) {
+    let preparingData: any = [];
     if (fs.existsSync(DATA_FILE_PATH)) {
         fs.readFile(DATA_FILE_PATH, null, async (err, d) => {
             try {
-                data = yaml.load(d.toString());
+                preparingData = yaml.load(d.toString());
             } catch (e) {
-                data = [];
+                console.warn(e);
             }
-            await init(_config);
+            await init(_config, preparingData);
         });
     } else {
         fs.readFile(DATA_FILE_JSON_PATH, null, async (err, d) => {
             try {
-                data = JSON.parse(d.toString());
+                preparingData = JSON.parse(d.toString());
             } catch (e) {
-                data = [];
+                console.warn(e);
             }
-            await init(_config);
+            await init(_config, preparingData);
         });
     }
 }
 
 // read and initial the config file
 fs.readFile(CONFIG_FILE_PATH, null, (err, d) => {
-    let config;
+    let _config;
     try {
-        config = yaml.load(d.toString());
+        _config = yaml.load(d.toString());
     } catch (e) {
-        config = {};
+        _config = {};
     } finally {
-        readData(config);
+        readData(_config);
     }
 });
