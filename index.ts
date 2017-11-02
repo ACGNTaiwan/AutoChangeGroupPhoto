@@ -278,16 +278,11 @@ async function main(bot: TelegramBot) {
 }
 
 function doCompatibleConvert(d: object): PhotoData.PhotoDataStrcture[] {
-    const apds: PhotoData.PhotoDataStrcture[] = [];
-    Object.keys(d).map((chatId: string) => {
-        const dc = (d as any)[chatId] as PhotoData.PhotoDataStrcture;
-        const pds = new PhotoData.PhotoDataStrcture(Number(chatId));
-        pds.interval = dc.interval ? dc.interval : 1;
-        pds.last = dc.last ? dc.last : +moment();
-        pds.queue = (dc.queue !== undefined && dc.queue.length > 0) ? dc.queue : [];
-        apds.push(pds);
-    });
-    return apds;
+    return Object.keys(d)
+        .map<PhotoData.PhotoDataStrcture>(
+            (chatId: string) =>
+                new PhotoData.PhotoDataStrcture((d as any)[chatId]),
+        );
 }
 
 async function init(_config: any, _data: any) {

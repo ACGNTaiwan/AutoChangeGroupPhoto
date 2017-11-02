@@ -48,8 +48,8 @@ export class PhotoDataStrcture {
             this.chatId = chatId;
             this.interval = interval ? interval : 1;
             this.last = last ? last : +moment();
-            this.queue = new Proxy(queue !== null ? queue : [], autoSaver);
-            this.history = new Proxy(history !== null ? history : [], autoSaver);
+            this.queue = new Proxy((queue !== null && queue !== undefined) ? queue : [], autoSaver);
+            this.history = new Proxy((history !== null && history !== undefined) ? history : [], autoSaver);
         } else {
             this.from(chatId as PhotoDataStrcture);
         }
@@ -58,8 +58,8 @@ export class PhotoDataStrcture {
         this.chatId = pds.chatId;
         this.interval = pds.interval ? pds.interval : 1;
         this.last = pds.last ? pds.last : +moment();
-        this.queue = new Proxy(pds.queue !== null ? pds.queue : [], autoSaver);
-        this.history = new Proxy(pds.history !== null ? pds.history : [], autoSaver);
+        this.queue = new Proxy((pds.queue !== null && pds.queue !== undefined) ? pds.queue : [], autoSaver);
+        this.history = new Proxy((pds.history !== null && pds.history !== undefined) ? pds.history : [], autoSaver);
     }
 }
 
