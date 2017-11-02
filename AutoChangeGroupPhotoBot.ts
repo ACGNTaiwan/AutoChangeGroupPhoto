@@ -391,7 +391,10 @@ class AutoChangeGroupPhotoBot {
     private async preProcessUrl(msg: TelegramBot.Message, url: string) {
         return new Promise<string>((resolve, reject) => {
             console.info(CONSTS.URL_PREPARE_TO_DOWNLOAD(msg, url));
-            if (url.match(/twitter.com/i) !== null) {
+            if (url.match(/\.pixiv\./i) !== null) {
+                // todo for pixiv, always reject until implemented
+                reject(url);
+            } else {
                 request.get(url, { encoding: null }, async (error, response, body) => {
                     ogs({ url }, (err: boolean, results: any) => {
                         if (!err && results.success === true &&
@@ -406,8 +409,6 @@ class AutoChangeGroupPhotoBot {
                         }
                     });
                 });
-            } else {
-                resolve(url);
             }
         }).catch((_url: string) => _url);
     }
