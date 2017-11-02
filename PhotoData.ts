@@ -1,23 +1,19 @@
 import * as moment from "moment";
 
-let _handler: () => void | undefined;
-let saver: NodeJS.Timer;
+let _saverHandler: () => void | undefined;
+let saverTimer: NodeJS.Timer;
 
 const save = () => {
-    if (_handler !== undefined) {
-        try {
-            clearTimeout(saver);
-            // let object sync back
-            saver = setTimeout(() => {
-                try {
-                    _handler();
-                } catch (e) {
-                    console.error(e);
-                }
-            },                 100);
-        } catch (e) {
-            console.error(e);
-        }
+    if (_saverHandler !== undefined) {
+        clearTimeout(saverTimer);
+        // let object sync back
+        saverTimer = setTimeout(() => {
+            try {
+                _saverHandler();
+            } catch (e) {
+                console.error(e);
+            }
+        },                      100);
     }
 };
 
@@ -40,21 +36,31 @@ export class PhotoDataStrcture {
     public interval: number;
     public last: number;
     public queue: string[];
-    public constructor(chatId: number, interval: number = 1, last: number = +moment(), queue: string[] = []) {
-        this.chatId = chatId;
-        this.interval = interval ? interval : 1;
-        this.last = last ? last : +moment();
-        this.queue = new Proxy(queue !== null ? queue : [], autoSaver);
+    public constructor(chatId: number | object | PhotoDataStrcture, interval: number = 1, last: number = +moment(), queue: string[] = []) {
+        if (typeof chatId === "number") {
+            this.chatId = chatId;
+            this.interval = interval ? interval : 1;
+            this.last = last ? last : +moment();
+            this.queue = new Proxy(queue !== null ? queue : [], autoSaver);
+        } else {
+            this.from(chatId as PhotoDataStrcture);
+        }
+    }
+    private from(pds: PhotoDataStrcture) {
+        this.chatId = pds.chatId;
+        this.interval = pds.interval ? pds.interval : 1;
+        this.last = pds.last ? pds.last : +moment();
+        this.queue = new Proxy(pds.queue !== null ? pds.queue : [], autoSaver);
     }
 }
 
-export const PhotoDataStore = (initStore: PhotoDataStrcture[] = [], handler: () => void | undefined): PhotoDataStrcture[] => {
+export const PhotoDataStore = (initStore: PhotoDataStrcture[] = [], saverHandler: () => void | undefined): PhotoDataStrcture[] => {
     const _photoDataStoreData: PhotoDataStrcture[] = [];
     const p = new Proxy(_photoDataStoreData, autoSaver);
     if (initStore.length !== 0) {
-        initStore.map((s: PhotoDataStrcture) => p.push(new Proxy(new PhotoDataStrcture(s.chatId, s.interval, s.last, s.queue), autoSaver)));
+        initStore.map((s: PhotoDataStrcture) => p.push(new Proxy(new PhotoDataStrcture(s), autoSaver)));
     }
-    _handler = handler;
+    _saverHandler = saverHandler;
     save();
     return p;
 };
