@@ -15,6 +15,8 @@ export const QUEUE_REQUEST_TEXT = (type: string, name: string) => `Receive ${typ
 export const QUEUE_TEXT = (type: string, name: string) => `Receive ${type} Queue from ${name}`;
 export const REGEXP_MATCH_TAG_COMMAND = /(#|＃)(群組圖|群组图)(片)?/ig;
 export const SET_INTERVAL = (interval: string) => `已設定變更間隔為${interval}小時`;
-export const URL_REQUESTED_IS_NOT_A_IMAGE = "要求的網址不是可辨識的圖片，無法安排自動換圖";
-export const URL_REQUESTED_IS_NOT_OK = "要求的網址回傳不是成功要求，請檢查網址";
+export const UPLOADING_PHOTO = (chatId: string | number, image: Buffer, url: string) =>
+    `Uploading the Photo from \`${url}\` (size: ${image.byteLength}) to Chat: ${chatId}`;
+export const URL_REQUESTED_IS_NOT_A_IMAGE = (url: string) => `要求的網址 \`${url}\` 不是可辨識的圖片，無法安排自動換圖`;
+export const URL_REQUESTED_IS_NOT_OK = (url: string) => `要求的網址 \`${url}\` 回傳不是成功要求，請檢查網址`;
 export const WAITING_PHOTOS = (count: number, nextTime: string) => `等待的圖片數：${count.toString()}\n下次換圖時間：${nextTime}`;

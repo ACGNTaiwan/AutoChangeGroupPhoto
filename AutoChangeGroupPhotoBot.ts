@@ -10,7 +10,12 @@ import * as PhotoData from "./PhotoData";
 
 moment.locale("zh-tw");
 
-export class AutoChangeGroupPhotoBot {
+export
+/**
+ * The Telegram Bot for Auto Change Group Photo Icon
+ * @class AutoChangeGroupPhotoBot
+ */
+class AutoChangeGroupPhotoBot {
     private static _instance?: AutoChangeGroupPhotoBot;
     private bot: TelegramBot;
     private data: PhotoData.PhotoDataStrcture[];
@@ -222,21 +227,31 @@ export class AutoChangeGroupPhotoBot {
      * @param entitiy Message Entity
      * @param url Requested URL queue
      */
-    private async sendQueueResult(msg: TelegramBot.Message, result: string, entitiy?: TelegramBot.MessageEntity, url?: string) {
+    private async sendQueueResult(
+        msg: TelegramBot.Message,
+        result: string,
+        parentMsg?: TelegramBot.Message,
+        entitiy?: TelegramBot.MessageEntity,
+        url?: string,
+    ) {
         switch (result) {
             case CONSTS.ADDED_INTO_QUEUE:
                 await this.bot.sendMessage(msg.chat.id, result, {reply_to_message_id: msg.message_id});
                 break;
             case CONSTS.ALREADY_IN_QUEUE:
-                // if file_id already in queue, delete the image message to save the view space
-                await this.bot.deleteMessage(msg.chat.id, msg.message_id.toString());
-                // and then, send a message with URL's substr offset and length of text
-                // to notify it's already in queue
                 if (entitiy && url) {
-                    await this.bot.sendMessage(msg.chat.id,
-                                               `@(${entitiy.offset}+${entitiy.length}): ${url} ${CONSTS.ALREADY_IN_QUEUE}`,
-                                               {reply_to_message_id: msg.message_id},
-                                        );
+                    // if file_id already in queue, delete the image message to save the view space
+                    await this.bot.deleteMessage(msg.chat.id, msg.message_id.toString());
+                    // and then, send a message with URL's substr offset and length of text
+                    // to notify it's already in queue
+                    if (parentMsg) {
+                        await this.bot.sendMessage(msg.chat.id,
+                                                   `@(${entitiy.offset}+${entitiy.length}): ${url} ${CONSTS.ALREADY_IN_QUEUE}`,
+                                                   {reply_to_message_id: parentMsg.message_id},
+                                            );
+                    }
+                } else {
+                    await this.bot.sendMessage(msg.chat.id, CONSTS.ALREADY_IN_QUEUE, {reply_to_message_id: msg.message_id});
                 }
                 break;
             default:
@@ -326,10 +341,11 @@ export class AutoChangeGroupPhotoBot {
      * @param url Requested URL queue
      */
     private async uploadPhoto(msg: TelegramBot.Message, imageBuffer: Buffer, ent: TelegramBot.MessageEntity, url: string) {
+        console.info(CONSTS.UPLOADING_PHOTO(`${msg.chat.title}(${msg.chat.id})`, imageBuffer, url));
         return this.bot.sendPhoto(msg.chat.id, imageBuffer, {caption: CONSTS.GROUP_PHOTO_CAPTION})
             .then(async (m) => {
                 if (!(m instanceof Error)) {
-                    await this.sendQueueResult(m, await this.checkQueue(m), ent, url);
+                    await this.sendQueueResult(m, await this.checkQueue(m), msg, ent, url);
                 }
             })
             .catch((e) => {
@@ -353,7 +369,9 @@ export class AutoChangeGroupPhotoBot {
                     await this.uploadPhoto(msg, imageBuffer, ent, url);
                 } else {
                     // jimp can not decode as an image, we must send a message to notify the URL is not an image
-                    await this.bot.sendMessage(msg.chat.id, CONSTS.URL_REQUESTED_IS_NOT_A_IMAGE, {reply_to_message_id: msg.message_id});
+                    await this.bot.sendMessage(msg.chat.id,
+                                               CONSTS.URL_REQUESTED_IS_NOT_A_IMAGE(url),
+                                               {reply_to_message_id: msg.message_id});
                 }
             })
             .catch((err: Error) => {
@@ -376,7 +394,9 @@ export class AutoChangeGroupPhotoBot {
                 await this.parsePhoto(msg, Buffer.from(response.body), ent, url);
             } else {
                 // notify the URL not responsed correctly
-                await this.bot.sendMessage(msg.chat.id, CONSTS.URL_REQUESTED_IS_NOT_OK, {reply_to_message_id: msg.message_id});
+                await this.bot.sendMessage(msg.chat.id,
+                                           CONSTS.URL_REQUESTED_IS_NOT_OK(url),
+                                           {reply_to_message_id: msg.message_id});
             }
         });
     }
