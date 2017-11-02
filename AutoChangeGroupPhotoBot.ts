@@ -15,17 +15,23 @@ export class AutoChangeGroupPhotoBot {
     private bot: TelegramBot;
     private data: PhotoData.PhotoDataStrcture[];
 
+    /**
+     * Singleton of AutoChangeGroupPhotoBot
+     * @param _config Telegram Bot config object
+     */
     public static getInstance(_config: any = {}) {
         return (this._instance) ? this._instance : (this._instance = new this(_config));
     }
 
+    /**
+     * AutoChangeGroupPhotoBot constructor
+     * @param _config Telegram Bot config object
+     */
     private constructor(_config: any = {}) {
         if (_config.token) {
             this.data = PhotoData.PhotoDataStore(this.readData(), () => { this.saveData(); });
             // if has bot token, then start the main program
             this.bot = new TelegramBot(_config.token, {polling: {interval: 0, params: {timeout: 60}}});
-
-            schedule.scheduleJob("0 * * * * *", () => { this.doUpdate(); });
 
             this.registerEvent().then(() => { /* no-op */ }).catch(() => { /* no-op */ });
         } else {
@@ -33,7 +39,12 @@ export class AutoChangeGroupPhotoBot {
         }
     }
 
+    /**
+     * Register Bot events and cronjob
+     */
     private async registerEvent() {
+        schedule.scheduleJob("0 * * * * *", () => { this.doUpdate(); });
+
         this.bot.onText(CONSTS.REGEXP_MATCH_TAG_COMMAND, async (msg) => {
             if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
                 console.info(CONSTS.QUEUE_TEXT("Text", `${msg.chat.title}(${msg.chat.id})`));
@@ -149,6 +160,10 @@ export class AutoChangeGroupPhotoBot {
         });
     }
 
+    /**
+     * Convert Data from old structure
+     * @param d PhotoDataStrcture Data Array
+     */
     private doCompatibleConvert(d: object): PhotoData.PhotoDataStrcture[] {
         return Object.keys(d)
             .map<PhotoData.PhotoDataStrcture>(
@@ -157,7 +172,9 @@ export class AutoChangeGroupPhotoBot {
             );
     }
 
-    // read site data which contains chat's photo list data
+    /**
+     * Read PhotoDataStrcture Datas into PhotoDataStore which contains Chat's data stores
+     */
     private readData() {
         let _data;
         try {
@@ -175,11 +192,18 @@ export class AutoChangeGroupPhotoBot {
         return _data;
     }
 
+    /**
+     * Save PhotoDataStore to data file
+     */
     private saveData() {
         const _data = JSON.parse(JSON.stringify(this.data)); // to prevent Proxy dump undefined
         fs.writeFile(CONSTS.DATA_FILE_PATH, yaml.safeDump(_data));
     }
 
+    /**
+     * Get Chat Data Store by Chat ID
+     * @param chatId Telegram Chat ID aka. Group ID
+     */
     private getData(chatId: number): PhotoData.PhotoDataStrcture {
         const chatData = this.data.filter((d) => d.chatId === chatId).shift();
         if (chatData instanceof PhotoData.PhotoDataStrcture) {
@@ -191,6 +215,13 @@ export class AutoChangeGroupPhotoBot {
         }
     }
 
+    /**
+     * Send Queue Result back to Chat
+     * @param msg Message Object
+     * @param result Queue result string
+     * @param entitiy Message Entity
+     * @param url Requested URL queue
+     */
     private async sendQueueResult(msg: TelegramBot.Message, result: string, entitiy?: TelegramBot.MessageEntity, url?: string) {
         switch (result) {
             case CONSTS.ADDED_INTO_QUEUE:
@@ -214,6 +245,10 @@ export class AutoChangeGroupPhotoBot {
         }
     }
 
+    /**
+     * Check and Add into the Queue
+     * @param msg Message Object
+     */
     private async checkQueue(msg: TelegramBot.Message) {
         const chatId = msg.chat.id;
         let fileId: string;
@@ -245,6 +280,10 @@ export class AutoChangeGroupPhotoBot {
         return result;
     }
 
+    /**
+     * Add Photo to Queue
+     * @param msg Message Object
+     */
     private async addPhoto(msg: TelegramBot.Message) {
         const result = await this.checkQueue(msg);
         if (result !== undefined && result.length > 0) {
@@ -253,6 +292,9 @@ export class AutoChangeGroupPhotoBot {
         return result;
     }
 
+    /**
+     * Update the Group Photo Icon
+     */
     private doUpdate() {
         this.data.map(async (chatData) => {
             if (!chatData.last || moment(chatData.last).add(chatData.interval, "h").isBefore(moment())) {
@@ -276,6 +318,13 @@ export class AutoChangeGroupPhotoBot {
         });
     }
 
+    /**
+     * Upload the Photo from URL back to Chat for acquire a file ID
+     * @param msg Message Object
+     * @param imageBuffer Image Buffer Object
+     * @param ent Message Entity
+     * @param url Requested URL queue
+     */
     private async uploadPhoto(msg: TelegramBot.Message, imageBuffer: Buffer, ent: TelegramBot.MessageEntity, url: string) {
         return this.bot.sendPhoto(msg.chat.id, imageBuffer, {caption: CONSTS.GROUP_PHOTO_CAPTION})
             .then(async (m) => {
@@ -288,6 +337,13 @@ export class AutoChangeGroupPhotoBot {
             });
     }
 
+    /**
+     * Try to parse the downloaded Photo, then add into the queue
+     * @param msg Message Object
+     * @param imageBuffer Image Buffer Object
+     * @param ent Message Entity
+     * @param url Requested URL queue
+     */
     private async parsePhoto(msg: TelegramBot.Message, imageBuffer: Buffer, ent: TelegramBot.MessageEntity, url: string) {
         return jimp.read(imageBuffer)
             .then(async (image) => {
@@ -305,6 +361,12 @@ export class AutoChangeGroupPhotoBot {
             });
     }
 
+    /**
+     * Try to get Image from the URL and try to parse then add
+     * @param msg Message Object
+     * @param ent Message Entity
+     * @param url Requested URL queue
+     */
     private tryGetPhotoFromUrl(msg: TelegramBot.Message, ent: TelegramBot.MessageEntity, url: string) {
         return request.get(url, { encoding: null }, async (error, response, body) => {
             if (error) {
@@ -319,6 +381,10 @@ export class AutoChangeGroupPhotoBot {
         });
     }
 
+    /**
+     * Add URL Photo to queue
+     * @param msg Message Object
+     */
     private doAddPhotoByUrl(msg: TelegramBot.Message) {
         if (msg.entities) {
             const urls: string[] = [];
