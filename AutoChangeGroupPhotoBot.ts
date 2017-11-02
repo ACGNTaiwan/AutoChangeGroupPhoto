@@ -19,6 +19,7 @@ class AutoChangeGroupPhotoBot {
     private static _instance?: AutoChangeGroupPhotoBot;
     private bot: TelegramBot;
     private data: PhotoData.PhotoDataStrcture[];
+    private uploadQueue: Promise<any> = Promise.resolve();
 
     /**
      * Singleton of AutoChangeGroupPhotoBot
@@ -344,9 +345,11 @@ class AutoChangeGroupPhotoBot {
         console.info(CONSTS.UPLOADING_PHOTO(`${msg.chat.title}(${msg.chat.id})`, imageBuffer, url));
         return this.bot.sendPhoto(msg.chat.id, imageBuffer, {caption: CONSTS.GROUP_PHOTO_CAPTION})
             .then(async (m) => {
+                let ret;
                 if (!(m instanceof Error)) {
-                    await this.sendQueueResult(m, await this.checkQueue(m), msg, ent, url);
+                    ret = await this.sendQueueResult(m, await this.checkQueue(m), msg, ent, url);
                 }
+                return ret;
             })
             .catch((e) => {
                 console.error(e);
@@ -385,20 +388,29 @@ class AutoChangeGroupPhotoBot {
      * @param ent Message Entity
      * @param url Requested URL queue
      */
-    private tryGetPhotoFromUrl(msg: TelegramBot.Message, ent: TelegramBot.MessageEntity, url: string) {
-        return request.get(url, { encoding: null }, async (error, response, body) => {
-            if (error) {
-                console.error(error);
-            }
-            if (response.statusCode === 200) {
-                await this.parsePhoto(msg, Buffer.from(response.body), ent, url);
-            } else {
-                // notify the URL not responsed correctly
-                await this.bot.sendMessage(msg.chat.id,
-                                           CONSTS.URL_REQUESTED_IS_NOT_OK(url),
-                                           {reply_to_message_id: msg.message_id});
-            }
-        });
+    private async tryGetPhotoFromUrl(msg: TelegramBot.Message, ent: TelegramBot.MessageEntity, url: string) {
+        this.uploadQueue = this.uploadQueue.then(async () =>
+            new Promise<void>(async (resolve, reject) =>
+                request.get(url, { encoding: null }, async (error, response, body) => {
+                    if (error) {
+                        console.error(error);
+                        reject();
+                        return;
+                    }
+                    if (response.statusCode === 200) {
+                        await this.parsePhoto(msg, Buffer.from(response.body), ent, url);
+                        resolve();
+                    } else {
+                        // notify the URL not responsed correctly
+                        await this.bot.sendMessage(msg.chat.id,
+                                                   CONSTS.URL_REQUESTED_IS_NOT_OK(url),
+                                                   {reply_to_message_id: msg.message_id});
+                        reject();
+                    }
+                }),
+            ),
+        ).catch(() => { /* no-op */ });
+        return this.uploadQueue;
     }
 
     /**
@@ -413,8 +425,8 @@ class AutoChangeGroupPhotoBot {
                     const url = msg.text.substr(ent.offset, ent.length);
                     if (urls.indexOf(url) === -1) {
                         console.info(CONSTS.QUEUE_REQUEST_TEXT("URL", `${msg.chat.title}(${msg.chat.id}): ${url}`));
-                        this.tryGetPhotoFromUrl(msg, ent, url);
                         urls.push(url);
+                        await this.tryGetPhotoFromUrl(msg, ent, url);
                     }
                 }
             });
