@@ -59,6 +59,7 @@ async function main(bot: TelegramBot) {
         }
         return result;
     }
+
     async function addPhoto(msg: TelegramBot.Message) {
         const chatId = msg.chat.id;
         const result = await checkQueue(msg);
@@ -70,12 +71,23 @@ async function main(bot: TelegramBot) {
 
     function doUpdate() {
         data.map(async (chatData) => {
-            if (chatData.queue.length > 0 &&
-                (!chatData.last || moment(chatData.last).add(chatData.interval, "h").isBefore(moment()))
-            ) {
-                await bot.getFileLink(chatData.queue.shift()!)
-                    .then(async (link) => link instanceof Error ? null : bot.setChatPhoto(chatData.chatId, request(link)));
-                chatData.last = +moment();
+            if (!chatData.last || moment(chatData.last).add(chatData.interval, "h").isBefore(moment())) {
+                let fileLink: string;
+                if (chatData.queue.length > 0) {
+                    fileLink = chatData.queue.shift()!;
+                    if (!chatData.history.includes(fileLink)) {
+                        chatData.history.push(fileLink);
+                    }
+                } else if (chatData.queue.length === 0 && chatData.history.length > 0) {
+                    fileLink = chatData.history[Math.floor(Math.random() * chatData.history.length)];
+                } else {
+                    fileLink = "";
+                }
+                if (fileLink.length > 0) {
+                    await bot.getFileLink(fileLink)
+                        .then(async (link) => link instanceof Error ? null : bot.setChatPhoto(chatData.chatId, request(link)));
+                    chatData.last = +moment();
+                }
             }
         });
     }

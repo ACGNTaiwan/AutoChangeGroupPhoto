@@ -36,12 +36,20 @@ export class PhotoDataStrcture {
     public interval: number;
     public last: number;
     public queue: string[];
-    public constructor(chatId: number | object | PhotoDataStrcture, interval: number = 1, last: number = +moment(), queue: string[] = []) {
+    public history: string[];
+    public constructor(
+        chatId: number | object | PhotoDataStrcture,
+        interval: number = 1,
+        last: number = +moment(),
+        queue: string[] = [],
+        history: string[] = [],
+    ) {
         if (typeof chatId === "number") {
             this.chatId = chatId;
             this.interval = interval ? interval : 1;
             this.last = last ? last : +moment();
             this.queue = new Proxy(queue !== null ? queue : [], autoSaver);
+            this.history = new Proxy(history !== null ? history : [], autoSaver);
         } else {
             this.from(chatId as PhotoDataStrcture);
         }
@@ -51,6 +59,7 @@ export class PhotoDataStrcture {
         this.interval = pds.interval ? pds.interval : 1;
         this.last = pds.last ? pds.last : +moment();
         this.queue = new Proxy(pds.queue !== null ? pds.queue : [], autoSaver);
+        this.history = new Proxy(pds.history !== null ? pds.history : [], autoSaver);
     }
 }
 
