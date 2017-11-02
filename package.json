@@ -31,6 +31,7 @@
     "moment": "^2.18.1",
     "node-schedule": "^1.2.3",
     "node-telegram-bot-api": "github:yagop/node-telegram-bot-api",
+    "open-graph-scraper": "^3.1.0",
     "request": "^2.81.0"
   },
   "devDependencies": {

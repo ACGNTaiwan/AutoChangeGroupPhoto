@@ -4,6 +4,7 @@ import * as yaml from "js-yaml";
 import * as moment from "moment";
 import * as schedule from "node-schedule";
 import * as TelegramBot from "node-telegram-bot-api";
+const ogs = require("open-graph-scraper");
 import * as request from "request";
 import * as CONSTS from "./consts";
 import * as PhotoData from "./PhotoData";
@@ -383,6 +384,35 @@ class AutoChangeGroupPhotoBot {
     }
 
     /**
+     * Pre-Process URL for some Open Graph supported sites
+     * @param msg Message Object
+     * @param url Requested URL queue
+     */
+    private async preProcessUrl(msg: TelegramBot.Message, url: string) {
+        return new Promise<string>((resolve, reject) => {
+            console.info(CONSTS.URL_PREPARE_TO_DOWNLOAD(msg, url));
+            if (url.match(/twitter.com/i) !== null) {
+                request.get(url, { encoding: null }, async (error, response, body) => {
+                    ogs({ url }, (err: boolean, results: any) => {
+                        if (!err && results.success === true &&
+                            results.data && results.data.ogImage && results.data.ogImage.url
+                        ) {
+                            const ogUrl = results.data.ogImage.url;
+                            console.info(CONSTS.URL_FOUND_OG_IMAGE_URL(msg, url, ogUrl));
+                            resolve(ogUrl);
+                        } else {
+                            console.info(CONSTS.URL_NOT_FOUND_OG_IMAGE_URL(msg, url));
+                            reject(url);
+                        }
+                    });
+                });
+            } else {
+                resolve(url);
+            }
+        }).catch((_url: string) => _url);
+    }
+
+    /**
      * Try to get Image from the URL and try to parse then add
      * @param msg Message Object
      * @param ent Message Entity
@@ -390,8 +420,13 @@ class AutoChangeGroupPhotoBot {
      */
     private async tryGetPhotoFromUrl(msg: TelegramBot.Message, ent: TelegramBot.MessageEntity, url: string) {
         this.uploadQueue = this.uploadQueue.then(async () =>
-            new Promise<void>(async (resolve, reject) =>
-                request.get(url, { encoding: null }, async (error, response, body) => {
+            new Promise<void>(async (resolve, reject) => {
+                const imgUrl = await this.preProcessUrl(msg, url);
+                if (imgUrl.length === 0) {
+                    reject();
+                    return;
+                }
+                return request.get(imgUrl, { encoding: null }, async (error, response, body) => {
                     if (error) {
                         console.error(error);
                         reject();
@@ -407,8 +442,8 @@ class AutoChangeGroupPhotoBot {
                                                    {reply_to_message_id: msg.message_id});
                         reject();
                     }
-                }),
-            ),
+                });
+            }),
         ).catch(() => { /* no-op */ });
         return this.uploadQueue;
     }

@@ -21,6 +21,10 @@ export const UPLOADING_PHOTO = (chatId: string | number, image: Buffer, url: str
     `Uploading the Photo from \`${url}\` (size: ${image.byteLength}) to Chat: ${chatId}`;
 export const URL_PREPARE_TO_DOWNLOAD = (msg: TelegramBot.Message, url: string) =>
     `Prepare to download \`${url}\` for ${msg.chat.title}({msg.chat.id})`;
+export const URL_FOUND_OG_IMAGE_URL = (msg: TelegramBot.Message, url: string, ogUrl: string) =>
+    `Found \`og:img\` to download \`${url}\` => \`${ogUrl}\` for ${msg.chat.title}({msg.chat.id})`;
+export const URL_NOT_FOUND_OG_IMAGE_URL = (msg: TelegramBot.Message, url: string) =>
+    `\`og:img\` not found to download \`${url}\` for ${msg.chat.title}({msg.chat.id})`;
 export const URL_REQUESTED_IS_NOT_A_IMAGE = (url: string) => `要求的網址 \`${url}\` 不是可辨識的圖片，無法安排自動換圖`;
 export const URL_REQUESTED_IS_NOT_OK = (url: string) => `要求的網址 \`${url}\` 回傳不是成功要求，請檢查網址`;
 export const WAITING_PHOTOS = (count: number, nextTime: string) => `等待的圖片數：${count.toString()}\n下次換圖時間：${nextTime}`;

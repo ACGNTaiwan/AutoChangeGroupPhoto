@@ -33,6 +33,7 @@
     "no-unbound-method": false,
     "no-unnecessary-qualifier": false,
     "no-use-before-declare": true,
+    "no-var-requires": false,
     "no-void-expression": false,
     "prefer-function-over-method": false,
     "strict-type-predicates": false,
