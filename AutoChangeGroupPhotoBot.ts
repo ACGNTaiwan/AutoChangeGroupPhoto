@@ -132,16 +132,7 @@ class AutoChangeGroupPhotoBot {
                                         break;
                                     }
                                 }
-                                if (chatData.queue.length > 0) {
-                                    await this.bot.getFileLink(chatData.queue.shift()!)
-                                        .then(
-                                            async (link: string | Error) =>
-                                                link instanceof Error ?
-                                                    Promise.resolve(true) :
-                                                    this.bot.setChatPhoto(chatId, request(link)),
-                                        );
-                                    chatData.last = +moment();
-                                }
+                                await this.nextPhoto(chatData);
                                 break;
                             // TODO
                             // case 'setloop':
@@ -319,24 +310,40 @@ class AutoChangeGroupPhotoBot {
     private doUpdate() {
         this.data.map(async (chatData) => {
             if (!chatData.last || moment(chatData.last).add(chatData.interval, "h").isBefore(moment())) {
-                let fileLink: string;
-                if (chatData.queue.length > 0) {
-                    fileLink = chatData.queue.shift()!;
-                    if (!chatData.history.includes(fileLink)) {
-                        chatData.history.push(fileLink);
-                    }
-                } else if (chatData.queue.length === 0 && chatData.history.length > 0) {
-                    fileLink = chatData.history[Math.floor(Math.random() * chatData.history.length)];
-                } else {
-                    fileLink = "";
-                }
-                if (fileLink.length > 0) {
-                    await this.bot.getFileLink(fileLink)
-                        .then(async (link) => link instanceof Error ? null : this.bot.setChatPhoto(chatData.chatId, request(link)));
-                    chatData.last = +moment();
-                }
+                await this.nextPhoto(chatData);
             }
         });
+    }
+
+    private async nextPhoto(chatData: PhotoData.PhotoDataStrcture) {
+        let fileLink: string;
+        if (chatData.queue.length > 0) {
+            fileLink = chatData.queue.shift()!;
+            if (!chatData.history.includes(fileLink)) {
+                chatData.history.push(fileLink);
+            }
+        } else if (chatData.queue.length === 0 && chatData.history.length > 0) {
+            fileLink = this.randomHistory(chatData);
+        } else {
+            fileLink = "";
+        }
+        if (fileLink.length > 0) {
+            await this.bot.getFileLink(fileLink)
+                .then(async (link) => link instanceof Error ? null : this.bot.setChatPhoto(chatData.chatId, request(link)));
+            chatData.last = +moment();
+        }
+        return fileLink;
+    }
+
+    private randomHistory(chatData: PhotoData.PhotoDataStrcture) {
+        // prevent last photo out of random queue
+        const idx = Math.floor(Math.random() * (chatData.history.length - 1));
+        const fileLink = chatData.history[idx];
+        // make next photo to last
+        chatData.history = chatData.history.map<string>((h) => h !== fileLink ? h : "")
+            .filter((h) => h)
+            .concat([fileLink]);
+        return fileLink;
     }
 
     /**
