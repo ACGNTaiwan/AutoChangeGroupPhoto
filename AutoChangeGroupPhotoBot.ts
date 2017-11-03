@@ -6,6 +6,7 @@ import * as schedule from "node-schedule";
 import * as TelegramBot from "node-telegram-bot-api";
 const ogs = require("open-graph-scraper");
 import * as request from "request";
+import { BotConfig } from "./BotConfig";
 import * as CONSTS from "./consts";
 import * as PhotoData from "./PhotoData";
 
@@ -18,6 +19,7 @@ export
  */
 class AutoChangeGroupPhotoBot {
     private static _instance?: AutoChangeGroupPhotoBot;
+    private config: BotConfig;
     private bot: TelegramBot;
     private data: PhotoData.PhotoDataStrcture[];
     private uploadQueue: Promise<any> = Promise.resolve();
@@ -35,10 +37,11 @@ class AutoChangeGroupPhotoBot {
      * @param _config Telegram Bot config object
      */
     private constructor(_config: any = {}) {
-        if (_config.token) {
+        this.config = Object.assign(new BotConfig(), _config);
+        if (this.config.token) {
             this.data = PhotoData.PhotoDataStore(this.readData(), () => { this.saveData(); });
             // if has bot token, then start the main program
-            this.bot = new TelegramBot(_config.token, {polling: {interval: 0, params: {timeout: 60}}});
+            this.bot = new TelegramBot(this.config.token, {polling: {interval: 0, params: {timeout: 60}}});
 
             this.registerEvent().then(() => { /* no-op */ }).catch(() => { /* no-op */ });
         } else {
@@ -115,7 +118,7 @@ class AutoChangeGroupPhotoBot {
                                         await this.bot.sendMessage(chatId, CONSTS.NOW_INTERVAL(chatData.interval.toString()));
                                         break;
                                     }
-                                    if (args.length > 0 && Number(args) >= 0.5) {
+                                    if (args.length > 0 && Number(args) >= this.config.minBotInterval) {
                                         chatData.interval = Number(args);
                                         await this.bot.sendMessage(chatId, CONSTS.SET_INTERVAL(chatData.interval.toString()));
                                     } else {
