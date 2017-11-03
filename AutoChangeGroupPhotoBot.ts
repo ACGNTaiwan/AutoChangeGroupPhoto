@@ -322,7 +322,7 @@ class AutoChangeGroupPhotoBot {
             if (!chatData.history.includes(fileLink)) {
                 chatData.history.push(fileLink);
             }
-        } else if (chatData.queue.length === 0 && chatData.history.length > 0) {
+        } else if (chatData.queue.length === 0 && chatData.history.length > 1) {
             fileLink = this.randomHistory(chatData);
         } else {
             fileLink = "";
