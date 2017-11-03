@@ -152,6 +152,7 @@ class AutoChangeGroupPhotoBot {
                             case "queue":
                                 await this.bot.sendMessage(chatId,
                                                            CONSTS.WAITING_PHOTOS(chatData.queue.length,
+                                                                                 chatData.history.length,
                                                                                  moment(chatData.last)
                                                                                     .add(chatData.interval, "h")
                                                                                     .format("LLL"),

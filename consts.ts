@@ -27,4 +27,5 @@ export const URL_NOT_FOUND_OG_IMAGE_URL = (msg: TelegramBot.Message, url: string
     `\`og:img\` not found to download \`${url}\` for ${msg.chat.title}(${msg.chat.id}), fallback to continue`;
 export const URL_REQUESTED_IS_NOT_A_IMAGE = (url: string) => `要求的網址 \`${url}\` 不是可辨識的圖片，無法安排自動換圖`;
 export const URL_REQUESTED_IS_NOT_OK = (url: string) => `要求的網址 \`${url}\` 回傳不是成功要求，請檢查網址`;
-export const WAITING_PHOTOS = (count: number, nextTime: string) => `等待的圖片數：${count.toString()}\n下次換圖時間：${nextTime}`;
+export const WAITING_PHOTOS = (count: number, historyCount: number, nextTime: string) =>
+    `等待的圖片數：${count}\n歷史記錄數量：${historyCount}\n下次換圖時間：${nextTime}`;
