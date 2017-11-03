@@ -204,7 +204,7 @@ class AutoChangeGroupPhotoBot {
      */
     private saveData() {
         const _data = JSON.parse(JSON.stringify(this.data)); // to prevent Proxy dump undefined
-        fs.writeFile(CONSTS.DATA_FILE_PATH, yaml.safeDump(_data));
+        fs.writeFile(CONSTS.DATA_FILE_PATH, yaml.safeDump(_data), () => void(0));
     }
 
     /**
