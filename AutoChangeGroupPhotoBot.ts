@@ -146,8 +146,7 @@ class AutoChangeGroupPhotoBot {
                                                                                  chatData.history.length,
                                                                                  moment(chatData.last)
                                                                                     .add(chatData.interval, "h")
-                                                                                    .format("LLL"),
-                                                ),
+                                                                                    .format("LLL")),
                                 );
                                 break;
                             // TODO
@@ -244,8 +243,7 @@ class AutoChangeGroupPhotoBot {
                     if (parentMsg) {
                         await this.bot.sendMessage(msg.chat.id,
                                                    `@(${entitiy.offset}+${entitiy.length}): ${url} ${CONSTS.ALREADY_IN_QUEUE}`,
-                                                   {reply_to_message_id: parentMsg.message_id},
-                                            );
+                                                   {reply_to_message_id: parentMsg.message_id});
                     }
                 } else {
                     await this.bot.sendMessage(msg.chat.id, CONSTS.ALREADY_IN_QUEUE, {reply_to_message_id: msg.message_id});
