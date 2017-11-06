@@ -315,6 +315,10 @@ class AutoChangeGroupPhotoBot {
         });
     }
 
+    /**
+     * To send update action for group photo
+     * @param chatData PhotoDataStrcture
+     */
     private async nextPhoto(chatData: PhotoData.PhotoDataStrcture) {
         let fileLink: string;
         if (chatData.queue.length > 0) {
@@ -335,6 +339,10 @@ class AutoChangeGroupPhotoBot {
         return fileLink;
     }
 
+    /**
+     * For random output a file id and push the result to last
+     * @param chatData PhotoDataStrcture
+     */
     private randomHistory(chatData: PhotoData.PhotoDataStrcture) {
         // prevent last photo out of random queue
         const idx = Math.floor(Math.random() * (chatData.history.length - 1));
