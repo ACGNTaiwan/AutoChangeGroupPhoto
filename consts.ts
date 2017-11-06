@@ -8,6 +8,8 @@ export const CAN_NOT_CHANGE_PHOTO = "I can't change your photo!";
 export const CONFIG_FILE_PATH = "./config.yaml";
 export const DATA_FILE_JSON_PATH = "./data.json";
 export const DATA_FILE_PATH = "./data.yaml";
+export const FILE_ADDED_INTO_QUEUE = (fileId: string) => `File (${fileId}) added into queue.`;
+export const FILE_ALREADY_IN_QUEUE = (fileId: string) => `File (${fileId}) already in the queue.`;
 export const GROUP_PHOTO_CAPTION = "#群組圖片";
 export const IMAGE_FROM_URL_DIMENSION = (mime: string, w: number, h: number) =>
     `Got Image file in type of ${mime} as resolution in dimension (${w}×${h}).`;

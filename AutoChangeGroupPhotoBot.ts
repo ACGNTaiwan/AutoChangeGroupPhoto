@@ -286,8 +286,10 @@ class AutoChangeGroupPhotoBot {
         if (chatData.queue.indexOf(fileId) === -1) {
             chatData.queue.push(fileId);
             result = CONSTS.ADDED_INTO_QUEUE;
+            console.info(CONSTS.FILE_ADDED_INTO_QUEUE(fileId));
         } else {
             result = CONSTS.ALREADY_IN_QUEUE;
+            console.info(CONSTS.FILE_ALREADY_IN_QUEUE(fileId));
         }
         return result;
     }
