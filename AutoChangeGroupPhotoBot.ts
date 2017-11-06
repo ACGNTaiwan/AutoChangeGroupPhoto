@@ -408,7 +408,7 @@ class AutoChangeGroupPhotoBot {
      * @param url Requested URL queue
      */
     private async preProcessUrl(msg: TelegramBot.Message, url: string) {
-        return new Promise<string>((resolve, reject) => {
+        return new Promise<string | Buffer>((resolve, reject) => {
             console.info(CONSTS.URL_PREPARE_TO_DOWNLOAD(msg, url));
             if (url.match(/\.pixiv\./i) !== null) {
                 // todo for pixiv, always reject until implemented
@@ -424,7 +424,7 @@ class AutoChangeGroupPhotoBot {
                             resolve(ogUrl);
                         } else {
                             console.info(CONSTS.URL_NOT_FOUND_OG_IMAGE_URL(msg, url));
-                            reject(url);
+                            reject(Buffer.from(response.body));
                         }
                     });
                 });
@@ -446,23 +446,30 @@ class AutoChangeGroupPhotoBot {
                     reject();
                     return;
                 }
-                return request.get(imgUrl, { encoding: null }, async (error, response, body) => {
-                    if (error) {
-                        console.error(error);
-                        reject();
-                        return;
-                    }
-                    if (response.statusCode === 200) {
-                        await this.parsePhoto(msg, Buffer.from(response.body), ent, url);
+                switch ((typeof imgUrl).toLowerCase()) {
+                    case "string":
+                        return request.get(imgUrl as string, { encoding: null }, async (error, response, body) => {
+                            if (error) {
+                                console.error(error);
+                                reject();
+                                return;
+                            }
+                            if (response.statusCode === 200) {
+                                await this.parsePhoto(msg, Buffer.from(response.body), ent, url);
+                                resolve();
+                            } else {
+                                // notify the URL not responsed correctly
+                                await this.bot.sendMessage(msg.chat.id,
+                                                           CONSTS.URL_REQUESTED_IS_NOT_OK(url),
+                                                           {reply_to_message_id: msg.message_id});
+                                reject();
+                            }
+                        });
+                    case "buffer":
+                        await this.parsePhoto(msg, imgUrl as Buffer, ent, url);
                         resolve();
-                    } else {
-                        // notify the URL not responsed correctly
-                        await this.bot.sendMessage(msg.chat.id,
-                                                   CONSTS.URL_REQUESTED_IS_NOT_OK(url),
-                                                   {reply_to_message_id: msg.message_id});
-                        reject();
-                    }
-                });
+                        return;
+                }
             }),
         ).catch(() => { /* no-op */ });
         return this.uploadQueue;
