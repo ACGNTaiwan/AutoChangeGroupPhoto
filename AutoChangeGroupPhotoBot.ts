@@ -403,33 +403,85 @@ class AutoChangeGroupPhotoBot {
     }
 
     /**
+     * Check the content Size for pre-process action
+     * @param url The Request URL which need to check size
+     */
+    private async sizeLimitationCheck(url: string) {
+        return new Promise<boolean>((resolve, reject) => {
+            console.info(CONSTS.URL_SIZE_CHECK(url));
+            request.head(url, { encoding: null }, async (error, response, body) => {
+                const headers = response.headers;
+                let length = -1;
+                let mime = "";
+                if (headers["content-length"]) {
+                    length = Number(headers["content-length"]);
+                }
+                if (headers["content-type"]) {
+                    mime = headers["content-type"];
+                }
+                const isHTML = mime.match(/html/i) !== null;
+                const isAcceptedMime = mime.match(/^image/i) !== null || isHTML;
+                const isOutOfSizeBound = length !== -1 && length > this.config.downloadMaxSize;
+                if (isAcceptedMime) {
+                    if (isHTML) {
+                        console.info(CONSTS.URL_HTML_IGNORE(url));
+                        resolve();
+                    } else {
+                        if (isOutOfSizeBound) {
+                            console.warn(CONSTS.URL_SIZE_OUT_OF_BOUND(url, length, this.config.downloadMaxSize));
+                            reject();
+                        } else {
+                            console.info(CONSTS.URL_SIZE_RESULT(url, length));
+                            resolve();
+                        }
+                    }
+                } else {
+                    // always reject for non image or web page
+                    console.warn(CONSTS.URL_CONTENT_TYPE_NOT_ACCEPTED(url, mime));
+                    reject();
+                }
+            });
+        }).then(() => true).catch(() => false);
+    }
+
+    /**
      * Pre-Process URL for some Open Graph supported sites
      * @param msg Message Object
      * @param url Requested URL queue
      */
     private async preProcessUrl(msg: TelegramBot.Message, url: string) {
-        return new Promise<string | Buffer>((resolve, reject) => {
+        return new Promise<string | Buffer>(async (resolve, reject) => {
             console.info(CONSTS.URL_PREPARE_TO_DOWNLOAD(msg, url));
-            if (url.match(/\.pixiv\./i) !== null) {
-                // todo for pixiv, always reject until implemented
-                reject(url);
-            } else {
-                request.get(url, { encoding: null }, async (error, response, body) => {
-                    ogs({ url }, (err: boolean, results: any) => {
-                        if (!err && results.success === true &&
-                            results.data && results.data.ogImage && results.data.ogImage.url
-                        ) {
-                            const ogUrl = results.data.ogImage.url;
-                            console.info(CONSTS.URL_FOUND_OG_IMAGE_URL(msg, url, ogUrl));
-                            resolve(ogUrl);
-                        } else {
-                            console.info(CONSTS.URL_NOT_FOUND_OG_IMAGE_URL(msg, url));
-                            reject(Buffer.from(response.body));
-                        }
+            const checkSizeOk = await this.sizeLimitationCheck(url);
+            if (checkSizeOk) {
+                if (url.match(/\.pixiv\./i) !== null) {
+                    // todo for pixiv, always reject until implemented
+                    reject(url);
+                } else {
+                    request.get(url, { encoding: null }, async (error, response, body) => {
+                        ogs({ url }, async (err: boolean, results: any) => {
+                            if (!err && results.success === true &&
+                                results.data && results.data.ogImage && results.data.ogImage.url
+                            ) {
+                                const ogUrl = results.data.ogImage.url;
+                                console.info(CONSTS.URL_FOUND_OG_IMAGE_URL(msg, url, ogUrl));
+                                const ogCheckSizeOk = await this.sizeLimitationCheck(ogUrl);
+                                if (ogCheckSizeOk) {
+                                    resolve(ogUrl);
+                                } else {
+                                    reject(Buffer.from([]));
+                                }
+                            } else {
+                                console.info(CONSTS.URL_NOT_FOUND_OG_IMAGE_URL(msg, url));
+                                resolve(Buffer.from(response.body));
+                            }
+                        });
                     });
-                });
+                }
+            } else {
+                reject(Buffer.from([]));
             }
-        }).catch((_url: string) => _url);
+        }).catch((_url: string | Buffer) => _url);
     }
 
     /**
@@ -442,33 +494,33 @@ class AutoChangeGroupPhotoBot {
         this.uploadQueue = this.uploadQueue.then(async () =>
             new Promise<void>(async (resolve, reject) => {
                 const imgUrl = await this.preProcessUrl(msg, url);
+                const isBuffer = (imgUrl instanceof Buffer);
                 if (imgUrl.length === 0) {
                     reject();
                     return;
                 }
-                switch ((typeof imgUrl).toLowerCase()) {
-                    case "string":
-                        return request.get(imgUrl as string, { encoding: null }, async (error, response, body) => {
-                            if (error) {
-                                console.error(error);
-                                reject();
-                                return;
-                            }
-                            if (response.statusCode === 200) {
-                                await this.parsePhoto(msg, Buffer.from(response.body), ent, url);
-                                resolve();
-                            } else {
-                                // notify the URL not responsed correctly
-                                await this.bot.sendMessage(msg.chat.id,
-                                                           CONSTS.URL_REQUESTED_IS_NOT_OK(url),
-                                                           {reply_to_message_id: msg.message_id});
-                                reject();
-                            }
-                        });
-                    case "buffer":
-                        await this.parsePhoto(msg, imgUrl as Buffer, ent, url);
-                        resolve();
-                        return;
+                if (isBuffer) {
+                    await this.parsePhoto(msg, imgUrl as Buffer, ent, url);
+                    resolve();
+                    return;
+                } else {
+                    return request.get(imgUrl as string, { encoding: null }, async (error, response, body) => {
+                        if (error) {
+                            console.error(error);
+                            reject();
+                            return;
+                        }
+                        if (response.statusCode === 200) {
+                            await this.parsePhoto(msg, Buffer.from(response.body), ent, url);
+                            resolve();
+                        } else {
+                            // notify the URL not responsed correctly
+                            await this.bot.sendMessage(msg.chat.id,
+                                                       CONSTS.URL_REQUESTED_IS_NOT_OK(url),
+                                                       {reply_to_message_id: msg.message_id});
+                            reject();
+                        }
+                    });
                 }
             }),
         ).catch(() => { /* no-op */ });
