@@ -55,12 +55,27 @@ class AutoChangeGroupPhotoBot {
     private async registerEvent() {
         schedule.scheduleJob("0 * * * * *", () => { this.doUpdate(); });
 
+        // queue the phpto
         this.bot.onText(CONSTS.REGEXP_MATCH_TAG_COMMAND, async (msg) => {
             if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
                 console.info(CONSTS.QUEUE_TEXT("Text", `${msg.chat.title}(${msg.chat.id})`));
                 await this.addPhoto(msg.reply_to_message);
             } else if (msg.reply_to_message && msg.reply_to_message.entities) {
                 this.doAddPhotoByUrl(msg.reply_to_message);
+            }
+        });
+
+        // ban the photo
+        this.bot.onText(CONSTS.REGEXP_MATCH_BAN_COMMAND, async (msg) => {
+            if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
+                await this.banPhoto(msg);
+            }
+        });
+
+        // unban the photo
+        this.bot.onText(CONSTS.REGEXP_MATCH_UNBAN_COMMAND, async (msg) => {
+            if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
+                await this.unbanPhoto(msg);
             }
         });
 
@@ -143,6 +158,7 @@ class AutoChangeGroupPhotoBot {
                             case "queue":
                                 await this.bot.sendMessage(chatId,
                                                            CONSTS.WAITING_PHOTOS(chatData.queue.length,
+                                                                                 chatData.banList.length,
                                                                                  chatData.history.length,
                                                                                  moment(chatData.last)
                                                                                     .add(chatData.interval, "h")
@@ -281,15 +297,50 @@ class AutoChangeGroupPhotoBot {
 
         const chatData = this.getData(chatId);
         let result = null;
-        if (chatData.queue.indexOf(fileId) === -1) {
-            chatData.queue.push(fileId);
-            result = CONSTS.ADDED_INTO_QUEUE;
-            console.info(CONSTS.FILE_ADDED_INTO_QUEUE(fileId));
+        if (chatData.banList.indexOf(fileId) === -1) {
+            if (chatData.queue.indexOf(fileId) === -1) {
+                chatData.queue.push(fileId);
+                result = CONSTS.ADDED_INTO_QUEUE;
+                console.info(CONSTS.FILE_ADDED_INTO_QUEUE(fileId));
+            } else {
+                result = CONSTS.ALREADY_IN_QUEUE;
+                console.info(CONSTS.FILE_ALREADY_IN_QUEUE(fileId));
+            }
         } else {
-            result = CONSTS.ALREADY_IN_QUEUE;
-            console.info(CONSTS.FILE_ALREADY_IN_QUEUE(fileId));
+            result = CONSTS.BANNED_PHOTO;
+            console.info(CONSTS.QUEUE_WAS_BANNED(chatId, fileId));
         }
         return result;
+    }
+
+    /**
+     * Ban the photo
+     * @param msg Message Object
+     */
+    private async banPhoto(msg: TelegramBot.Message) {
+        const chatId = msg.chat.id;
+        const fileIdIist = (msg.reply_to_message!.photo ? msg.reply_to_message!.photo!.map<string>((p) => p.file_id) : [])
+            .concat(msg.reply_to_message!.document ? [msg.reply_to_message!.document!.file_id] : []);
+        const chatData = this.getData(chatId);
+        fileIdIist.map((p) => chatData.banList.indexOf(p) === -1 ? chatData.banList.push(p) : null);
+        this.delPhoto(chatId, fileIdIist);
+        console.info(CONSTS.BANNED_TEXT(chatId, fileIdIist.join(", ")));
+        await this.bot.sendMessage(chatId, CONSTS.BANNED_PHOTO, {reply_to_message_id: msg.message_id});
+    }
+
+    /**
+     * Unban the banned photo
+     * @param msg Message Object
+     */
+    private async unbanPhoto(msg: TelegramBot.Message) {
+        const chatId = msg.chat.id;
+        const fileIdIist = (msg.reply_to_message!.photo ? msg.reply_to_message!.photo!.map<string>((p) => p.file_id) : [])
+            .concat(msg.reply_to_message!.document ? [msg.reply_to_message!.document!.file_id] : []);
+        const chatData = this.getData(chatId);
+        chatData.banList = chatData.banList
+            .map<string>((b) => fileIdIist.indexOf(b) !== -1 ? "" : b)
+            .filter((b) => b);
+        console.info(CONSTS.UNBANNED_TEXT(chatId, fileIdIist.join(", ")));
     }
 
     /**
@@ -302,6 +353,18 @@ class AutoChangeGroupPhotoBot {
             await this.sendQueueResult(msg, result);
         }
         return result;
+    }
+
+    /**
+     * Delete photo in queue
+     * @param chatId Chat ID
+     * @param files file_id list
+     */
+    private delPhoto(chatId: number, files: string[]) {
+        const chatData = this.getData(chatId);
+        chatData.queue = chatData.queue
+            .map<string>((q) => files.indexOf(q) === -1 ? q : "")
+            .filter((q) => q);
     }
 
     /**

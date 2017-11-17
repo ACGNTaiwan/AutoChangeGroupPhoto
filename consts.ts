@@ -3,6 +3,8 @@ import * as TelegramBot from "node-telegram-bot-api";
 
 export const ADDED_INTO_QUEUE = "已加入序列";
 export const ALREADY_IN_QUEUE = "已在序列中";
+export const BANNED_PHOTO = "此圖片已被封鎖";
+export const BANNED_TEXT = (charId: number, fileId: string) => `Receive Ban Queue for ${charId} to ${fileId}.`;
 export const CAN_NOT_CHANGE_ALL_ADMINS_PHOTO = "I can't change group photo if all members are admin!";
 export const CAN_NOT_CHANGE_PHOTO = "I can't change your photo!";
 export const CONFIG_FILE_PATH = "./config.yaml";
@@ -18,8 +20,12 @@ export const NEED_TELEGRAM_BOT_TOKEN = "Need a valid Telegram Bot Token.";
 export const NOW_INTERVAL = (interval: string) => `目前設定值為${interval}小時`;
 export const QUEUE_REQUEST_TEXT = (type: string, name: string) => `Receive ${type} Queue Request from ${name}.`;
 export const QUEUE_TEXT = (type: string, name: string) => `Receive ${type} Queue from ${name}.`;
+export const QUEUE_WAS_BANNED = (chatId: number, fileId: string) => `The file of ${fileId} was banned in ${chatId}`;
+export const REGEXP_MATCH_BAN_COMMAND = /(#|＃)(鞭|ban|banned|block|R18)/ig;
 export const REGEXP_MATCH_TAG_COMMAND = /(#|＃)(群組圖|群组图)(片)?/ig;
+export const REGEXP_MATCH_UNBAN_COMMAND = /(#|＃)(解鞭|unban)/ig;
 export const SET_INTERVAL = (interval: string) => `已設定變更間隔為${interval}小時`;
+export const UNBANNED_TEXT = (charId: number, fileId: string) => `Receive UnBan Queue for ${charId} to ${fileId}.`;
 export const UPLOADING_PHOTO = (chatId: string | number, image: Buffer, url: string) =>
     `Uploading the Photo from \`${url}\` (size: ${convert(image.byteLength).from("B").to("MB").toFixed(2)}MB) to Chat: ${chatId}.`;
 export const URL_CONTENT_TYPE_NOT_ACCEPTED = (url: string, mime: string) =>
@@ -39,5 +45,5 @@ export const URL_SIZE_RESULT = (url: string, size: number) =>
 export const URL_SIZE_OUT_OF_BOUND = (url: string, size: number, limitation: number) =>
     `The request of \`${url}\` is ${convert(size).from("B").to("MB").toFixed(2)}MB, ` +
     `that is exceed the limitation of ${convert(limitation).from("B").to("MB").toFixed(2)}MB.`;
-export const WAITING_PHOTOS = (count: number, historyCount: number, nextTime: string) =>
-    `等待的圖片數：${count}\n歷史記錄數量：${historyCount}\n下次換圖時間：${nextTime}`;
+export const WAITING_PHOTOS = (count: number, banCount: number, historyCount: number, nextTime: string) =>
+    `等待的圖片數：${count}\n被鞭圖片數量：${banCount}\n歷史記錄數量：${historyCount}\n下次換圖時間：${nextTime}`;
