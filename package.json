@@ -8,7 +8,9 @@
     "tslint": "tslint --project .",
     "precommit": "npm run tslint",
     "build": "tsc --pretty",
-    "serve": "ts-node index.ts"
+    "serve": "ts-node index.ts",
+    "debug": "yarn build && node --trace-deprecation dist/index.js",
+    "start": "yarn serve"
   },
   "repository": {
     "type": "git",
