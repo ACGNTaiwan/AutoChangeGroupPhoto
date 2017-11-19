@@ -12,19 +12,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/james58899/AutoChangeGroupPhoto.git"
+    "url": "git+https://github.com/ACGNTaiwan/AutoChangeGroupPhoto.git"
   },
   "keywords": [
     "telegram",
     "group",
     "photo"
   ],
-  "author": "james58899",
+  "author": "ACGNTaiwan",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/james58899/AutoChangeGroupPhoto/issues"
+    "url": "https://github.com/ACGNTaiwan/AutoChangeGroupPhoto/issues"
   },
-  "homepage": "https://github.com/james58899/AutoChangeGroupPhoto#readme",
+  "homepage": "https://github.com/ACGNTaiwan/AutoChangeGroupPhoto#readme",
   "dependencies": {
     "convert-units": "^2.3.1",
     "jimp": "^0.2.28",
