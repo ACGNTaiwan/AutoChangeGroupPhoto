@@ -184,8 +184,11 @@ class AutoChangeGroupPhotoBot {
     private doCompatibleConvert(d: object): PhotoData.PhotoDataStrcture[] {
         return Object.keys(d)
             .map<PhotoData.PhotoDataStrcture>(
-                (chatId: string) =>
-                    new PhotoData.PhotoDataStrcture((d as any)[chatId]),
+                (chatId: string) => {
+                    const pds = (d as any)[chatId] as PhotoData.PhotoDataStrcture;
+                    pds.chatId = Number(chatId);
+                    return new PhotoData.PhotoDataStrcture(pds);
+                },
             );
     }
 
