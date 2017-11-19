@@ -43,8 +43,6 @@
     "@types/node-telegram-bot-api": "^0.28.1",
     "@types/pad": "^1.0.0",
     "@types/tmp": "^0.0.33",
-    "eslint": "^4.3.0",
-    "eslint-config-google": "^0.9.1",
     "husky": "^0.14.3",
     "ts-loader": "^2.1.0",
     "ts-node": "^3.3.0",
