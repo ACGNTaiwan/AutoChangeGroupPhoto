@@ -421,7 +421,11 @@ class AutoChangeGroupPhotoBot {
                         if (chat instanceof Error) {
                             logger.error(chat);
                         } else {
-                            logger.info(CONSTS.UPDATED_PHOTO(chat, fileLink));
+                            if (fileLink.length > 0) {
+                                logger.info(CONSTS.UPDATED_PHOTO(chat, fileLink));
+                            } else {
+                                logger.info(CONSTS.UPDATE_PHOTO_IGNORE(chat));
+                            }
                         }
                     });
             }
