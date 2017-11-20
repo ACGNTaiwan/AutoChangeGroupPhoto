@@ -121,7 +121,7 @@ class AutoChangeGroupPhotoBot {
                         }
 
                         switch (regex[1].toLowerCase()) {
-                            case "setinterval":
+                            case CONSTS.COMMANDS.SET_INTERVAL:
                                 if (msg.text) {
                                     if (msg.from) {
                                         if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) {
@@ -141,7 +141,7 @@ class AutoChangeGroupPhotoBot {
                                     }
                                 }
                                 break;
-                            case "next":
+                            case CONSTS.COMMANDS.NEXT_PHOTO:
                                 if (msg.from) {
                                     if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) {
                                         break;
@@ -155,7 +155,7 @@ class AutoChangeGroupPhotoBot {
                             //     if (msg.text.split(' ').length === 1) bot.sendMessage(chatId, '目前')
                             // case 'block':
                             //     if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
-                            case "queue":
+                            case CONSTS.COMMANDS.QUEUE_STATUS:
                                 await this.bot.sendMessage(chatId,
                                                            CONSTS.WAITING_PHOTOS(chatData.queue.length,
                                                                                  chatData.banList.length,

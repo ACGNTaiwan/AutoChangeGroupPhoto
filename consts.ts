@@ -7,6 +7,11 @@ export const BANNED_PHOTO = "此圖片已被封鎖";
 export const BANNED_TEXT = (charId: number, fileId: string) => `Receive Ban Queue for ${charId} to ${fileId}.`;
 export const CAN_NOT_CHANGE_ALL_ADMINS_PHOTO = "I can't change group photo if all members are admin!";
 export const CAN_NOT_CHANGE_PHOTO = "I can't change your photo!";
+export enum COMMANDS {
+    SET_INTERVAL = "setinterval",
+    NEXT_PHOTO = "next",
+    QUEUE_STATUS = "queue",
+}
 export const CONFIG_FILE_PATH = "./config.yaml";
 export const DATA_FILE_JSON_PATH = "./data.json";
 export const DATA_FILE_PATH = "./data.yaml";
