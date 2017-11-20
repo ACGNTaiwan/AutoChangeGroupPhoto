@@ -63,6 +63,7 @@ export class PixivIllustStructure {
 
 export class PhotoDataStrcture {
     public chatId: number;
+    public chatName: string;
     public interval: number;
     public last: number;
     public queue: string[];
@@ -70,6 +71,7 @@ export class PhotoDataStrcture {
     public banList: string[];
     public constructor(
         chatId: number | object | PhotoDataStrcture,
+        chatName: string = "",
         interval: number = 1,
         last: number = +moment(),
         queue: string[] = [],
@@ -78,6 +80,7 @@ export class PhotoDataStrcture {
     ) {
         if (typeof chatId === "number") {
             this.chatId = chatId;
+            this.chatName = chatName;
             this.interval = interval ? interval : 1;
             this.last = last ? last : +moment();
             this.queue = new Proxy((queue !== null && queue !== undefined) ? queue : [], autoSaver);
@@ -89,6 +92,7 @@ export class PhotoDataStrcture {
     }
     private from(pds: PhotoDataStrcture) {
         this.chatId = pds.chatId;
+        this.chatName = pds.chatName;
         this.interval = pds.interval ? pds.interval : 1;
         this.last = pds.last ? pds.last : +moment();
         this.queue = new Proxy((pds.queue !== null && pds.queue !== undefined) ? pds.queue : [], autoSaver);

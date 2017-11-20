@@ -421,6 +421,7 @@ class AutoChangeGroupPhotoBot {
                         if (chat instanceof Error) {
                             logger.error(chat);
                         } else {
+                            chatData.chatName = `${chat.title || chat.username}`;
                             if (fileLink.length > 0) {
                                 logger.info(CONSTS.UPDATED_PHOTO(chat, fileLink));
                             } else {
