@@ -89,7 +89,7 @@ class AutoChangeGroupPhotoBot {
         // queue the phpto
         this.bot.onText(CONSTS.REGEXP_MATCH_TAG_COMMAND, async (msg) => {
             if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
-                logger.info(CONSTS.QUEUE_TEXT("Text", `${msg.chat.title}(${msg.chat.id})`));
+                logger.info(CONSTS.QUEUE_TEXT("Text", msg.chat));
                 await this.addPhoto(msg.reply_to_message);
             } else if (msg.reply_to_message && msg.reply_to_message.entities) {
                 this.doAddPhotoByUrl(msg.reply_to_message);
@@ -112,14 +112,14 @@ class AutoChangeGroupPhotoBot {
 
         this.bot.on("photo", async (msg: TelegramBot.Message) => {
             if (msg.caption && msg.caption.match(CONSTS.REGEXP_MATCH_TAG_COMMAND)) {
-                logger.info(CONSTS.QUEUE_TEXT("Photo", `${msg.chat.title}(${msg.chat.id})`));
+                logger.info(CONSTS.QUEUE_TEXT("Photo", msg.chat));
                 await this.addPhoto(msg);
             }
         });
 
         this.bot.on("document", async (msg: TelegramBot.Message) => {
             if (msg.caption && msg.caption.match(CONSTS.REGEXP_MATCH_TAG_COMMAND)) {
-                logger.info(CONSTS.QUEUE_TEXT("Document", `${msg.chat.title}(${msg.chat.id})`));
+                logger.info(CONSTS.QUEUE_TEXT("Document", msg.chat));
                 await this.addPhoto(msg);
             }
         });
