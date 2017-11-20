@@ -415,7 +415,15 @@ class AutoChangeGroupPhotoBot {
     private doUpdate() {
         this.data.map(async (chatData) => {
             if (!chatData.last || moment(chatData.last).add(chatData.interval, "h").isBefore(moment())) {
-                await this.nextPhoto(chatData);
+                const fileLink = await this.nextPhoto(chatData);
+                await this.bot.getChat(chatData.chatId)
+                    .then((chat) => {
+                        if (chat instanceof Error) {
+                            logger.error(chat);
+                        } else {
+                            logger.info(CONSTS.UPDATED_PHOTO(chat, fileLink));
+                        }
+                    });
             }
         });
     }
