@@ -419,7 +419,7 @@ class AutoChangeGroupPhotoBot {
                 await this.bot.getChat(chatData.chatId)
                     .then((chat) => {
                         if (chat instanceof Error) {
-                            logger.error(chat);
+                            logger.error(CONSTS.GET_CHAT_ERROR(chatData.chatId, chat));
                         } else {
                             chatData.chatName = `${chat.title || chat.username}`;
                             if (fileLink.length > 0) {
@@ -428,6 +428,9 @@ class AutoChangeGroupPhotoBot {
                                 logger.info(CONSTS.UPDATE_PHOTO_IGNORE(chat));
                             }
                         }
+                    })
+                    .catch((reason: any) => {
+                        logger.error(CONSTS.GET_CHAT_ERROR(chatData.chatId, reason));
                     });
             }
         });

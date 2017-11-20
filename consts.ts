@@ -24,6 +24,7 @@ export const ENABLING_REFRESHED_PIXIV_ACCOUNT = (account: string, refreshToken: 
 export const ENABLING_PIXIV_ACCOUNT = (account: string) => `Enabling Pixiv API Account => \`${account}\`.`;
 export const FILE_ADDED_INTO_QUEUE = (fileId: string) => `File (${fileId}) added into queue.`;
 export const FILE_ALREADY_IN_QUEUE = (fileId: string) => `File (${fileId}) already in the queue.`;
+export const GET_CHAT_ERROR = (chatId: number, reason: any) => `Get Chat Error ${chatId}: ${reason}.`;
 export const GROUP_PHOTO_CAPTION = "#群組圖片";
 export const GROUP_PHOTO_PIXIV_CAPTION = (illust: PhotoData.PixivIllustStructure) =>
     `${illust.title}(${illust.userName})
