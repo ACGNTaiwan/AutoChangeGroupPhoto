@@ -35,7 +35,9 @@
     "node-schedule": "^1.2.3",
     "node-telegram-bot-api": "github:yagop/node-telegram-bot-api",
     "open-graph-scraper": "^3.1.0",
-    "request": "^2.81.0"
+    "pixiv-api-client": "^0.16.0",
+    "request": "^2.81.0",
+    "tracer": "^0.8.11"
   },
   "devDependencies": {
     "@types/jimp": "^0.2.1",

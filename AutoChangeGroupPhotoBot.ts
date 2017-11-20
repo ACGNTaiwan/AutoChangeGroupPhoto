@@ -5,8 +5,11 @@ import * as moment from "moment";
 import * as schedule from "node-schedule";
 import * as TelegramBot from "node-telegram-bot-api";
 const ogs = require("open-graph-scraper");
+const pixivApi = require("pixiv-api-client");
 import * as request from "request";
-import { BotConfig } from "./BotConfig";
+const tracer = require("tracer");
+const logger = tracer.colorConsole({level: "info"});
+import { BotConfig, InitialConfig } from "./BotConfig";
 import * as CONSTS from "./consts";
 import * as PhotoData from "./PhotoData";
 
@@ -23,6 +26,7 @@ class AutoChangeGroupPhotoBot {
     private bot: TelegramBot;
     private data: PhotoData.PhotoDataStrcture[];
     private uploadQueue: Promise<any> = Promise.resolve();
+    private pixiv?: any;
 
     /**
      * Singleton of AutoChangeGroupPhotoBot
@@ -37,13 +41,38 @@ class AutoChangeGroupPhotoBot {
      * @param _config Telegram Bot config object
      */
     private constructor(_config: any = {}) {
-        this.config = Object.assign(new BotConfig(), _config);
+        this.config = InitialConfig(Object.assign(new BotConfig(), _config), () => { this.saveConfig(); });
         if (this.config.token) {
             this.data = PhotoData.PhotoDataStore(this.readData(), () => { this.saveData(); });
             // if has bot token, then start the main program
             this.bot = new TelegramBot(this.config.token, {polling: {interval: 0, params: {timeout: 60}}});
 
             this.registerEvent().then(() => { /* no-op */ }).catch(() => { /* no-op */ });
+            if (this.config.pixiv.account && this.config.pixiv.password) {
+                this.pixiv = new pixivApi();
+                const pixivLogged = (userInfo: any) => {
+                    this.config.pixiv.refreshToken = userInfo.refresh_token;
+                    logger.info(CONSTS.ENABLED_PIXIV_ACCOUNT(this.config.pixiv.account, this.config.pixiv.refreshToken));
+                };
+                const pixivLogginError = (e: any) => {
+                    logger.error(e);
+                };
+                if (this.config.pixiv.refreshToken === "") {
+                    logger.info(CONSTS.ENABLING_PIXIV_ACCOUNT(this.config.pixiv.account));
+                    this.pixiv.login(this.config.pixiv.account, this.config.pixiv.password)
+                        .then(pixivLogged)
+                        .catch(pixivLogginError);
+                } else {
+                    logger.info(CONSTS.ENABLING_REFRESHED_PIXIV_ACCOUNT(this.config.pixiv.account, this.config.pixiv.refreshToken));
+                    this.pixiv.refreshAccessToken(this.config.pixiv.refreshToken)
+                        .then(pixivLogged)
+                        .catch(pixivLogginError);
+                }
+                setInterval(() => this.pixiv.refreshAccessToken(), 60 * 1000 * 60);
+            } else {
+                this.pixiv = null;
+                logger.info(CONSTS.DISABLED_PIXIV_ACCOUNT);
+            }
         } else {
             throw Error(CONSTS.NEED_TELEGRAM_BOT_TOKEN);
         }
@@ -58,7 +87,7 @@ class AutoChangeGroupPhotoBot {
         // queue the phpto
         this.bot.onText(CONSTS.REGEXP_MATCH_TAG_COMMAND, async (msg) => {
             if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
-                console.info(CONSTS.QUEUE_TEXT("Text", `${msg.chat.title}(${msg.chat.id})`));
+                logger.info(CONSTS.QUEUE_TEXT("Text", `${msg.chat.title}(${msg.chat.id})`));
                 await this.addPhoto(msg.reply_to_message);
             } else if (msg.reply_to_message && msg.reply_to_message.entities) {
                 this.doAddPhotoByUrl(msg.reply_to_message);
@@ -81,14 +110,14 @@ class AutoChangeGroupPhotoBot {
 
         this.bot.on("photo", async (msg: TelegramBot.Message) => {
             if (msg.caption && msg.caption.match(CONSTS.REGEXP_MATCH_TAG_COMMAND)) {
-                console.info(CONSTS.QUEUE_TEXT("Photo", `${msg.chat.title}(${msg.chat.id})`));
+                logger.info(CONSTS.QUEUE_TEXT("Photo", `${msg.chat.title}(${msg.chat.id})`));
                 await this.addPhoto(msg);
             }
         });
 
         this.bot.on("document", async (msg: TelegramBot.Message) => {
             if (msg.caption && msg.caption.match(CONSTS.REGEXP_MATCH_TAG_COMMAND)) {
-                console.info(CONSTS.QUEUE_TEXT("Document", `${msg.chat.title}(${msg.chat.id})`));
+                logger.info(CONSTS.QUEUE_TEXT("Document", `${msg.chat.title}(${msg.chat.id})`));
                 await this.addPhoto(msg);
             }
         });
@@ -202,7 +231,7 @@ class AutoChangeGroupPhotoBot {
                 yaml.load(fs.readFileSync(CONSTS.DATA_FILE_PATH).toString()) :
                 JSON.parse(fs.readFileSync(CONSTS.DATA_FILE_JSON_PATH).toString());
         } catch (e) {
-            console.warn(e);
+            logger.warn(e);
             _data = [];
         } finally {
             if (_data instanceof Object && !(_data instanceof Array) && _data !== undefined) {
@@ -218,6 +247,14 @@ class AutoChangeGroupPhotoBot {
     private saveData() {
         const _data = JSON.parse(JSON.stringify(this.data)); // to prevent Proxy dump undefined
         fs.writeFile(CONSTS.DATA_FILE_PATH, yaml.safeDump(_data), () => void(0));
+    }
+
+    /**
+     * Save Config to file
+     */
+    private saveConfig() {
+        const _config = JSON.parse(JSON.stringify(this.config)); // to prevent Proxy dump undefined
+        fs.writeFile(CONSTS.CONFIG_FILE_PATH, yaml.safeDump(_config), () => void(0));
     }
 
     /**
@@ -304,14 +341,14 @@ class AutoChangeGroupPhotoBot {
             if (chatData.queue.indexOf(fileId) === -1) {
                 chatData.queue.push(fileId);
                 result = CONSTS.ADDED_INTO_QUEUE;
-                console.info(CONSTS.FILE_ADDED_INTO_QUEUE(fileId));
+                logger.info(CONSTS.FILE_ADDED_INTO_QUEUE(fileId));
             } else {
                 result = CONSTS.ALREADY_IN_QUEUE;
-                console.info(CONSTS.FILE_ALREADY_IN_QUEUE(fileId));
+                logger.info(CONSTS.FILE_ALREADY_IN_QUEUE(fileId));
             }
         } else {
             result = CONSTS.BANNED_PHOTO;
-            console.info(CONSTS.QUEUE_WAS_BANNED(chatId, fileId));
+            logger.info(CONSTS.QUEUE_WAS_BANNED(chatId, fileId));
         }
         return result;
     }
@@ -327,7 +364,7 @@ class AutoChangeGroupPhotoBot {
         const chatData = this.getData(chatId);
         fileIdIist.map((p) => chatData.banList.indexOf(p) === -1 ? chatData.banList.push(p) : null);
         this.delPhoto(chatId, fileIdIist);
-        console.info(CONSTS.BANNED_TEXT(chatId, fileIdIist.join(", ")));
+        logger.info(CONSTS.BANNED_TEXT(chatId, fileIdIist.join(", ")));
         await this.bot.sendMessage(chatId, CONSTS.BANNED_PHOTO, {reply_to_message_id: msg.message_id});
     }
 
@@ -343,7 +380,7 @@ class AutoChangeGroupPhotoBot {
         chatData.banList = chatData.banList
             .map<string>((b) => fileIdIist.indexOf(b) !== -1 ? "" : b)
             .filter((b) => b);
-        console.info(CONSTS.UNBANNED_TEXT(chatId, fileIdIist.join(", ")));
+        logger.info(CONSTS.UNBANNED_TEXT(chatId, fileIdIist.join(", ")));
     }
 
     /**
@@ -428,7 +465,7 @@ class AutoChangeGroupPhotoBot {
      * @param url Requested URL queue
      */
     private async uploadPhoto(msg: TelegramBot.Message, imageBuffer: Buffer, ent: TelegramBot.MessageEntity, url: string) {
-        console.info(CONSTS.UPLOADING_PHOTO(`${msg.chat.title}(${msg.chat.id})`, imageBuffer, url));
+        logger.info(CONSTS.UPLOADING_PHOTO(`${msg.chat.title}(${msg.chat.id})`, imageBuffer, url));
         return this.bot.sendPhoto(msg.chat.id, imageBuffer, {caption: CONSTS.GROUP_PHOTO_CAPTION})
             .then(async (m) => {
                 let ret;
@@ -438,7 +475,7 @@ class AutoChangeGroupPhotoBot {
                 return ret;
             })
             .catch((e) => {
-                console.error(e);
+                logger.error(e);
             });
     }
 
@@ -453,7 +490,7 @@ class AutoChangeGroupPhotoBot {
         return jimp.read(imageBuffer)
             .then(async (image) => {
                 if (image !== undefined) {
-                    console.info(CONSTS.IMAGE_FROM_URL_DIMENSION(image.getMIME(), image.bitmap.width, image.bitmap.height));
+                    logger.info(CONSTS.IMAGE_FROM_URL_DIMENSION(image.getMIME(), image.bitmap.width, image.bitmap.height));
                     // send image which downloaded back to the chat for placehold a file_id
                     await this.uploadPhoto(msg, imageBuffer, ent, url);
                 } else {
@@ -464,7 +501,7 @@ class AutoChangeGroupPhotoBot {
                 }
             })
             .catch((err: Error) => {
-                console.error("jimp error", err.message);
+                logger.error("jimp error", err.message);
             });
     }
 
@@ -474,7 +511,7 @@ class AutoChangeGroupPhotoBot {
      */
     private async sizeLimitationCheck(url: string) {
         return new Promise<boolean>((resolve, reject) => {
-            console.info(CONSTS.URL_SIZE_CHECK(url));
+            logger.info(CONSTS.URL_SIZE_CHECK(url));
             request.head(url, { encoding: null }, async (error, response, body) => {
                 const headers = response.headers;
                 let length = -1;
@@ -490,20 +527,20 @@ class AutoChangeGroupPhotoBot {
                 const isOutOfSizeBound = length !== -1 && length > this.config.downloadMaxSize;
                 if (isAcceptedMime) {
                     if (isHTML) {
-                        console.info(CONSTS.URL_HTML_IGNORE(url));
+                        logger.info(CONSTS.URL_HTML_IGNORE(url));
                         resolve();
                     } else {
                         if (isOutOfSizeBound) {
-                            console.warn(CONSTS.URL_SIZE_OUT_OF_BOUND(url, length, this.config.downloadMaxSize));
+                            logger.warn(CONSTS.URL_SIZE_OUT_OF_BOUND(url, length, this.config.downloadMaxSize));
                             reject();
                         } else {
-                            console.info(CONSTS.URL_SIZE_RESULT(url, length));
+                            logger.info(CONSTS.URL_SIZE_RESULT(url, length));
                             resolve();
                         }
                     }
                 } else {
                     // always reject for non image or web page
-                    console.warn(CONSTS.URL_CONTENT_TYPE_NOT_ACCEPTED(url, mime));
+                    logger.warn(CONSTS.URL_CONTENT_TYPE_NOT_ACCEPTED(url, mime));
                     reject();
                 }
             });
@@ -517,7 +554,7 @@ class AutoChangeGroupPhotoBot {
      */
     private async preProcessUrl(msg: TelegramBot.Message, url: string) {
         return new Promise<string | Buffer>(async (resolve, reject) => {
-            console.info(CONSTS.URL_PREPARE_TO_DOWNLOAD(msg, url));
+            logger.info(CONSTS.URL_PREPARE_TO_DOWNLOAD(msg, url));
             const checkSizeOk = await this.sizeLimitationCheck(url);
             if (checkSizeOk) {
                 if (url.match(/\.pixiv\./i) !== null) {
@@ -530,7 +567,7 @@ class AutoChangeGroupPhotoBot {
                                 results.data && results.data.ogImage && results.data.ogImage.url
                             ) {
                                 const ogUrl = results.data.ogImage.url;
-                                console.info(CONSTS.URL_FOUND_OG_IMAGE_URL(msg, url, ogUrl));
+                                logger.info(CONSTS.URL_FOUND_OG_IMAGE_URL(msg, url, ogUrl));
                                 const ogCheckSizeOk = await this.sizeLimitationCheck(ogUrl);
                                 if (ogCheckSizeOk) {
                                     resolve(ogUrl);
@@ -538,7 +575,7 @@ class AutoChangeGroupPhotoBot {
                                     reject(Buffer.from([]));
                                 }
                             } else {
-                                console.info(CONSTS.URL_NOT_FOUND_OG_IMAGE_URL(msg, url));
+                                logger.info(CONSTS.URL_NOT_FOUND_OG_IMAGE_URL(msg, url));
                                 resolve(Buffer.from(response.body));
                             }
                         });
@@ -572,7 +609,7 @@ class AutoChangeGroupPhotoBot {
                 } else {
                     return request.get(imgUrl as string, { encoding: null }, async (error, response, body) => {
                         if (error) {
-                            console.error(error);
+                            logger.error(error);
                             reject();
                             return;
                         }
@@ -604,7 +641,7 @@ class AutoChangeGroupPhotoBot {
                 if (ent.type === "url" && msg.text !== undefined) {
                     const url = msg.text.substr(ent.offset, ent.length);
                     if (urls.indexOf(url) === -1) {
-                        console.info(CONSTS.QUEUE_REQUEST_TEXT("URL", `${msg.chat.title}(${msg.chat.id}): ${url}`));
+                        logger.info(CONSTS.QUEUE_REQUEST_TEXT("URL", `${msg.chat.title}(${msg.chat.id}): ${url}`));
                         urls.push(url);
                         await this.tryGetPhotoFromUrl(msg, ent, url);
                     }

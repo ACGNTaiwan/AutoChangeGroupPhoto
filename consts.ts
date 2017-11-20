@@ -15,6 +15,12 @@ export enum COMMANDS {
 export const CONFIG_FILE_PATH = "./config.yaml";
 export const DATA_FILE_JSON_PATH = "./data.json";
 export const DATA_FILE_PATH = "./data.yaml";
+export const DISABLED_PIXIV_ACCOUNT = "There not configurated for pixiv API account";
+export const ENABLED_PIXIV_ACCOUNT = (account: string, refreshToken: string) =>
+    `Pixiv API Account Enabled => \`${account}\` with refresh token => \`${refreshToken}\`.`;
+export const ENABLING_REFRESHED_PIXIV_ACCOUNT = (account: string, refreshToken: string) =>
+    `Re-Enabling Pixiv API Account => \`${account}\` by refresh token => \`${refreshToken}\`.`;
+export const ENABLING_PIXIV_ACCOUNT = (account: string) => `Enabling Pixiv API Account => \`${account}\`.`;
 export const FILE_ADDED_INTO_QUEUE = (fileId: string) => `File (${fileId}) added into queue.`;
 export const FILE_ALREADY_IN_QUEUE = (fileId: string) => `File (${fileId}) already in the queue.`;
 export const GROUP_PHOTO_CAPTION = "#群組圖片";
