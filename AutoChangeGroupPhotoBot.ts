@@ -584,7 +584,6 @@ class AutoChangeGroupPhotoBot {
             const checkSizeOk = await this.sizeLimitationCheck(url);
             if (checkSizeOk) {
                 if (url.match(CONSTS.REGEXP_MATCH_PIXIV_DOMAIN) !== null) {
-                    // todo for pixiv, always reject until implemented
                     const pixivInfo = Array.from(url.match(CONSTS.REGEXP_MATCH_PIXIV_ILLUST_ID)!).filter((m) => m);
                     if (this.pixiv !== null && pixivInfo.length > 0) {
                         const iid = Number(pixivInfo.pop());
