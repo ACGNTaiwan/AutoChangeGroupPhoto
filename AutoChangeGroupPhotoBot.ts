@@ -1,4 +1,6 @@
+// const europa = new (require("node-europa"))({ absolute: true, inline: true });
 import * as fs from "fs";
+import * as htmlToText from "html-to-text";
 import * as jimp from "jimp";
 import * as yaml from "js-yaml";
 import * as moment from "moment";
@@ -475,7 +477,7 @@ class AutoChangeGroupPhotoBot {
         logger.info(CONSTS.UPLOADING_PHOTO(`${msg.chat.title}(${msg.chat.id})`, imageBuffer, url));
         const illust: PhotoData.PixivIllustStructure | null = imgUrl instanceof PhotoData.PixivIllustStructure ? imgUrl : null;
         const caption = (illust ? CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illust) : CONSTS.GROUP_PHOTO_CAPTION);
-        return this.bot.sendPhoto(msg.chat.id, imageBuffer, { caption })
+        return this.bot.sendPhoto(msg.chat.id, imageBuffer, { caption, disable_notification: true })
             .then(async (m) => {
                 let ret;
                 if (!(m instanceof Error)) {
@@ -568,7 +570,7 @@ class AutoChangeGroupPhotoBot {
      * @param oUrl Original Image URL
      */
     private processPixivUrl(oUrl: string) {
-        const pUrl = oUrl.replace(CONSTS.REGEXP_MATCH_PIXIV_IMAGE_DOMAIN, `$1${this.config.pixiv.reverseProxyDomain}$2`);
+        const pUrl = (typeof oUrl === "string" ? oUrl : "").replace(CONSTS.REGEXP_MATCH_PIXIV_IMAGE_DOMAIN, `$1${this.config.pixiv.reverseProxyDomain}$2`);
         logger.info(CONSTS.PIXIV_URL_REVERSED_PROXY(oUrl, pUrl));
         return pUrl;
     }
@@ -593,10 +595,11 @@ class AutoChangeGroupPhotoBot {
                                 const smUrl = this.processPixivUrl(illust.image_urls.square_medium);
                                 const rfUrl = CONSTS.PIXIV_ILLUST_IID_URL(iid);
                                 const tags = illust.tags.map((t: any) => `#${t.name}`);
+                                const caption = htmlToText.fromString(illust.caption); // europa.convert(illust.caption);
                                 const illustObj = new PhotoData.PixivIllustStructure(
                                     iid,
                                     illust.title,
-                                    illust.caption,
+                                    caption,
                                     illust.user.name,
                                     tags,
                                     oUrl,

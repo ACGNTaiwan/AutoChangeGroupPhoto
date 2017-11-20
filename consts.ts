@@ -27,12 +27,10 @@ export const FILE_ALREADY_IN_QUEUE = (fileId: string) => `File (${fileId}) alrea
 export const GROUP_PHOTO_CAPTION = "#群組圖片";
 export const GROUP_PHOTO_PIXIV_CAPTION = (illust: PhotoData.PixivIllustStructure) =>
     `${illust.title}(${illust.userName})
-${illust.caption}
-${illust.referralUrl}
+${illust.referralUrl} ${GROUP_PHOTO_CAPTION}
 
 ${illust.tags.join(" ")}
-
-${GROUP_PHOTO_CAPTION}`;
+${illust.caption}`;
 export const IMAGE_FROM_URL_DIMENSION = (mime: string, w: number, h: number) =>
     `Got Image file in type of ${mime} as resolution in dimension (${w}×${h}).`;
 export const INVALID_VALUE = "無效的數值";
