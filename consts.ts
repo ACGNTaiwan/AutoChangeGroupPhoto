@@ -52,6 +52,7 @@ export const REGEXP_MATCH_TAG_COMMAND = /(#|＃)(群組圖|群组图)(片)?/ig;
 export const REGEXP_MATCH_UNBAN_COMMAND = /(#|＃)(解鞭|unban)/ig;
 export const SET_INTERVAL = (interval: string) => `已設定變更間隔為${interval}小時`;
 export const UNBANNED_TEXT = (charId: number, fileId: string) => `Receive UnBan Queue for ${charId} to ${fileId}.`;
+export const UPDATE_PHOTO_ERROR = (chatId: number, reason: any) => `Update photo rejected on ${chatId}: ${reason}.`;
 export const UPDATE_PHOTO_IGNORE = (chat: TelegramBot.Chat) => `Group ${chat.title}(${chat.id}) ignore to update photo due to photo link was empty.`;
 export const UPDATED_PHOTO = (chat: TelegramBot.Chat, fileLink: string) =>
     `Group ${chat.title}(${chat.id}) updated photo to \`${fileLink}\`.`;

@@ -450,7 +450,12 @@ class AutoChangeGroupPhotoBot {
         }
         if (fileLink.length > 0) {
             await this.bot.getFileLink(fileLink)
-                .then(async (link) => link instanceof Error ? null : this.bot.setChatPhoto(chatData.chatId, request(link)));
+                .then(async (link) => link instanceof Error ? null :
+                    this.bot.setChatPhoto(chatData.chatId, request(link))
+                        .catch((reason) => {
+                            logger.error(CONSTS.UPDATE_PHOTO_ERROR(chatData.chatId, reason));
+                        }),
+                );
             chatData.last = +moment();
         }
         return fileLink;
