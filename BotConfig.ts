@@ -35,6 +35,7 @@ export class PixivConfig {
     public account = "";
     public password = "";
     public refreshToken = "";
+    public reverseProxyDomain = "";
 }
 
 export class BotConfig {

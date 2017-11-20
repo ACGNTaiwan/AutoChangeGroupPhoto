@@ -31,6 +31,36 @@ const autoSaver = {
     },
 };
 
+export class PixivIllustStructure {
+    public illustId = -1;
+    public title = "";
+    public caption = "";
+    public userName = "";
+    public tags: string[] = [];
+    public originalUrl = "";
+    public squareMediumUrl = "";
+    public referralUrl = "";
+    public constructor(
+        illustId: number,
+        title: string,
+        caption: string,
+        userName: string,
+        tags: string[],
+        originalUrl: string,
+        squareMediumUrl: string,
+        referralUrl: string,
+    ) {
+        this.illustId = illustId;
+        this.title = title;
+        this.caption = caption;
+        this.userName = userName;
+        this.tags = tags;
+        this.originalUrl = originalUrl;
+        this.squareMediumUrl = squareMediumUrl;
+        this.referralUrl = referralUrl;
+    }
+}
+
 export class PhotoDataStrcture {
     public chatId: number;
     public interval: number;

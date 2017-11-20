@@ -463,10 +463,19 @@ class AutoChangeGroupPhotoBot {
      * @param imageBuffer Image Buffer Object
      * @param ent Message Entity
      * @param url Requested URL queue
+     * @param imgUrl URL or Pixiv Structure
      */
-    private async uploadPhoto(msg: TelegramBot.Message, imageBuffer: Buffer, ent: TelegramBot.MessageEntity, url: string) {
+    private async uploadPhoto(
+        msg: TelegramBot.Message,
+        imageBuffer: Buffer,
+        ent: TelegramBot.MessageEntity,
+        url: string,
+        imgUrl?: string | PhotoData.PixivIllustStructure,
+    ) {
         logger.info(CONSTS.UPLOADING_PHOTO(`${msg.chat.title}(${msg.chat.id})`, imageBuffer, url));
-        return this.bot.sendPhoto(msg.chat.id, imageBuffer, {caption: CONSTS.GROUP_PHOTO_CAPTION})
+        const illust: PhotoData.PixivIllustStructure | null = imgUrl instanceof PhotoData.PixivIllustStructure ? imgUrl : null;
+        const caption = (illust ? CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illust) : CONSTS.GROUP_PHOTO_CAPTION);
+        return this.bot.sendPhoto(msg.chat.id, imageBuffer, { caption })
             .then(async (m) => {
                 let ret;
                 if (!(m instanceof Error)) {
@@ -485,14 +494,21 @@ class AutoChangeGroupPhotoBot {
      * @param imageBuffer Image Buffer Object
      * @param ent Message Entity
      * @param url Requested URL queue
+     * @param imgUrl URL or Pixiv Structure
      */
-    private async parsePhoto(msg: TelegramBot.Message, imageBuffer: Buffer, ent: TelegramBot.MessageEntity, url: string) {
+    private async parsePhoto(
+        msg: TelegramBot.Message,
+        imageBuffer: Buffer,
+        ent: TelegramBot.MessageEntity,
+        url: string,
+        imgUrl?: string | PhotoData.PixivIllustStructure,
+    ) {
         return jimp.read(imageBuffer)
             .then(async (image) => {
                 if (image !== undefined) {
                     logger.info(CONSTS.IMAGE_FROM_URL_DIMENSION(image.getMIME(), image.bitmap.width, image.bitmap.height));
                     // send image which downloaded back to the chat for placehold a file_id
-                    await this.uploadPhoto(msg, imageBuffer, ent, url);
+                    await this.uploadPhoto(msg, imageBuffer, ent, url, imgUrl);
                 } else {
                     // jimp can not decode as an image, we must send a message to notify the URL is not an image
                     await this.bot.sendMessage(msg.chat.id,
@@ -548,18 +564,52 @@ class AutoChangeGroupPhotoBot {
     }
 
     /**
+     * Convert to Reverse Proxy URL for Pixiv Images
+     * @param oUrl Original Image URL
+     */
+    private processPixivUrl(oUrl: string) {
+        const pUrl = oUrl.replace(CONSTS.REGEXP_MATCH_PIXIV_IMAGE_DOMAIN, `$1${this.config.pixiv.reverseProxyDomain}$2`);
+        logger.info(CONSTS.PIXIV_URL_REVERSED_PROXY(oUrl, pUrl));
+        return pUrl;
+    }
+
+    /**
      * Pre-Process URL for some Open Graph supported sites
      * @param msg Message Object
      * @param url Requested URL queue
      */
     private async preProcessUrl(msg: TelegramBot.Message, url: string) {
-        return new Promise<string | Buffer>(async (resolve, reject) => {
+        return new Promise<string | Buffer | PhotoData.PixivIllustStructure>(async (resolve, reject) => {
             logger.info(CONSTS.URL_PREPARE_TO_DOWNLOAD(msg, url));
             const checkSizeOk = await this.sizeLimitationCheck(url);
             if (checkSizeOk) {
-                if (url.match(/\.pixiv\./i) !== null) {
+                if (url.match(CONSTS.REGEXP_MATCH_PIXIV_DOMAIN) !== null) {
                     // todo for pixiv, always reject until implemented
-                    reject(url);
+                    const pixivInfo = Array.from(url.match(CONSTS.REGEXP_MATCH_PIXIV_ILLUST_ID)!).filter((m) => m);
+                    if (this.pixiv !== null && pixivInfo.length > 0) {
+                        const iid = Number(pixivInfo.pop());
+                        this.pixiv.illustDetail(iid, {})
+                            .then(({ illust }: any) => {
+                                const oUrl = this.processPixivUrl(illust.meta_single_page.original_image_url);
+                                const smUrl = this.processPixivUrl(illust.image_urls.square_medium);
+                                const rfUrl = CONSTS.PIXIV_ILLUST_IID_URL(iid);
+                                const tags = illust.tags.map((t: any) => `#${t.name}`);
+                                const illustObj = new PhotoData.PixivIllustStructure(
+                                    iid,
+                                    illust.title,
+                                    illust.caption,
+                                    illust.user.name,
+                                    tags,
+                                    oUrl,
+                                    smUrl,
+                                    rfUrl,
+                                );
+                                logger.info(CONSTS.PIXIV_ILLUST_DETAIL(illustObj));
+                                resolve(illustObj);
+                            });
+                    } else {
+                        reject(url);
+                    }
                 } else {
                     request.get(url, { encoding: null }, async (error, response, body) => {
                         ogs({ url }, async (err: boolean, results: any) => {
@@ -597,33 +647,38 @@ class AutoChangeGroupPhotoBot {
         this.uploadQueue = this.uploadQueue.then(async () =>
             new Promise<void>(async (resolve, reject) => {
                 const imgUrl = await this.preProcessUrl(msg, url);
-                const isBuffer = (imgUrl instanceof Buffer);
-                if (imgUrl.length === 0) {
+                const isBuffer = imgUrl instanceof Buffer;
+                const isPixiv = imgUrl instanceof PhotoData.PixivIllustStructure;
+                if (!(imgUrl instanceof PhotoData.PixivIllustStructure) && imgUrl.length === 0) {
                     reject();
                     return;
                 }
+                const downloadImage = async (err: any, response: any, body: any) => {
+                    if (err) {
+                        logger.error(err);
+                        reject();
+                        return;
+                    }
+                    if (response.statusCode === 200) {
+                        await this.parsePhoto(msg, Buffer.from(response.body), ent, url, imgUrl instanceof Buffer ? undefined : imgUrl);
+                        resolve();
+                    } else {
+                        // notify the URL not responsed correctly
+                        await this.bot.sendMessage(msg.chat.id,
+                                                   CONSTS.URL_REQUESTED_IS_NOT_OK(url),
+                                                   {reply_to_message_id: msg.message_id});
+                        reject();
+                    }
+                };
                 if (isBuffer) {
                     await this.parsePhoto(msg, imgUrl as Buffer, ent, url);
                     resolve();
                     return;
+                } else if (isPixiv) {
+                    const illust = imgUrl as PhotoData.PixivIllustStructure;
+                    return request.get(illust.squareMediumUrl, { encoding: null }, downloadImage);
                 } else {
-                    return request.get(imgUrl as string, { encoding: null }, async (error, response, body) => {
-                        if (error) {
-                            logger.error(error);
-                            reject();
-                            return;
-                        }
-                        if (response.statusCode === 200) {
-                            await this.parsePhoto(msg, Buffer.from(response.body), ent, url);
-                            resolve();
-                        } else {
-                            // notify the URL not responsed correctly
-                            await this.bot.sendMessage(msg.chat.id,
-                                                       CONSTS.URL_REQUESTED_IS_NOT_OK(url),
-                                                       {reply_to_message_id: msg.message_id});
-                            reject();
-                        }
-                    });
+                    return request.get(imgUrl as string, { encoding: null }, downloadImage);
                 }
             }),
         ).catch(() => { /* no-op */ });

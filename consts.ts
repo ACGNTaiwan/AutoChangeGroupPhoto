@@ -1,5 +1,6 @@
 const convert = require("convert-units");
 import * as TelegramBot from "node-telegram-bot-api";
+import * as PhotoData from "./PhotoData";
 
 export const ADDED_INTO_QUEUE = "已加入序列";
 export const ALREADY_IN_QUEUE = "已在序列中";
@@ -24,15 +25,31 @@ export const ENABLING_PIXIV_ACCOUNT = (account: string) => `Enabling Pixiv API A
 export const FILE_ADDED_INTO_QUEUE = (fileId: string) => `File (${fileId}) added into queue.`;
 export const FILE_ALREADY_IN_QUEUE = (fileId: string) => `File (${fileId}) already in the queue.`;
 export const GROUP_PHOTO_CAPTION = "#群組圖片";
+export const GROUP_PHOTO_PIXIV_CAPTION = (illust: PhotoData.PixivIllustStructure) =>
+    `${illust.title}(${illust.userName})
+${illust.caption}
+${illust.referralUrl}
+
+${illust.tags.join(" ")}
+
+${GROUP_PHOTO_CAPTION}`;
 export const IMAGE_FROM_URL_DIMENSION = (mime: string, w: number, h: number) =>
     `Got Image file in type of ${mime} as resolution in dimension (${w}×${h}).`;
 export const INVALID_VALUE = "無效的數值";
 export const NEED_TELEGRAM_BOT_TOKEN = "Need a valid Telegram Bot Token.";
 export const NOW_INTERVAL = (interval: string) => `目前設定值為${interval}小時`;
+export const PIXIV_ILLUST_IID_URL = (iid: number) => `https://www.pixiv.net/i/${iid}`;
+export const PIXIV_ILLUST_DETAIL = (illust: PhotoData.PixivIllustStructure) =>
+    `Got Illust \`${illust.title} : ${illust.caption} - ${illust.userName}\` (${illust.tags.join(", ")}) ` +
+    `with URL \`${illust.originalUrl}\` and square image URL \`${illust.squareMediumUrl}\``;
+export const PIXIV_URL_REVERSED_PROXY = (oUrl: string, pUrl: string) => `Convert Pixiv URL \`${oUrl}\` => \`${pUrl}\``;
 export const QUEUE_REQUEST_TEXT = (type: string, name: string) => `Receive ${type} Queue Request from ${name}.`;
 export const QUEUE_TEXT = (type: string, name: string) => `Receive ${type} Queue from ${name}.`;
 export const QUEUE_WAS_BANNED = (chatId: number, fileId: string) => `The file of ${fileId} was banned in ${chatId}`;
 export const REGEXP_MATCH_BAN_COMMAND = /(#|＃)(鞭|ban|banned|block|R18)/ig;
+export const REGEXP_MATCH_PIXIV_DOMAIN = /\.pixiv\./i;
+export const REGEXP_MATCH_PIXIV_ILLUST_ID = /illust_id=(\d+)|www.pixiv.net\/i\/(\d+)/i;
+export const REGEXP_MATCH_PIXIV_IMAGE_DOMAIN = /^(https:\/\/)i.pximg.net(\/.+)$/i;
 export const REGEXP_MATCH_TAG_COMMAND = /(#|＃)(群組圖|群组图)(片)?/ig;
 export const REGEXP_MATCH_UNBAN_COMMAND = /(#|＃)(解鞭|unban)/ig;
 export const SET_INTERVAL = (interval: string) => `已設定變更間隔為${interval}小時`;
