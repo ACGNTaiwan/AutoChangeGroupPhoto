@@ -618,6 +618,35 @@ class AutoChangeGroupPhotoBot {
     }
 
     /**
+     * Get Pixiv Illust Detail infomations
+     * @param illustId Pixiv Illust ID
+     * @param options Pixiv API Options
+     */
+    private async getPixivIllustDetail(illustId: number, options: any = {}): Promise<PhotoData.PixivIllustStructure> {
+        return this.pixiv.illustDetail(illustId, options)
+            .catch((e: any) => logger.error(e))
+            .then(({ illust }: any) => {
+                const oUrl = this.processPixivUrl(illust.meta_single_page.original_image_url);
+                const smUrl = this.processPixivUrl(illust.image_urls.square_medium);
+                const rfUrl = CONSTS.PIXIV_ILLUST_IID_URL(illustId);
+                const tags = illust.tags.map((t: any) => `#${t.name}`);
+                const caption = htmlToText.fromString(illust.caption); // europa.convert(illust.caption);
+                const illustObj = new PhotoData.PixivIllustStructure(
+                    illustId,
+                    illust.title,
+                    caption,
+                    illust.user.name,
+                    tags,
+                    oUrl,
+                    smUrl,
+                    rfUrl,
+                );
+                logger.info(CONSTS.PIXIV_ILLUST_DETAIL(illustObj));
+                return illustObj;
+            });
+    }
+
+    /**
      * Pre-Process URL for some Open Graph supported sites
      * @param msg Message Object
      * @param url Requested URL queue
@@ -631,26 +660,7 @@ class AutoChangeGroupPhotoBot {
                     const pixivInfo = Array.from(url.match(CONSTS.REGEXP_MATCH_PIXIV_ILLUST_ID)!).filter((m) => m);
                     if (this.pixiv !== null && pixivInfo.length > 0) {
                         const iid = Number(pixivInfo.pop());
-                        this.pixiv.illustDetail(iid, {})
-                            .then(({ illust }: any) => {
-                                const oUrl = this.processPixivUrl(illust.meta_single_page.original_image_url);
-                                const smUrl = this.processPixivUrl(illust.image_urls.square_medium);
-                                const rfUrl = CONSTS.PIXIV_ILLUST_IID_URL(iid);
-                                const tags = illust.tags.map((t: any) => `#${t.name}`);
-                                const caption = htmlToText.fromString(illust.caption); // europa.convert(illust.caption);
-                                const illustObj = new PhotoData.PixivIllustStructure(
-                                    iid,
-                                    illust.title,
-                                    caption,
-                                    illust.user.name,
-                                    tags,
-                                    oUrl,
-                                    smUrl,
-                                    rfUrl,
-                                );
-                                logger.info(CONSTS.PIXIV_ILLUST_DETAIL(illustObj));
-                                resolve(illustObj);
-                            });
+                        await this.getPixivIllustDetail(iid).then((illustObj) => { resolve(illustObj); return illustObj; });
                     } else {
                         reject(url);
                     }
