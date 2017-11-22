@@ -96,20 +96,6 @@ class AutoChangeGroupPhotoBot {
             }
         });
 
-        // ban the photo
-        this.bot.onText(CONSTS.REGEXP_MATCH_BAN_COMMAND, async (msg) => {
-            if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
-                await this.banPhoto(msg);
-            }
-        });
-
-        // unban the photo
-        this.bot.onText(CONSTS.REGEXP_MATCH_UNBAN_COMMAND, async (msg) => {
-            if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
-                await this.unbanPhoto(msg);
-            }
-        });
-
         this.bot.on("photo", async (msg: TelegramBot.Message) => {
             if (msg.caption && msg.caption.match(CONSTS.REGEXP_MATCH_TAG_COMMAND)) {
                 logger.info(CONSTS.QUEUE_TEXT("Photo", msg.chat));
@@ -225,6 +211,16 @@ class AutoChangeGroupPhotoBot {
                 break;
             case CONSTS.COMMANDS.NEXT_PHOTO:
                 await this.nextPhoto(chatData);
+                break;
+            case CONSTS.COMMANDS.BAN:
+                if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
+                    await this.banPhoto(msg);
+                }
+                break;
+            case CONSTS.COMMANDS.UNBAN:
+                if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
+                    await this.unbanPhoto(msg);
+                }
                 break;
             // TODO
             // case 'setloop':

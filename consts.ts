@@ -14,12 +14,16 @@ export enum COMMANDS {
     SET_INTERVAL = "setinterval",
     NEXT_PHOTO = "next",
     QUEUE_STATUS = "queue",
+    BAN = "ban",
+    UNBAN = "unban",
 }
 export const COMMANDS_ADMINS_ONLY = [
     COMMANDS.SET_PAUSED,
     COMMANDS.SET_RESUMED,
     COMMANDS.SET_INTERVAL,
     COMMANDS.NEXT_PHOTO,
+    COMMANDS.BAN,
+    COMMANDS.UNBAN,
 ];
 export const CONFIG_FILE_PATH = "./config.yaml";
 export const DATA_FILE_JSON_PATH = "./data.json";
@@ -57,12 +61,10 @@ export const PIXIV_URL_REVERSED_PROXY = (oUrl: string, pUrl: string) => `Convert
 export const QUEUE_REQUEST_TEXT = (type: string, name: string) => `Receive ${type} Queue Request from ${name}.`;
 export const QUEUE_TEXT = (type: string, chat: TelegramBot.Chat) => `Receive ${type} Queue from Group/Peer ${chat.title || chat.username}(${chat.id}).`;
 export const QUEUE_WAS_BANNED = (chatId: number, fileId: string) => `The file of ${fileId} was banned in ${chatId}`;
-export const REGEXP_MATCH_BAN_COMMAND = /(#|＃)(鞭|ban|banned|block|R18)/ig;
 export const REGEXP_MATCH_PIXIV_DOMAIN = /\.pixiv\./i;
 export const REGEXP_MATCH_PIXIV_ILLUST_ID = /illust_id=(\d+)|www.pixiv.net\/i\/(\d+)/i;
 export const REGEXP_MATCH_PIXIV_IMAGE_DOMAIN = /^(https:\/\/)i.pximg.net(\/.+)$/i;
 export const REGEXP_MATCH_TAG_COMMAND = /(#|＃)(群組圖|群组图)(片)?/ig;
-export const REGEXP_MATCH_UNBAN_COMMAND = /(#|＃)(解鞭|unban)/ig;
 export const SET_INTERVAL = (interval: string) => `已設定變更間隔為${interval}小時`;
 export const UNBANNED_TEXT = (charId: number, fileId: string) => `Receive UnBan Queue for ${charId} to ${fileId}.`;
 export const UPDATE_PHOTO_ERROR = (chatId: number, reason: any) => `Update photo rejected on ${chatId}: ${reason}.`;
@@ -91,6 +93,6 @@ export const URL_SIZE_OUT_OF_BOUND = (url: string, size: number, limitation: num
     `that is exceed the limitation of ${convert(limitation).from("B").to("MB").toFixed(2)}MB.`;
 export const WAITING_PHOTOS = (chatData: PhotoData.PhotoDataStrcture, nextTime: string) =>
     `等待的圖片數：${chatData.queue.length}
-被鞭圖片數量：${chatData.banList.length}
+封鎖的圖片數量：${chatData.banList.length}
 歷史記錄數量：${chatData.history.length}
 下次換圖時間：${nextTime}${chatData.paused ? " (暫停更換中)" : ""}`;
