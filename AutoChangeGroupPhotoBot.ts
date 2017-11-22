@@ -143,6 +143,8 @@ class AutoChangeGroupPhotoBot {
                         return;
                     }
 
+                    const command = regex[1].toLowerCase();
+                    const commandArgs = regex.slice(2);
                     const chatId = msg.chat.id;
                     const chatData = this.getData(chatId);
 
@@ -150,8 +152,15 @@ class AutoChangeGroupPhotoBot {
                         if (members instanceof Error) {
                             return;
                         }
+                        if (CONSTS.COMMANDS_ADMINS_ONLY.indexOf(command as CONSTS.COMMANDS) !== -1) {
+                            if (msg.from) {
+                                if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) {
+                                    return;
+                                }
+                            }
+                        }
 
-                        switch (regex[1].toLowerCase()) {
+                        switch (command) {
                             case CONSTS.COMMANDS.SET_PAUSED:
                                 chatData.paused = true;
                                 logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
@@ -164,12 +173,7 @@ class AutoChangeGroupPhotoBot {
                                 break;
                             case CONSTS.COMMANDS.SET_INTERVAL:
                                 if (msg.text) {
-                                    if (msg.from) {
-                                        if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) {
-                                            break;
-                                        }
-                                    }
-                                    const args = msg.text.replace(regex[0], "").trim();
+                                    const args = commandArgs.join(" ").trim();
                                     if (args.length === 0) {
                                         await this.bot.sendMessage(chatId, CONSTS.NOW_INTERVAL(chatData.interval.toString()));
                                         break;
@@ -183,11 +187,6 @@ class AutoChangeGroupPhotoBot {
                                 }
                                 break;
                             case CONSTS.COMMANDS.NEXT_PHOTO:
-                                if (msg.from) {
-                                    if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) {
-                                        break;
-                                    }
-                                }
                                 await this.nextPhoto(chatData);
                                 break;
                             // TODO

@@ -15,6 +15,12 @@ export enum COMMANDS {
     NEXT_PHOTO = "next",
     QUEUE_STATUS = "queue",
 }
+export const COMMANDS_ADMINS_ONLY = [
+    COMMANDS.SET_PAUSED,
+    COMMANDS.SET_RESUMED,
+    COMMANDS.SET_INTERVAL,
+    COMMANDS.NEXT_PHOTO,
+];
 export const CONFIG_FILE_PATH = "./config.yaml";
 export const DATA_FILE_JSON_PATH = "./data.json";
 export const DATA_FILE_PATH = "./data.yaml";
