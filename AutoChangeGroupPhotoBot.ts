@@ -597,7 +597,7 @@ class AutoChangeGroupPhotoBot {
                     length = Number(headers["content-length"]);
                 }
                 if (headers["content-type"]) {
-                    mime = headers["content-type"];
+                    mime = headers["content-type"]!;
                 }
                 const isHTML = mime.match(/html/i) !== null;
                 const isAcceptedMime = mime.match(/^image/i) !== null || isHTML;
