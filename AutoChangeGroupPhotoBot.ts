@@ -137,6 +137,23 @@ class AutoChangeGroupPhotoBot {
                 return;
             }
 
+            this.bot.on("inline_query", async (inlineQuery: TelegramBot.InlineQuery) => {
+                logger.info(inlineQuery);
+                if (inlineQuery.query.match(/^\d+$/)) {
+                    const pid = Number(inlineQuery.query);
+                    await this.getPixivIllustDetail(pid).then((illustObj) => {
+                        const result: TelegramBot.InlineQueryResultPhoto = {
+                            caption: CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illustObj),
+                            id: inlineQuery.id,
+                            photo_url: illustObj.squareMediumUrl,
+                            thumb_url: illustObj.squareMediumUrl,
+                            type: "photo",
+                        };
+                        this.bot.answerInlineQuery(inlineQuery.id, [ result ], { cache_time: 1 }).catch(() => { /* no-op */ });
+                    });
+                }
+            });
+
             this.bot.onText(/^\/(\w+)@?(\w*)/i, async (msg, regex) => {
                 if (regex) {
                     if (regex[2] && regex[2] !== me.username) {
