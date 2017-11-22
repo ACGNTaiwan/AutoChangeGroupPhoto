@@ -152,6 +152,16 @@ class AutoChangeGroupPhotoBot {
                         }
 
                         switch (regex[1].toLowerCase()) {
+                            case CONSTS.COMMANDS.SET_PAUSED:
+                                chatData.paused = true;
+                                logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
+                                await this.bot.sendMessage(chatId, CONSTS.PAUSE_RESUME_MESSAGE(msg.chat, chatData));
+                                break;
+                            case CONSTS.COMMANDS.SET_RESUMED:
+                                chatData.paused = false;
+                                logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
+                                await this.bot.sendMessage(chatId, CONSTS.PAUSE_RESUME_MESSAGE(msg.chat, chatData));
+                                break;
                             case CONSTS.COMMANDS.SET_INTERVAL:
                                 if (msg.text) {
                                     if (msg.from) {
@@ -187,14 +197,10 @@ class AutoChangeGroupPhotoBot {
                             // case 'block':
                             //     if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
                             case CONSTS.COMMANDS.QUEUE_STATUS:
-                                await this.bot.sendMessage(chatId,
-                                                           CONSTS.WAITING_PHOTOS(chatData.queue.length,
-                                                                                 chatData.banList.length,
-                                                                                 chatData.history.length,
-                                                                                 moment(chatData.last)
-                                                                                    .add(chatData.interval, "h")
-                                                                                    .format("LLL")),
-                                );
+                                const nextTime = moment(chatData.last)
+                                    .add(chatData.interval, "h")
+                                    .format("LLL");
+                                await this.bot.sendMessage(chatId, CONSTS.WAITING_PHOTOS(chatData, nextTime));
                                 break;
                             // TODO
                             // case 'votenext':
@@ -414,7 +420,7 @@ class AutoChangeGroupPhotoBot {
      */
     private doUpdate() {
         this.data.map(async (chatData) => {
-            if (!chatData.last || moment(chatData.last).add(chatData.interval, "h").isBefore(moment())) {
+            if (!chatData.paused && (!chatData.last || moment(chatData.last).add(chatData.interval, "h").isBefore(moment()))) {
                 const fileLink = await this.nextPhoto(chatData);
                 await this.bot.getChat(chatData.chatId)
                     .then((chat) => {

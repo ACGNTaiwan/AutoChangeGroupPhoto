@@ -64,6 +64,7 @@ export class PixivIllustStructure {
 export class PhotoDataStrcture {
     public chatId: number;
     public chatName: string;
+    public paused = false;
     public interval: number;
     public last: number;
     public queue: string[];
@@ -93,6 +94,7 @@ export class PhotoDataStrcture {
     private from(pds: PhotoDataStrcture) {
         this.chatId = pds.chatId;
         this.chatName = pds.chatName;
+        this.paused = pds.paused;
         this.interval = pds.interval ? pds.interval : 1;
         this.last = pds.last ? pds.last : +moment();
         this.queue = new Proxy((pds.queue !== null && pds.queue !== undefined) ? pds.queue : [], autoSaver);

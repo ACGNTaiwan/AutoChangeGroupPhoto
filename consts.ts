@@ -9,6 +9,8 @@ export const BANNED_TEXT = (charId: number, fileId: string) => `Receive Ban Queu
 export const CAN_NOT_CHANGE_ALL_ADMINS_PHOTO = "I can't change group photo if all members are admin!";
 export const CAN_NOT_CHANGE_PHOTO = "I can't change your photo!";
 export enum COMMANDS {
+    SET_PAUSED = "pause",
+    SET_RESUMED = "resume",
     SET_INTERVAL = "setinterval",
     NEXT_PHOTO = "next",
     QUEUE_STATUS = "queue",
@@ -37,6 +39,10 @@ export const IMAGE_FROM_URL_DIMENSION = (mime: string, w: number, h: number) =>
 export const INVALID_VALUE = "無效的數值";
 export const NEED_TELEGRAM_BOT_TOKEN = "Need a valid Telegram Bot Token.";
 export const NOW_INTERVAL = (interval: string) => `目前設定值為${interval}小時`;
+export const PAUSE_RESUME_MESSAGE = (chat: TelegramBot.Chat, chatData: PhotoData.PhotoDataStrcture) =>
+    `暫停更換群組圖狀態已設為: ${chatData.paused ? "暫停中" : "正常中"}`;
+export const PAUSE_RESUME_LOG_MESSAGE = (chat: TelegramBot.Chat, chatData: PhotoData.PhotoDataStrcture) =>
+    `Group/Peer ${chat.title || chat.username}(${chat.id}) set paused state to => ${chatData.paused}.`;
 export const PIXIV_ILLUST_IID_URL = (iid: number) => `https://www.pixiv.net/i/${iid}`;
 export const PIXIV_ILLUST_DETAIL = (illust: PhotoData.PixivIllustStructure) =>
     `Got Illust \`${illust.title} : ${illust.caption} - ${illust.userName}\` (${illust.tags.join(", ")}) ` +
@@ -77,5 +83,8 @@ export const URL_SIZE_RESULT = (url: string, size: number) =>
 export const URL_SIZE_OUT_OF_BOUND = (url: string, size: number, limitation: number) =>
     `The request of \`${url}\` is ${convert(size).from("B").to("MB").toFixed(2)}MB, ` +
     `that is exceed the limitation of ${convert(limitation).from("B").to("MB").toFixed(2)}MB.`;
-export const WAITING_PHOTOS = (count: number, banCount: number, historyCount: number, nextTime: string) =>
-    `等待的圖片數：${count}\n被鞭圖片數量：${banCount}\n歷史記錄數量：${historyCount}\n下次換圖時間：${nextTime}`;
+export const WAITING_PHOTOS = (chatData: PhotoData.PhotoDataStrcture, nextTime: string) =>
+    `等待的圖片數：${chatData.queue.length}
+被鞭圖片數量：${chatData.banList.length}
+歷史記錄數量：${chatData.history.length}
+下次換圖時間：${nextTime}${chatData.paused ? " (暫停更換中)" : ""}`;
