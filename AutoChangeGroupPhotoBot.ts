@@ -144,73 +144,89 @@ class AutoChangeGroupPhotoBot {
                     }
 
                     const command = regex[1].toLowerCase();
-                    const commandArgs = regex.slice(2);
-                    const chatId = msg.chat.id;
-                    const chatData = this.getData(chatId);
+                    const commandArgs = msg.text!.replace(regex[0], "").trim().split(" ");
 
-                    await this.bot.getChatAdministrators(chatId).then(async (members) => {
-                        if (members instanceof Error) {
-                            return;
-                        }
-                        if (CONSTS.COMMANDS_ADMINS_ONLY.indexOf(command as CONSTS.COMMANDS) !== -1) {
-                            if (msg.from) {
-                                if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) {
-                                    return;
-                                }
-                            }
-                        }
-
-                        switch (command) {
-                            case CONSTS.COMMANDS.SET_PAUSED:
-                                chatData.paused = true;
-                                logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
-                                await this.bot.sendMessage(chatId, CONSTS.PAUSE_RESUME_MESSAGE(msg.chat, chatData));
-                                break;
-                            case CONSTS.COMMANDS.SET_RESUMED:
-                                chatData.paused = false;
-                                logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
-                                await this.bot.sendMessage(chatId, CONSTS.PAUSE_RESUME_MESSAGE(msg.chat, chatData));
-                                break;
-                            case CONSTS.COMMANDS.SET_INTERVAL:
-                                if (msg.text) {
-                                    const args = commandArgs.join(" ").trim();
-                                    if (args.length === 0) {
-                                        await this.bot.sendMessage(chatId, CONSTS.NOW_INTERVAL(chatData.interval.toString()));
-                                        break;
-                                    }
-                                    if (args.length > 0 && Number(args) >= this.config.minBotInterval) {
-                                        chatData.interval = Number(args);
-                                        await this.bot.sendMessage(chatId, CONSTS.SET_INTERVAL(chatData.interval.toString()));
-                                    } else {
-                                        await this.bot.sendMessage(chatId, CONSTS.INVALID_VALUE);
-                                    }
-                                }
-                                break;
-                            case CONSTS.COMMANDS.NEXT_PHOTO:
-                                await this.nextPhoto(chatData);
-                                break;
-                            // TODO
-                            // case 'setloop':
-                            //     if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
-                            //     if (msg.text.split(' ').length === 1) bot.sendMessage(chatId, '目前')
-                            // case 'block':
-                            //     if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
-                            case CONSTS.COMMANDS.QUEUE_STATUS:
-                                const nextTime = moment(chatData.last)
-                                    .add(chatData.interval, "h")
-                                    .format("LLL");
-                                await this.bot.sendMessage(chatId, CONSTS.WAITING_PHOTOS(chatData, nextTime));
-                                break;
-                            // TODO
-                            // case 'votenext':
-                            //     break;
-                            default:
-                                // no-op
-                        }
-                    });
+                    await this.bot.getChatAdministrators(msg.chat.id)
+                        .then(async (members) => this.parseCommand(members, msg, command as CONSTS.COMMANDS, commandArgs));
                 }
             });
         });
+    }
+
+    /**
+     * Parse Text Command from chat
+     * @param members Telegram Chat Members
+     * @param msg Message Object
+     * @param command Command
+     * @param commandArgs Command Arguments
+     */
+    private async parseCommand(
+        members: TelegramBot.ChatMember[] | Error,
+        msg: TelegramBot.Message,
+        command: CONSTS.COMMANDS,
+        commandArgs: string[],
+    ) {
+        const chatId = msg.chat.id;
+        const chatData = this.getData(chatId);
+
+        if (members instanceof Error) {
+            return;
+        }
+        if (CONSTS.COMMANDS_ADMINS_ONLY.indexOf(command) !== -1) {
+            if (msg.from) {
+                if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) {
+                    return;
+                }
+            }
+        }
+
+        switch (command) {
+            case CONSTS.COMMANDS.SET_PAUSED:
+                chatData.paused = true;
+                logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
+                await this.bot.sendMessage(chatId, CONSTS.PAUSE_RESUME_MESSAGE(msg.chat, chatData));
+                break;
+            case CONSTS.COMMANDS.SET_RESUMED:
+                chatData.paused = false;
+                logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
+                await this.bot.sendMessage(chatId, CONSTS.PAUSE_RESUME_MESSAGE(msg.chat, chatData));
+                break;
+            case CONSTS.COMMANDS.SET_INTERVAL:
+                if (msg.text) {
+                    const args = commandArgs.join(" ");
+                    if (args.length === 0) {
+                        await this.bot.sendMessage(chatId, CONSTS.NOW_INTERVAL(chatData.interval.toString()));
+                        break;
+                    }
+                    if (args.length > 0 && Number(args) >= this.config.minBotInterval) {
+                        chatData.interval = Number(args);
+                        await this.bot.sendMessage(chatId, CONSTS.SET_INTERVAL(chatData.interval.toString()));
+                    } else {
+                        await this.bot.sendMessage(chatId, CONSTS.INVALID_VALUE);
+                    }
+                }
+                break;
+            case CONSTS.COMMANDS.NEXT_PHOTO:
+                await this.nextPhoto(chatData);
+                break;
+            // TODO
+            // case 'setloop':
+            //     if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
+            //     if (msg.text.split(' ').length === 1) bot.sendMessage(chatId, '目前')
+            // case 'block':
+            //     if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
+            case CONSTS.COMMANDS.QUEUE_STATUS:
+                const nextTime = moment(chatData.last)
+                    .add(chatData.interval, "h")
+                    .format("LLL");
+                await this.bot.sendMessage(chatId, CONSTS.WAITING_PHOTOS(chatData, nextTime));
+                break;
+            // TODO
+            // case 'votenext':
+            //     break;
+            default:
+                // no-op
+        }
     }
 
     /**
