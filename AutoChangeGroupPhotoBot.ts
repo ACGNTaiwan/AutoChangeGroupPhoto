@@ -519,7 +519,7 @@ class AutoChangeGroupPhotoBot {
         logger.info(CONSTS.UPLOADING_PHOTO(`${msg.chat.title}(${msg.chat.id})`, imageBuffer, url));
         const illust: PhotoData.PixivIllustStructure | null = imgUrl instanceof PhotoData.PixivIllustStructure ? imgUrl : null;
         const caption = (illust ? CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illust) : CONSTS.GROUP_PHOTO_CAPTION);
-        return this.bot.sendPhoto(msg.chat.id, imageBuffer, { caption, disable_notification: true })
+        return this.bot.sendPhoto(msg.chat.id, imageBuffer, { caption, disable_notification: true, reply_to_message_id: msg.message_id })
             .then(async (m) => {
                 let ret;
                 if (!(m instanceof Error)) {
