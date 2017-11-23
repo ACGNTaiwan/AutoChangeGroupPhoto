@@ -344,6 +344,9 @@ class AutoChangeGroupPhotoBot {
                     await this.bot.sendMessage(msg.chat.id, CONSTS.ALREADY_IN_QUEUE, {reply_to_message_id: msg.message_id});
                 }
                 break;
+            case CONSTS.UNSUPPORTED_FILE_EXTENSIONS(msg.document!.file_name!):
+                await this.bot.sendMessage(msg.chat.id, result, {reply_to_message_id: msg.message_id, parse_mode: "Markdown"});
+                break;
             default:
                 // unspecified response, always delete the message we sent
                 await this.bot.deleteMessage(msg.chat.id, msg.message_id.toString());
@@ -369,7 +372,13 @@ class AutoChangeGroupPhotoBot {
         if (msg.photo && msg.photo.length > 0) {
             fileId = msg.photo.pop()!.file_id;
         } else if (msg.document && msg.document.thumb) {
-            fileId = msg.document.file_id;
+            if (msg.document.file_name!.match(/.(gif|mp4)/gi) === null) {
+                fileId = msg.document.file_id;
+            } else {
+                fileId = "";
+                logger.info(CONSTS.FILE_ADD_INTO_QUEUE_UNSUPPORTED(msg.document.file_name!));
+                return CONSTS.UNSUPPORTED_FILE_EXTENSIONS(msg.document.file_name!);
+            }
         } else {
             fileId = "";
         }

@@ -34,6 +34,7 @@ export const ENABLED_PIXIV_ACCOUNT = (account: string, refreshToken: string) =>
 export const ENABLING_REFRESHED_PIXIV_ACCOUNT = (account: string, refreshToken: string) =>
     `Re-Enabling Pixiv API Account => \`${account}\` by refresh token => \`${refreshToken}\`.`;
 export const ENABLING_PIXIV_ACCOUNT = (account: string) => `Enabling Pixiv API Account => \`${account}\`.`;
+export const FILE_ADD_INTO_QUEUE_UNSUPPORTED = (fileName: string) => `Unsupported file for \`${fileName}\`.`;
 export const FILE_ADDED_INTO_QUEUE = (fileId: string) => `File (${fileId}) added into queue.`;
 export const FILE_ALREADY_IN_QUEUE = (fileId: string) => `File (${fileId}) already in the queue.`;
 export const GET_CHAT_ERROR = (chatId: number, reason: any) => `Get Chat Error ${chatId}: ${reason}.`;
@@ -67,6 +68,7 @@ export const REGEXP_MATCH_PIXIV_IMAGE_DOMAIN = /^(https:\/\/)i.pximg.net(\/.+)$/
 export const REGEXP_MATCH_TAG_COMMAND = /(#|＃)(群組圖|群组图)(片)?/ig;
 export const SET_INTERVAL = (interval: string) => `已設定變更間隔為${interval}小時`;
 export const UNBANNED_TEXT = (charId: number, fileId: string) => `Receive UnBan Queue for ${charId} to ${fileId}.`;
+export const UNSUPPORTED_FILE_EXTENSIONS = (fileName: string) => `不支援檔案 \`${fileName}\`，因此無法設定群圖`;
 export const UPDATE_PHOTO_ERROR = (chatId: number, reason: any) => `Update photo rejected on ${chatId}: ${reason}.`;
 export const UPDATE_PHOTO_IGNORE = (chat: TelegramBot.Chat) =>
     `Group/Peer ${chat.title || chat.username}(${chat.id}) ignore to update photo due to photo link was empty.`;
