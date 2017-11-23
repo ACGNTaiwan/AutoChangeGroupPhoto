@@ -37,8 +37,8 @@ export class PixivIllustStructure {
     public caption = "";
     public userName = "";
     public tags: string[] = [];
-    public originalUrl = "";
-    public squareMediumUrl = "";
+    public originalUrl: string[] = [];
+    public squareMediumUrl: string[] = [];
     public referralUrl = "";
     public constructor(
         illustId: number,
@@ -46,8 +46,8 @@ export class PixivIllustStructure {
         caption: string,
         userName: string,
         tags: string[],
-        originalUrl: string,
-        squareMediumUrl: string,
+        originalUrl: string[],
+        squareMediumUrl: string[],
         referralUrl: string,
     ) {
         this.illustId = illustId;

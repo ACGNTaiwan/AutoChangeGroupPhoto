@@ -128,14 +128,17 @@ class AutoChangeGroupPhotoBot {
                 if (inlineQuery.query.match(/^\d+$/)) {
                     const pid = Number(inlineQuery.query);
                     await this.getPixivIllustDetail(pid).then((illustObj) => {
-                        const result: TelegramBot.InlineQueryResultPhoto = {
-                            caption: CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illustObj),
-                            id: inlineQuery.id,
-                            photo_url: illustObj.squareMediumUrl,
-                            thumb_url: illustObj.squareMediumUrl,
-                            type: "photo",
-                        };
-                        this.bot.answerInlineQuery(inlineQuery.id, [ result ], { cache_time: 1 }).catch(() => { /* no-op */ });
+                        const result: TelegramBot.InlineQueryResultPhoto[] = illustObj.squareMediumUrl.map((url, i) => {
+                            const r: TelegramBot.InlineQueryResultPhoto = {
+                                caption: CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illustObj),
+                                id: `${inlineQuery.id}_${i}`,
+                                photo_url: url,
+                                thumb_url: url,
+                                type: "photo",
+                            };
+                            return r;
+                        });
+                        this.bot.answerInlineQuery(inlineQuery.id, result, { cache_time: 1 }).catch(() => { /* no-op */ });
                     });
                 }
             });
@@ -639,8 +642,10 @@ class AutoChangeGroupPhotoBot {
         return this.pixiv.illustDetail(illustId, options)
             .catch((e: any) => logger.error(e))
             .then(({ illust }: any) => {
-                const oUrl = this.processPixivUrl(illust.meta_single_page.original_image_url);
-                const smUrl = this.processPixivUrl(illust.image_urls.square_medium);
+                const oUrl = illust.meta_single_page.original_image_url ? [this.processPixivUrl(illust.meta_single_page.original_image_url)] :
+                    illust.meta_pages.map((mp: any) => this.processPixivUrl(mp.image_urls.original));
+                const smUrl = illust.meta_single_page.original_image_url ? [this.processPixivUrl(illust.image_urls.square_medium)] :
+                    illust.meta_pages.map((mp: any) => this.processPixivUrl(mp.image_urls.square_medium));
                 const rfUrl = CONSTS.PIXIV_ILLUST_IID_URL(illustId);
                 const tags = illust.tags.map((t: any) => `#${t.name}`);
                 const caption = htmlToText.fromString(illust.caption); // europa.convert(illust.caption);
@@ -743,7 +748,7 @@ class AutoChangeGroupPhotoBot {
                     return;
                 } else if (isPixiv) {
                     const illust = imgUrl as PhotoData.PixivIllustStructure;
-                    return request.get(illust.squareMediumUrl, { encoding: null }, downloadImage);
+                    return request.get(illust.squareMediumUrl[0], { encoding: null }, downloadImage);
                 } else {
                     return request.get(imgUrl as string, { encoding: null }, downloadImage);
                 }
