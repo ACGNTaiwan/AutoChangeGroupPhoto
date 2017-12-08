@@ -128,7 +128,7 @@ class AutoChangeGroupPhotoBot {
                 if (inlineQuery.query.match(/^\d+$/)) {
                     const pid = Number(inlineQuery.query);
                     await this.getPixivIllustDetail(pid).then((illustObj) => {
-                        const result: TelegramBot.InlineQueryResultPhoto[] = illustObj.squareMediumUrl.map((url, i) => {
+                        const result: TelegramBot.InlineQueryResultPhoto[] = illustObj.originalUrl.map((url, i) => {
                             const r: TelegramBot.InlineQueryResultPhoto = {
                                 caption: CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illustObj),
                                 id: `${inlineQuery.id}_${i}`,
@@ -757,7 +757,7 @@ class AutoChangeGroupPhotoBot {
                     return;
                 } else if (isPixiv) {
                     const illust = imgUrl as PhotoData.PixivIllustStructure;
-                    return request.get(illust.squareMediumUrl[0], { encoding: null }, downloadImage);
+                    return request.get(illust.originalUrl[0], { encoding: null }, downloadImage);
                 } else {
                     return request.get(imgUrl as string, { encoding: null }, downloadImage);
                 }
