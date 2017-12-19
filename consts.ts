@@ -49,6 +49,8 @@ export const IMAGE_FROM_URL_DIMENSION = (mime: string, w: number, h: number) =>
     `Got Image file in type of ${mime} as resolution in dimension (${w}×${h}).`;
 export const INVALID_VALUE = "無效的數值";
 export const NEED_TELEGRAM_BOT_TOKEN = "Need a valid Telegram Bot Token.";
+export const NOT_SUPPORT_FOR_HENTAI = (url: string) => `Not support for hentai: ${url}`;
+export const NOT_SUPPORT_FOR_HENTAI_MSG = (url: string) => `目前這個網址不提供紳士支援: ${url}`;
 export const NOW_INTERVAL = (interval: string) => `目前設定值為${interval}小時`;
 export const PAUSE_RESUME_MESSAGE = (chat: TelegramBot.Chat, chatData: PhotoData.PhotoDataStrcture) =>
     `暫停更換群組圖狀態已設為: ${chatData.paused ? "暫停中" : "正常中"}`;
@@ -62,6 +64,7 @@ export const PIXIV_URL_REVERSED_PROXY = (oUrl: string, pUrl: string) => `Convert
 export const QUEUE_REQUEST_TEXT = (type: string, name: string) => `Receive ${type} Queue Request from ${name}.`;
 export const QUEUE_TEXT = (type: string, chat: TelegramBot.Chat) => `Receive ${type} Queue from Group/Peer ${chat.title || chat.username}(${chat.id}).`;
 export const QUEUE_WAS_BANNED = (chatId: number, fileId: string) => `The file of ${fileId} was banned in ${chatId}`;
+export const REGEXP_MATCH_HENTAI_DOMAIN = /e[x\-]?hentai.org/i;
 export const REGEXP_MATCH_PIXIV_DOMAIN = /\.pixiv\./i;
 export const REGEXP_MATCH_PIXIV_ILLUST_ID = /illust_id=(\d+)|www.pixiv.net\/i\/(\d+)/i;
 export const REGEXP_MATCH_PIXIV_IMAGE_DOMAIN = /^(https:\/\/)i.pximg.net(\/.+)$/i;

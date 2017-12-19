@@ -695,6 +695,10 @@ class AutoChangeGroupPhotoBot {
                     } else {
                         reject(url);
                     }
+                } else if (url.match(CONSTS.REGEXP_MATCH_HENTAI_DOMAIN) !== null) {
+                    logger.info(CONSTS.NOT_SUPPORT_FOR_HENTAI(url));
+                    await this.bot.sendMessage(msg.chat.id, CONSTS.NOT_SUPPORT_FOR_HENTAI_MSG(url), { reply_to_message_id: msg.message_id });
+                    reject(Buffer.from([]));
                 } else {
                     request.get(url, this.requestOptions, async (error, response, body) => {
                         ogs({ url }, async (err: boolean, results: any) => {
@@ -711,7 +715,11 @@ class AutoChangeGroupPhotoBot {
                                 }
                             } else {
                                 logger.info(CONSTS.URL_NOT_FOUND_OG_IMAGE_URL(msg, url));
-                                resolve(Buffer.from(response.body));
+                                if (response.body.length > 0) {
+                                    resolve(Buffer.from(response.body));
+                                } else {
+                                    reject(Buffer.from([]));
+                                }
                             }
                         });
                     });
