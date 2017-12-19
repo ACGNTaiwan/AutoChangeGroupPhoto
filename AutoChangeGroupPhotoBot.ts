@@ -29,6 +29,10 @@ class AutoChangeGroupPhotoBot {
     private data: PhotoData.PhotoDataStrcture[];
     private uploadQueue: Promise<any> = Promise.resolve();
     private pixiv?: any;
+    private requestOptions = {
+        encoding: null,
+        followRedirect: false,
+    };
 
     /**
      * Singleton of AutoChangeGroupPhotoBot
@@ -597,7 +601,7 @@ class AutoChangeGroupPhotoBot {
     private async sizeLimitationCheck(url: string) {
         return new Promise<boolean>((resolve, reject) => {
             logger.info(CONSTS.URL_SIZE_CHECK(url));
-            request.head(url, { encoding: null }, async (error, response, body) => {
+            request.head(url, this.requestOptions, async (error, response, body) => {
                 const headers = response.headers;
                 let length = -1;
                 let mime = "";
@@ -692,7 +696,7 @@ class AutoChangeGroupPhotoBot {
                         reject(url);
                     }
                 } else {
-                    request.get(url, { encoding: null }, async (error, response, body) => {
+                    request.get(url, this.requestOptions, async (error, response, body) => {
                         ogs({ url }, async (err: boolean, results: any) => {
                             if (!err && results.success === true &&
                                 results.data && results.data.ogImage && results.data.ogImage.url
@@ -757,9 +761,9 @@ class AutoChangeGroupPhotoBot {
                     return;
                 } else if (isPixiv) {
                     const illust = imgUrl as PhotoData.PixivIllustStructure;
-                    return request.get(illust.originalUrl[0], { encoding: null }, downloadImage);
+                    return request.get(illust.originalUrl[0], this.requestOptions, downloadImage);
                 } else {
-                    return request.get(imgUrl as string, { encoding: null }, downloadImage);
+                    return request.get(imgUrl as string, this.requestOptions, downloadImage);
                 }
             }),
         ).catch(() => { /* no-op */ });
