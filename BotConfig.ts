@@ -1,4 +1,5 @@
 const convert = require("convert-units");
+const prompt = require("prompt");
 
 let _saverHandler: () => void | undefined;
 let saverTimer: NodeJS.Timer;
@@ -44,6 +45,39 @@ export class BotConfig {
     public downloadMaxSize = convert(5).from("MB").to("B");
     public pixiv = new Proxy(new PixivConfig(), autoSaver);
 }
+
+export const BotConfigGenerator = {
+    async AskForInputCredentials() {
+        return new Promise<object>((resolve, reject) => {
+            const config = new BotConfig();
+            prompt.message = "Config";
+            prompt.delimiter = ">";
+            prompt.start();
+            return prompt.get({
+                properties: {
+                    TelegramBotKey: {
+                        message: "Telegram Bot API Key",
+                    },
+                    pixivAcct: {
+                        message: "pixiv Account",
+                    },
+                    pixivPass: {
+                        message: "pixiv Password",
+                    },
+                    pixivProxy: {
+                        message: "pixiv Proxy hostname",
+                    },
+                },
+            },                (err: any, result: any) => {
+                config.token = result.TelegramBotKey;
+                config.pixiv.account = result.pixivAcct;
+                config.pixiv.password = result.pixivPass;
+                config.pixiv.reverseProxyDomain = result.pixivProxy;
+                resolve(config);
+            });
+        });
+    },
+};
 
 export const InitialConfig = (_config: BotConfig, saverHandler: () => void | undefined) => {
     const p = new Proxy(_config, autoSaver);
