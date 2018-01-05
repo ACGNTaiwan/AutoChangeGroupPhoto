@@ -10,7 +10,7 @@ const ogs = require("open-graph-scraper");
 const pixivApi = require("pixiv-api-client");
 import * as request from "request";
 const tracer = require("tracer");
-const logger = tracer.colorConsole({level: "info"});
+const logger = tracer.colorConsole({ level: "info" });
 import { BotConfig, InitialConfig } from "./BotConfig";
 import * as CONSTS from "./consts";
 import * as PhotoData from "./PhotoData";
@@ -18,11 +18,11 @@ import * as PhotoData from "./PhotoData";
 moment.locale("zh-tw");
 
 export
-/**
- * The Telegram Bot for Auto Change Group Photo Icon
- * @class AutoChangeGroupPhotoBot
- */
-class AutoChangeGroupPhotoBot {
+    /**
+     * The Telegram Bot for Auto Change Group Photo Icon
+     * @class AutoChangeGroupPhotoBot
+     */
+    class AutoChangeGroupPhotoBot {
     private static _instance?: AutoChangeGroupPhotoBot;
     private config: BotConfig;
     private bot: TelegramBot;
@@ -51,7 +51,7 @@ class AutoChangeGroupPhotoBot {
         if (this.config.token) {
             this.data = PhotoData.PhotoDataStore(this.readData(), () => { this.saveData(); });
             // if has bot token, then start the main program
-            this.bot = new TelegramBot(this.config.token, {polling: {interval: 0, params: {timeout: 60}}});
+            this.bot = new TelegramBot(this.config.token, { polling: { interval: 0, params: { timeout: 60 } } });
 
             this.registerEvent().then(() => { /* no-op */ }).catch(() => { /* no-op */ });
             if (this.config.pixiv.account && this.config.pixiv.password) {
@@ -245,7 +245,7 @@ class AutoChangeGroupPhotoBot {
             // case 'votenext':
             //     break;
             default:
-                // no-op
+            // no-op
         }
     }
 
@@ -256,12 +256,12 @@ class AutoChangeGroupPhotoBot {
     private doCompatibleConvert(d: object): PhotoData.PhotoDataStrcture[] {
         return Object.keys(d)
             .map<PhotoData.PhotoDataStrcture>(
-                (chatId: string) => {
-                    const pds = (d as any)[chatId] as PhotoData.PhotoDataStrcture;
-                    pds.chatId = Number(chatId);
-                    return new PhotoData.PhotoDataStrcture(pds);
-                },
-            );
+            (chatId: string) => {
+                const pds = (d as any)[chatId] as PhotoData.PhotoDataStrcture;
+                pds.chatId = Number(chatId);
+                return new PhotoData.PhotoDataStrcture(pds);
+            },
+        );
     }
 
     /**
@@ -289,7 +289,7 @@ class AutoChangeGroupPhotoBot {
      */
     private saveData() {
         const _data = JSON.parse(JSON.stringify(this.data)); // to prevent Proxy dump undefined
-        fs.writeFile(CONSTS.DATA_FILE_PATH, yaml.safeDump(_data), () => void(0));
+        fs.writeFile(CONSTS.DATA_FILE_PATH, yaml.safeDump(_data), () => void (0));
     }
 
     /**
@@ -297,7 +297,7 @@ class AutoChangeGroupPhotoBot {
      */
     private saveConfig() {
         const _config = JSON.parse(JSON.stringify(this.config)); // to prevent Proxy dump undefined
-        fs.writeFile(CONSTS.CONFIG_FILE_PATH, yaml.safeDump(_config), () => void(0));
+        fs.writeFile(CONSTS.CONFIG_FILE_PATH, yaml.safeDump(_config), () => void (0));
     }
 
     /**
@@ -331,7 +331,7 @@ class AutoChangeGroupPhotoBot {
     ) {
         switch (result) {
             case CONSTS.ADDED_INTO_QUEUE:
-                await this.bot.sendMessage(msg.chat.id, result, {reply_to_message_id: msg.message_id});
+                await this.bot.sendMessage(msg.chat.id, result, { reply_to_message_id: msg.message_id });
                 break;
             case CONSTS.ALREADY_IN_QUEUE:
                 if (entitiy && url) {
@@ -342,14 +342,14 @@ class AutoChangeGroupPhotoBot {
                     if (parentMsg) {
                         await this.bot.sendMessage(msg.chat.id,
                                                    `@(${entitiy.offset}+${entitiy.length}): ${url} ${CONSTS.ALREADY_IN_QUEUE}`,
-                                                   {reply_to_message_id: parentMsg.message_id});
+                                                   { reply_to_message_id: parentMsg.message_id });
                     }
                 } else {
-                    await this.bot.sendMessage(msg.chat.id, CONSTS.ALREADY_IN_QUEUE, {reply_to_message_id: msg.message_id});
+                    await this.bot.sendMessage(msg.chat.id, CONSTS.ALREADY_IN_QUEUE, { reply_to_message_id: msg.message_id });
                 }
                 break;
             case CONSTS.UNSUPPORTED_FILE_EXTENSIONS(msg.document!.file_name!):
-                await this.bot.sendMessage(msg.chat.id, result, {reply_to_message_id: msg.message_id, parse_mode: "Markdown"});
+                await this.bot.sendMessage(msg.chat.id, result, { reply_to_message_id: msg.message_id, parse_mode: "Markdown" });
                 break;
             default:
                 // unspecified response, always delete the message we sent
@@ -417,7 +417,7 @@ class AutoChangeGroupPhotoBot {
         fileIdIist.map((p) => chatData.banList.indexOf(p) === -1 ? chatData.banList.push(p) : null);
         this.delPhoto(chatId, fileIdIist);
         logger.info(CONSTS.BANNED_TEXT(chatId, fileIdIist.join(", ")));
-        await this.bot.sendMessage(chatId, CONSTS.BANNED_PHOTO, {reply_to_message_id: msg.message_id});
+        await this.bot.sendMessage(chatId, CONSTS.BANNED_PHOTO, { reply_to_message_id: msg.message_id });
     }
 
     /**
@@ -509,7 +509,7 @@ class AutoChangeGroupPhotoBot {
                         .catch((reason) => {
                             logger.error(CONSTS.UPDATE_PHOTO_ERROR(chatData.chatId, reason));
                         }),
-                );
+            );
             chatData.last = +moment();
         }
         return fileLink;
@@ -586,7 +586,7 @@ class AutoChangeGroupPhotoBot {
                     // jimp can not decode as an image, we must send a message to notify the URL is not an image
                     await this.bot.sendMessage(msg.chat.id,
                                                CONSTS.URL_REQUESTED_IS_NOT_A_IMAGE(url),
-                                               {reply_to_message_id: msg.message_id});
+                                               { reply_to_message_id: msg.message_id });
                 }
             })
             .catch((err: Error) => {
@@ -759,7 +759,7 @@ class AutoChangeGroupPhotoBot {
                         // notify the URL not responsed correctly
                         await this.bot.sendMessage(msg.chat.id,
                                                    CONSTS.URL_REQUESTED_IS_NOT_OK(url),
-                                                   {reply_to_message_id: msg.message_id});
+                                                   { reply_to_message_id: msg.message_id });
                         reject();
                     }
                 };
@@ -792,6 +792,12 @@ class AutoChangeGroupPhotoBot {
                         logger.info(CONSTS.QUEUE_REQUEST_TEXT("URL", `${msg.chat.title}(${msg.chat.id}): ${url}`));
                         urls.push(url);
                         await this.tryGetPhotoFromUrl(msg, ent, url);
+                    }
+                } else if (ent.type === "text_link") {
+                    if (urls.indexOf(ent.url!) === -1) {
+                        logger.info(CONSTS.QUEUE_REQUEST_TEXT("URL", `${msg.chat.title}(${msg.chat.id}): ${ent.url}`));
+                        urls.push(ent.url!);
+                        await this.tryGetPhotoFromUrl(msg, ent, ent.url!);
                     }
                 }
             });
