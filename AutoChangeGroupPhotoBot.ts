@@ -325,28 +325,13 @@ export
     private async sendQueueResult(
         msg: TelegramBot.Message,
         result: string,
-        parentMsg?: TelegramBot.Message,
-        entitiy?: TelegramBot.MessageEntity,
-        url?: string,
     ) {
         switch (result) {
             case CONSTS.ADDED_INTO_QUEUE:
                 await this.bot.sendMessage(msg.chat.id, result, { reply_to_message_id: msg.message_id });
                 break;
             case CONSTS.ALREADY_IN_QUEUE:
-                if (entitiy && url) {
-                    // if file_id already in queue, delete the image message to save the view space
-                    await this.bot.deleteMessage(msg.chat.id, msg.message_id.toString());
-                    // and then, send a message with URL's substr offset and length of text
-                    // to notify it's already in queue
-                    if (parentMsg) {
-                        await this.bot.sendMessage(msg.chat.id,
-                                                   `@(${entitiy.offset}+${entitiy.length}): ${url} ${CONSTS.ALREADY_IN_QUEUE}`,
-                                                   { reply_to_message_id: parentMsg.message_id });
-                    }
-                } else {
-                    await this.bot.sendMessage(msg.chat.id, CONSTS.ALREADY_IN_QUEUE, { reply_to_message_id: msg.message_id });
-                }
+                await this.bot.sendMessage(msg.chat.id, CONSTS.ALREADY_IN_QUEUE, { reply_to_message_id: msg.message_id });
                 break;
             case CONSTS.UNSUPPORTED_FILE_EXTENSIONS(msg.document!.file_name!):
                 await this.bot.sendMessage(msg.chat.id, result, { reply_to_message_id: msg.message_id, parse_mode: "Markdown" });
@@ -552,7 +537,8 @@ export
             .then(async (m) => {
                 let ret;
                 if (!(m instanceof Error)) {
-                    ret = await this.sendQueueResult(m, await this.checkQueue(m), msg, ent, url);
+                    ret = await this.sendQueueResult(msg, await this.checkQueue(m));
+                    await this.bot.deleteMessage(m.chat.id, m.message_id.toString());
                 }
                 return ret;
             })
