@@ -4,8 +4,10 @@ import * as PhotoData from "./PhotoData";
 
 export const ADDED_INTO_QUEUE = "已加入序列";
 export const ALREADY_IN_QUEUE = "已在序列中";
-export const BANNED_PHOTO = "此圖片已被封鎖";
+export const BANNED_PHOTO = "圖片已被封鎖";
 export const BANNED_TEXT = (charId: number, fileId: string) => `Receive Ban Queue for ${charId} to ${fileId}.`;
+export const DELETE_PHOTO = "圖片已被刪除";
+export const DELETE_TEXT = (charId: number, fileId: string) => `Receive delete Queue for ${charId} to ${fileId}.`;
 export const CAN_NOT_CHANGE_ALL_ADMINS_PHOTO = "I can't change group photo if all members are admin!";
 export const CAN_NOT_CHANGE_PHOTO = "I can't change your photo!";
 export enum COMMANDS {
@@ -16,6 +18,7 @@ export enum COMMANDS {
     QUEUE_STATUS = "queue",
     BAN = "ban",
     UNBAN = "unban",
+    DELETE = "delete",
 }
 export const COMMANDS_ADMINS_ONLY = [
     COMMANDS.SET_PAUSED,
@@ -24,6 +27,7 @@ export const COMMANDS_ADMINS_ONLY = [
     COMMANDS.NEXT_PHOTO,
     COMMANDS.BAN,
     COMMANDS.UNBAN,
+    COMMANDS.DELETE,
 ];
 export const CONFIG_FILE_PATH = "./config.yaml";
 export const DATA_FILE_JSON_PATH = "./data.json";

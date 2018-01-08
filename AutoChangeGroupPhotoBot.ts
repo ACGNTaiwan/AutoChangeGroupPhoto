@@ -220,14 +220,15 @@ export
                 await this.nextPhoto(chatData);
                 break;
             case CONSTS.COMMANDS.BAN:
-                if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
-                    await this.banPhoto(msg);
-                }
+                await this.delPhoto(msg, true);
                 break;
             case CONSTS.COMMANDS.UNBAN:
                 if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
                     await this.unbanPhoto(msg);
                 }
+                break;
+            case CONSTS.COMMANDS.DELETE:
+                await this.delPhoto(msg);
                 break;
             // TODO
             // case 'setloop':
@@ -333,6 +334,9 @@ export
             case CONSTS.ALREADY_IN_QUEUE:
                 await this.bot.sendMessage(msg.chat.id, CONSTS.ALREADY_IN_QUEUE, { reply_to_message_id: msg.message_id });
                 break;
+            case CONSTS.BANNED_PHOTO:
+                await this.bot.sendMessage(msg.chat.id, result, { reply_to_message_id: msg.message_id });
+                break;
             case CONSTS.UNSUPPORTED_FILE_EXTENSIONS(msg.document!.file_name!):
                 await this.bot.sendMessage(msg.chat.id, result, { reply_to_message_id: msg.message_id, parse_mode: "Markdown" });
                 break;
@@ -393,16 +397,36 @@ export
     /**
      * Ban the photo
      * @param msg Message Object
+     * @param ban Ban Option
      */
-    private async banPhoto(msg: TelegramBot.Message) {
+    private async delPhoto(msg: TelegramBot.Message, ban = false) {
         const chatId = msg.chat.id;
-        const fileIdIist = (msg.reply_to_message!.photo ? msg.reply_to_message!.photo!.map<string>((p) => p.file_id) : [])
-            .concat(msg.reply_to_message!.document ? [msg.reply_to_message!.document!.file_id] : []);
         const chatData = this.getData(chatId);
-        fileIdIist.map((p) => chatData.banList.indexOf(p) === -1 ? chatData.banList.push(p) : null);
-        this.delPhoto(chatId, fileIdIist);
-        logger.info(CONSTS.BANNED_TEXT(chatId, fileIdIist.join(", ")));
-        await this.bot.sendMessage(chatId, CONSTS.BANNED_PHOTO, { reply_to_message_id: msg.message_id });
+        let fileIdIist: string[];
+
+        if (msg.reply_to_message) {
+            fileIdIist = (msg.reply_to_message.photo ? msg.reply_to_message.photo.map<string>((p) => p.file_id) : [])
+                .concat(msg.reply_to_message.document ? [msg.reply_to_message.document.file_id] : []);
+        } else {
+            fileIdIist = (chatData.history.length !== 0 ? [chatData.history.pop()!] : []);
+        }
+
+        if (fileIdIist.length === 0) { return; }
+
+        if (ban) {
+            fileIdIist.map((p) => chatData.banList.indexOf(p) === -1 ? chatData.banList.push(p) : null);
+            logger.info(CONSTS.BANNED_TEXT(chatId, fileIdIist.join(", ")));
+            await this.bot.sendMessage(chatId, CONSTS.BANNED_PHOTO, { reply_to_message_id: msg.message_id });
+        } else {
+            logger.info(CONSTS.DELETE_TEXT(chatId, fileIdIist.join(", ")));
+            await this.bot.sendMessage(chatId, CONSTS.DELETE_PHOTO, { reply_to_message_id: msg.message_id });
+        }
+
+        chatData.queue = chatData.queue
+            .map<string>((q) => fileIdIist.indexOf(q) === -1 ? q : "")
+            .filter((q) => q);
+
+        await this.nextPhoto(chatData);
     }
 
     /**
@@ -433,18 +457,6 @@ export
     }
 
     /**
-     * Delete photo in queue
-     * @param chatId Chat ID
-     * @param files file_id list
-     */
-    private delPhoto(chatId: number, files: string[]) {
-        const chatData = this.getData(chatId);
-        chatData.queue = chatData.queue
-            .map<string>((q) => files.indexOf(q) === -1 ? q : "")
-            .filter((q) => q);
-    }
-
-    /**
      * Update the Group Photo Icon
      */
     private doUpdate() {
@@ -459,8 +471,6 @@ export
                             chatData.chatName = `${chat.title || chat.username}`;
                             if (fileLink.length > 0) {
                                 logger.info(CONSTS.UPDATED_PHOTO(chat, fileLink));
-                            } else {
-                                logger.info(CONSTS.UPDATE_PHOTO_IGNORE(chat));
                             }
                         }
                     })
