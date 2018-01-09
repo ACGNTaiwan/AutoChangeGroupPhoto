@@ -9,6 +9,7 @@ import * as TelegramBot from "node-telegram-bot-api";
 const ogs = require("open-graph-scraper");
 const pixivApi = require("pixiv-api-client");
 import * as request from "request";
+import * as sharp from "sharp";
 const tracer = require("tracer");
 const logger = tracer.colorConsole({ level: process.env.DEBUG !== undefined ? process.env.DEBUG : "info" });
 import { BotConfig, InitialConfig } from "./BotConfig";
@@ -120,7 +121,9 @@ export
 
         this.bot.on("message", async (msg: TelegramBot.Message) => {
             if (msg.text !== undefined && msg.text.match(CONSTS.REGEXP_MATCH_TAG_COMMAND) !== null) {
-                if (msg.entities) {
+                if (msg.reply_to_message && msg.reply_to_message.sticker) {
+                    await this.doAddSticker(msg);
+                } else if (msg.entities) {
                     this.doAddPhotoByUrl(msg);
                 }
             }
@@ -377,7 +380,7 @@ export
                 return CONSTS.UNSUPPORTED_FILE_EXTENSIONS(msg.document.file_name!);
             }
         } else {
-            fileId = "";
+            fileId = (msg.sticker) ? msg.sticker.file_id : "";
         }
 
         const chatData = this.getData(chatId);
@@ -574,7 +577,12 @@ export
         logger.info(CONSTS.UPLOADING_PHOTO(`${msg.chat.title}(${msg.chat.id})`, imageBuffer, url));
         const illust: PhotoData.PixivIllustStructure | null = imgUrl instanceof PhotoData.PixivIllustStructure ? imgUrl : null;
         const caption = (illust ? CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illust) : CONSTS.GROUP_PHOTO_CAPTION);
-        return this.bot.sendPhoto(msg.chat.id, imageBuffer, { caption, disable_notification: true, reply_to_message_id: msg.message_id })
+        return this.sendPhotoPromise(msg, imageBuffer, { caption });
+    }
+
+    private async sendPhotoPromise(msg: TelegramBot.Message, buffer: Buffer, options?: TelegramBot.SendPhotoOptions) {
+        const opt = Object.apply({ reply_to_message_id: msg.message_id, disable_notification: true }, options) as TelegramBot.SendPhotoOptions;
+        return this.bot.sendPhoto(msg.chat.id, buffer, opt)
             .then(async (m) => {
                 let ret;
                 if (!(m instanceof Error)) {
@@ -619,6 +627,22 @@ export
             .catch((err: Error) => {
                 logger.error("jimp error", err.message);
             });
+    }
+
+    private async doAddSticker(msg: TelegramBot.Message) {
+        if (msg.reply_to_message && msg.reply_to_message.sticker) {
+            const stickerURL = await this.bot.getFileLink(msg.reply_to_message.sticker.file_id);
+            if (stickerURL instanceof Error) {
+                return Promise.reject(stickerURL);
+            } else {
+                return request(stickerURL, this.requestOptions, async (error, response, body) => {
+                    const stickerSharp = sharp(body);
+                    const stickerPng = await stickerSharp.png().toBuffer();
+                    await this.sendPhotoPromise(msg, stickerPng, { caption: CONSTS.GROUP_PHOTO_CAPTION });
+                });
+            }
+        }
+        return Promise.reject(null);
     }
 
     /**
