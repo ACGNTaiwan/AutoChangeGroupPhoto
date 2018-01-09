@@ -60,3 +60,4 @@ typings/
 config.yaml
 data.yaml
 dist
+.group_cache

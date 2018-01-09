@@ -29,6 +29,14 @@ export const COMMANDS_ADMINS_ONLY = [
     COMMANDS.UNBAN,
     COMMANDS.DELETE,
 ];
+export const CACHE_FILE_FOLDER = ".group_cache";
+export const CACHE_DATA_FILENAME = "data.yaml";
+export const CACHE_CREATED_FOLDER = (folder: string) => `Created cache folder at ${folder}`;
+export const CACHE_DOWNLOADED = (filename: string, dest: string) => `Downloaded as ${filename} at ${dest}`;
+export const CACHE_DOWNLOADING = (dest: string) => `Downloading cache into ${dest}`;
+export const CACHE_DOWNLOAD_ERROR = (dest: string) => `Cache download with error occurred for ${dest}`;
+export const CACHE_DOWNLOAD_IGNORE = (dest: string) => `Ignore exists file of ${dest}`;
+export const CACHE_FOLDER_CHECKED = (folder: string, files: string[]) => `Cache folder exists at ${folder} with ${files.length} files`;
 export const CONFIG_FILE_PATH = "./config.yaml";
 export const DATA_FILE_JSON_PATH = "./data.json";
 export const DATA_FILE_PATH = "./data.yaml";

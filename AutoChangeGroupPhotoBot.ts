@@ -14,6 +14,7 @@ const logger = tracer.colorConsole({ level: process.env.DEBUG !== undefined ? pr
 import { BotConfig, InitialConfig } from "./BotConfig";
 import * as CONSTS from "./consts";
 import * as PhotoData from "./PhotoData";
+import { TelegramDownload } from "./TelegramDownload";
 
 moment.locale("zh-tw");
 
@@ -24,6 +25,7 @@ export
      */
     class AutoChangeGroupPhotoBot {
     private static _instance?: AutoChangeGroupPhotoBot;
+    private downloader: TelegramDownload;
     private config: BotConfig;
     private bot: TelegramBot;
     private data: PhotoData.PhotoDataStrcture[];
@@ -52,6 +54,8 @@ export
             this.data = PhotoData.PhotoDataStore(this.readData(), () => { this.saveData(); });
             // if has bot token, then start the main program
             this.bot = new TelegramBot(this.config.token, { polling: { interval: 0, params: { timeout: 60 } } });
+
+            this.downloader = TelegramDownload.getInstance(this.bot, logger);
 
             this.registerEvent().then(() => { /* no-op */ }).catch(() => { /* no-op */ });
             if (this.config.pixiv.account && this.config.pixiv.password) {
@@ -391,6 +395,7 @@ export
             result = CONSTS.BANNED_PHOTO;
             logger.info(CONSTS.QUEUE_WAS_BANNED(chatId, fileId));
         }
+        this.downloader.checkGroup(chatData);
         return result;
     }
 
@@ -478,6 +483,7 @@ export
                         logger.error(CONSTS.GET_CHAT_ERROR(chatData.chatId, reason));
                     });
             }
+            this.downloader.checkGroup(chatData);
         });
     }
 
