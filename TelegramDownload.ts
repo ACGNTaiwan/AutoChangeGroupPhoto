@@ -22,7 +22,7 @@ export class TelegramDownload {
         files.forEach(async (f) => this.checkFile(photoData.chatId, f)
             .catch((fileId: string) => {
                 const retry = photoData.getRetryQueue(fileId);
-                logger.info(retry.retryTimes);
+                logger.debug(`${fileId} => ${retry.retryTimes}`);
                 if (retry.retryTimes >= CONSTS.PHOTO_RETRY_MAX) {
                     photoData.pruneQueue(fileId);
                 }
