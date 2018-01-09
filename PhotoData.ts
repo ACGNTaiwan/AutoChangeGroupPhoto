@@ -61,6 +61,14 @@ export class PixivIllustStructure {
     }
 }
 
+export class RetryDataStructure {
+    public fileName: string;
+    public retryTimes = 1;
+    public constructor(filename: string) {
+        this.fileName = filename;
+    }
+}
+
 export class PhotoDataStrcture {
     public chatId: number;
     public chatName: string;
@@ -70,6 +78,7 @@ export class PhotoDataStrcture {
     public queue: string[];
     public history: string[];
     public banList: string[];
+    public retryList: RetryDataStructure[];
     public constructor(
         chatId: number | object | PhotoDataStrcture,
         chatName: string = "",
@@ -78,6 +87,7 @@ export class PhotoDataStrcture {
         queue: string[] = [],
         history: string[] = [],
         banList: string[] = [],
+        retryList: RetryDataStructure[] = [],
     ) {
         if (typeof chatId === "number") {
             this.chatId = chatId;
@@ -87,10 +97,29 @@ export class PhotoDataStrcture {
             this.queue = new Proxy((queue !== null && queue !== undefined) ? queue : [], autoSaver);
             this.history = new Proxy((history !== null && history !== undefined) ? history : [], autoSaver);
             this.banList = new Proxy((banList !== null && banList !== undefined) ? banList : [], autoSaver);
+            this.retryList = new Proxy((retryList !== null && retryList !== undefined) ? retryList : [], autoSaver);
         } else {
             this.from(chatId as PhotoDataStrcture);
         }
     }
+
+    public getRetryQueue(fileLink: string) {
+        let retry = this.retryList.filter((r) => r.fileName === fileLink).pop();
+        if (retry === undefined) {
+            retry = new RetryDataStructure(fileLink);
+            this.retryList.push(new Proxy(retry, autoSaver));
+        } else {
+            retry.retryTimes++;
+        }
+        return retry;
+    }
+
+    public pruneQueue(fileLink: string) {
+        this.queue = this.queue.filter((q) => q !== fileLink);
+        this.history = this.history.filter((h) => h !== fileLink);
+        this.retryList = this.retryList.filter((r) => r.fileName !== fileLink);
+    }
+
     private from(pds: PhotoDataStrcture) {
         this.chatId = pds.chatId;
         this.chatName = pds.chatName;
@@ -100,6 +129,7 @@ export class PhotoDataStrcture {
         this.queue = new Proxy((pds.queue !== null && pds.queue !== undefined) ? pds.queue : [], autoSaver);
         this.history = new Proxy((pds.history !== null && pds.history !== undefined) ? pds.history : [], autoSaver);
         this.banList = new Proxy((pds.banList !== null && pds.banList !== undefined) ? pds.banList : [], autoSaver);
+        this.retryList = new Proxy((pds.retryList !== null && pds.retryList !== undefined) ? pds.retryList.map((r) => new Proxy(r, autoSaver)) : [], autoSaver);
     }
 }
 

@@ -462,6 +462,27 @@ export
     }
 
     /**
+     * Retry to Queue failed photo change
+     * @param chatData PhotoDataStrcture
+     * @param fileLink File ID
+     */
+    private async retryToQueuePhoto(chatData: PhotoData.PhotoDataStrcture, fileLink: string) {
+        const retry = chatData.getRetryQueue(fileLink);
+        if (retry.retryTimes >= CONSTS.PHOTO_RETRY_MAX) {
+            // remove all file link in queue, history and retryList
+            chatData.pruneQueue(fileLink);
+            logger.info(CONSTS.PHOTO_RETRY_DELETE_FROM_QUEUE(chatData.chatId, fileLink));
+            await this.bot.sendMessage(chatData.chatId, CONSTS.PHOTO_RETRY_DELETE_MESSAGE(fileLink));
+        } else {
+            // re-add to queue to retry again
+            chatData.queue.push(fileLink);
+            logger.info(CONSTS.PHOTO_RETRY_REQUEUE(chatData.chatId, fileLink));
+        }
+        // then auto update to next photo
+        await this.nextPhoto(chatData);
+    }
+
+    /**
      * Update the Group Photo Icon
      */
     private doUpdate() {
@@ -507,10 +528,14 @@ export
             await this.bot.getFileLink(fileLink)
                 .then(async (link) => link instanceof Error ? null :
                     this.bot.setChatPhoto(chatData.chatId, request(link))
-                        .catch((reason) => {
+                        .catch(async (reason) => {
                             logger.error(CONSTS.UPDATE_PHOTO_ERROR(chatData.chatId, reason));
+                            await this.retryToQueuePhoto(chatData, fileLink);
                         }),
-            );
+                )
+                .catch(async (reason) => {
+                    await this.retryToQueuePhoto(chatData, fileLink);
+                });
             chatData.last = +moment();
         }
         return fileLink;

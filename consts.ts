@@ -68,6 +68,11 @@ export const PAUSE_RESUME_MESSAGE = (chat: TelegramBot.Chat, chatData: PhotoData
     `暫停更換群組圖狀態已設為: ${chatData.paused ? "暫停中" : "正常中"}`;
 export const PAUSE_RESUME_LOG_MESSAGE = (chat: TelegramBot.Chat, chatData: PhotoData.PhotoDataStrcture) =>
     `Group/Peer ${chat.title || chat.username}(${chat.id}) set paused state to => ${chatData.paused}.`;
+export const PHOTO_RETRY_MAX = process.env.PHOTO_RETRY_MAX !== undefined ? Number(process.env.PHOTO_RETRY_MAX) : 3;
+export const PHOTO_RETRY_DELETE_MESSAGE = (fileId: string) => `檔案/圖片 \`${fileId}\` 重試失敗次數已超過 ${PHOTO_RETRY_MAX} 次，已從序列移除。`;
+export const PHOTO_RETRY_DELETE_FROM_QUEUE = (charId: number, fileId: string) =>
+    `Retry exceed the max retry of ${PHOTO_RETRY_MAX} times, delete \`${fileId}\` from \`${charId}\` queue`;
+export const PHOTO_RETRY_REQUEUE = (charId: number, fileId: string) => `Retry the photo of \`${fileId}\` by re-add into \`${charId}\` queue`;
 export const PIXIV_ILLUST_IID_URL = (iid: number) => `https://www.pixiv.net/i/${iid}`;
 export const PIXIV_ILLUST_DETAIL = (illust: PhotoData.PixivIllustStructure) =>
     `Got Illust \`${illust.title} : ${illust.caption} - ${illust.userName}\` (${illust.tags.join(", ")}) ` +
