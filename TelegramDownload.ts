@@ -19,7 +19,15 @@ export class TelegramDownload {
     public checkGroup(photoData: PhotoData.PhotoDataStrcture) {
         const files = [...new Set(([] as string[]).concat(photoData.queue).concat(photoData.history).concat(photoData.history))];
         this.checkGroupCacheFolder(photoData.chatId);
-        files.forEach(async (f) => this.checkFile(photoData.chatId, f));
+        files.forEach(async (f) => this.checkFile(photoData.chatId, f)
+            .catch((fileId: string) => {
+                const retry = photoData.getRetryQueue(fileId);
+                logger.info(retry.retryTimes);
+                if (retry.retryTimes >= CONSTS.PHOTO_RETRY_MAX) {
+                    photoData.pruneQueue(fileId);
+                }
+            }),
+        );
 
         const _data = JSON.parse(JSON.stringify(photoData)); // to prevent Proxy dump undefined
         fs.writeFileSync(path.join(this.store, photoData.chatId.toString(), CONSTS.CACHE_DATA_FILENAME), yaml.safeDump(_data));
@@ -66,9 +74,12 @@ export class TelegramDownload {
         const gFile = path.join(gFolder, fileId.toString());
         if (!fs.existsSync(gFile)) {
             logger.info(CONSTS.CACHE_DOWNLOADING(gFile));
-            const filepath = await this.bot.downloadFile(fileId, gFolder);
+            const fid = await this.bot.getFile(fileId)
+                .then((file) => (file instanceof Error) ? fileId : file.file_id)
+                .catch((reason: Error) => reason);
+            const filepath = (fid instanceof Error) ? fid : await this.bot.downloadFile(fid, gFolder);
             if (filepath instanceof Error) {
-                logger.error(CONSTS.CACHE_DOWNLOAD_ERROR(gFile));
+                logger.error(CONSTS.CACHE_DOWNLOAD_ERROR(gFile, filepath.message));
                 return Promise.reject(fileId);
             } else {
                 const filename = path.basename(filepath);
