@@ -426,7 +426,7 @@ export
             .map<string>((q) => fileIdIist.indexOf(q) === -1 ? q : "")
             .filter((q) => q);
 
-        await this.nextPhoto(chatData);
+        if (!msg.reply_to_message) { await this.nextPhoto(chatData); }
     }
 
     /**
