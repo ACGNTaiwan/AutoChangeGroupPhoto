@@ -10,7 +10,7 @@ const ogs = require("open-graph-scraper");
 const pixivApi = require("pixiv-api-client");
 import * as request from "request";
 const tracer = require("tracer");
-const logger = tracer.colorConsole({ level: process.env.DEBUG!.length > 0 ? process.env.DEBUG : "info" });
+const logger = tracer.colorConsole({ level: process.env.DEBUG !== undefined ? process.env.DEBUG : "info" });
 import { BotConfig, InitialConfig } from "./BotConfig";
 import * as CONSTS from "./consts";
 import * as PhotoData from "./PhotoData";
