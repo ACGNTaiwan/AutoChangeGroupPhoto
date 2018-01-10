@@ -16,6 +16,7 @@ import { BotConfig, InitialConfig } from "./BotConfig";
 import * as CONSTS from "./consts";
 import * as PhotoData from "./PhotoData";
 import { TelegramDownload } from "./TelegramDownload";
+import { TelegramBotExtended } from "./typings";
 
 moment.locale("zh-tw");
 
@@ -490,6 +491,9 @@ export
      */
     private doUpdate() {
         this.data.map(async (chatData) => {
+            if (chatData.disabled) {
+                return;
+            }
             if (!chatData.paused && (!chatData.last || moment(chatData.last).add(chatData.interval, "h").isBefore(moment()))) {
                 const fileLink = await this.nextPhoto(chatData);
                 await this.bot.getChat(chatData.chatId)
@@ -503,8 +507,17 @@ export
                             }
                         }
                     })
-                    .catch((reason: any) => {
-                        logger.error(CONSTS.GET_CHAT_ERROR(chatData.chatId, reason));
+                    .catch((reason: Error) => {
+                        logger.error(CONSTS.GET_CHAT_ERROR(chatData.chatId, reason.message));
+                        const e = reason as TelegramBotExtended.TelegramError;
+                        if (e.code === "ETELEGRAM") {
+                            if (e.response.body.error_code >= 400 && e.response.body.error_code < 500) {
+                                if (e.response.body.description.match(/chat not found/i) !== null) {
+                                    chatData.disabled = true;
+                                    logger.warn(CONSTS.CHAT_DISABLED_BY_SYSTEM(chatData.chatId, reason.message));
+                                }
+                            }
+                        }
                     });
             }
             this.downloader.checkGroup(chatData);

@@ -73,6 +73,7 @@ export class PhotoDataStrcture {
     public chatId: number;
     public chatName: string;
     public paused = false;
+    public disabled = false;
     public interval: number;
     public last: number;
     public queue: string[];
@@ -82,6 +83,8 @@ export class PhotoDataStrcture {
     public constructor(
         chatId: number | object | PhotoDataStrcture,
         chatName: string = "",
+        paused = false,
+        disabled = false,
         interval: number = 1,
         last: number = +moment(),
         queue: string[] = [],
@@ -92,6 +95,8 @@ export class PhotoDataStrcture {
         if (typeof chatId === "number") {
             this.chatId = chatId;
             this.chatName = chatName;
+            this.paused = paused;
+            this.disabled = disabled;
             this.interval = interval ? interval : 1;
             this.last = last ? last : +moment();
             this.queue = new Proxy((queue !== null && queue !== undefined) ? queue : [], autoSaver);
@@ -124,6 +129,7 @@ export class PhotoDataStrcture {
         this.chatId = pds.chatId;
         this.chatName = pds.chatName;
         this.paused = pds.paused;
+        this.disabled = pds.disabled;
         this.interval = pds.interval ? pds.interval : 1;
         this.last = pds.last ? pds.last : +moment();
         this.queue = new Proxy((pds.queue !== null && pds.queue !== undefined) ? pds.queue : [], autoSaver);

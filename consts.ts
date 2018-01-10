@@ -39,6 +39,7 @@ export const CACHE_DOWNLOADING = (dest: string) => `Downloading cache into ${des
 export const CACHE_DOWNLOAD_ERROR = (dest: string, reason: string) => `Cache download with error occurred for ${dest} as ${reason}`;
 export const CACHE_DOWNLOAD_IGNORE = (dest: string) => `Ignore exists file of ${dest}`;
 export const CACHE_FOLDER_CHECKED = (folder: string, files: string[]) => `Cache folder exists at ${folder} with ${files.length} files`;
+export const CHAT_DISABLED_BY_SYSTEM = (chatId: number, reason: string) => `Chat \`${chatId}\` disabled because \`${reason}\``;
 export const CONFIG_FILE_PATH = "./config.yaml";
 export const DATA_FILE_JSON_PATH = "./data.json";
 export const DATA_FILE_PATH = "./data.yaml";
