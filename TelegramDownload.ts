@@ -84,8 +84,12 @@ export class TelegramDownload {
             } else {
                 const filename = path.basename(filepath);
                 const downloadedFile = path.join(gFolder, filename);
-                fs.renameSync(downloadedFile, gFile);
-                logger.info(CONSTS.CACHE_DOWNLOADED(filename, gFile));
+                try {
+                    fs.renameSync(downloadedFile, gFile);
+                    logger.info(CONSTS.CACHE_DOWNLOADED(filename, gFile));
+                } catch (e) {
+                    logger.warn(CONSTS.CACHE_DOWNLOADED_RENAME_ERROR(filename, gFile, e));
+                }
             }
         } else {
             logger.debug(CONSTS.CACHE_DOWNLOAD_IGNORE(gFile));

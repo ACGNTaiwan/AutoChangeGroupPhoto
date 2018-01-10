@@ -33,6 +33,8 @@ export const CACHE_FILE_FOLDER = ".group_cache";
 export const CACHE_DATA_FILENAME = "data.yaml";
 export const CACHE_CREATED_FOLDER = (folder: string) => `Created cache folder at ${folder}`;
 export const CACHE_DOWNLOADED = (filename: string, dest: string) => `Downloaded as ${filename} at ${dest}`;
+export const CACHE_DOWNLOADED_RENAME_ERROR = (filename: string, dest: string, error: Error) =>
+    `${CACHE_DOWNLOADED(filename, dest)}, but rename file has exception -> ${error.message}`;
 export const CACHE_DOWNLOADING = (dest: string) => `Downloading cache into ${dest}`;
 export const CACHE_DOWNLOAD_ERROR = (dest: string, reason: string) => `Cache download with error occurred for ${dest} as ${reason}`;
 export const CACHE_DOWNLOAD_IGNORE = (dest: string) => `Ignore exists file of ${dest}`;
