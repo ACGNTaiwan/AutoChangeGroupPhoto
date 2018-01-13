@@ -411,37 +411,33 @@ export
     private async delPhoto(msg: TelegramBot.Message, ban = false) {
         const chatId = msg.chat.id;
         const chatData = this.getData(chatId);
-        let fileIdIist: string[];
+        let fileIdList: string[];
 
         if (msg.reply_to_message) {
-            fileIdIist = (msg.reply_to_message.photo ? msg.reply_to_message.photo.map<string>((p) => p.file_id) : [])
+            fileIdList = (msg.reply_to_message.photo ? msg.reply_to_message.photo.map<string>((p) => p.file_id) : [])
                 .concat(msg.reply_to_message.document ? [msg.reply_to_message.document.file_id] : []);
         } else {
-            fileIdIist = (chatData.history.length !== 0 ? [chatData.history[chatData.history.length - 1]] : []);
+            fileIdList = (chatData.history.length !== 0 ? [chatData.history[chatData.history.length - 1]] : []);
         }
 
-        if (fileIdIist.length === 0) { return; }
+        if (fileIdList.length === 0) { return; }
 
         if (ban) {
-            fileIdIist.map((p) => chatData.banList.indexOf(p) === -1 ? chatData.banList.push(p) : null);
-            logger.info(CONSTS.BANNED_TEXT(chatId, fileIdIist.join(", ")));
+            fileIdList.map((p) => chatData.banList.indexOf(p) === -1 ? chatData.banList.push(p) : null);
+            logger.info(CONSTS.BANNED_TEXT(chatId, fileIdList.join(", ")));
             await this.bot.sendMessage(chatId, CONSTS.BANNED_PHOTO, { reply_to_message_id: msg.message_id });
         } else {
-            logger.info(CONSTS.DELETE_TEXT(chatId, fileIdIist.join(", ")));
+            logger.info(CONSTS.DELETE_TEXT(chatId, fileIdList.join(", ")));
             await this.bot.sendMessage(chatId, CONSTS.DELETE_PHOTO, { reply_to_message_id: msg.message_id });
         }
 
-        if (fileIdIist.includes(chatData.history[chatData.history.length - 1])) {
+        if (fileIdList.includes(chatData.history[chatData.history.length - 1])) {
             await this.nextPhoto(chatData);
         }
 
-        chatData.queue = chatData.queue
-            .map<string>((q) => fileIdIist.includes(q) ? "" : q)
-            .filter((q) => q);
+        chatData.queue = chatData.queue.filter((q) => !fileIdList.includes(q));
 
-        chatData.history = chatData.history
-            .map<string>((q) => fileIdIist.includes(q) ? "" : q)
-            .filter((q) => q);
+        chatData.history = chatData.history.filter((q) => !fileIdList.includes(q));
     }
 
     /**
