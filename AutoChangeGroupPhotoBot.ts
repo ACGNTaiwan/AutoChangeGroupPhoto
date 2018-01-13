@@ -417,7 +417,7 @@ export
             fileIdIist = (msg.reply_to_message.photo ? msg.reply_to_message.photo.map<string>((p) => p.file_id) : [])
                 .concat(msg.reply_to_message.document ? [msg.reply_to_message.document.file_id] : []);
         } else {
-            fileIdIist = (chatData.history.length !== 0 ? [chatData.history.pop()!] : []);
+            fileIdIist = (chatData.history.length !== 0 ? [chatData.history[chatData.history.length - 1]] : []);
         }
 
         if (fileIdIist.length === 0) { return; }
@@ -431,11 +431,17 @@ export
             await this.bot.sendMessage(chatId, CONSTS.DELETE_PHOTO, { reply_to_message_id: msg.message_id });
         }
 
+        if (fileIdIist.includes(chatData.history[chatData.history.length - 1])) {
+            await this.nextPhoto(chatData);
+        }
+
         chatData.queue = chatData.queue
-            .map<string>((q) => fileIdIist.indexOf(q) === -1 ? q : "")
+            .map<string>((q) => fileIdIist.includes(q) ? "" : q)
             .filter((q) => q);
 
-        if (!msg.reply_to_message) { await this.nextPhoto(chatData); }
+        chatData.history = chatData.history
+            .map<string>((q) => fileIdIist.includes(q) ? "" : q)
+            .filter((q) => q);
     }
 
     /**
@@ -548,7 +554,7 @@ export
                             logger.error(CONSTS.UPDATE_PHOTO_ERROR(chatData.chatId, reason));
                             await this.retryToQueuePhoto(chatData, fileLink);
                         }),
-                )
+            )
                 .catch(async (reason) => {
                     await this.retryToQueuePhoto(chatData, fileLink);
                 });
