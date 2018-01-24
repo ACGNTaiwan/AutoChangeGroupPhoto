@@ -472,7 +472,11 @@ export
      * @param chatData PhotoDataStrcture
      * @param fileLink File ID
      */
-    private async retryToQueuePhoto(chatData: PhotoData.PhotoDataStrcture, fileLink: string) {
+    private async retryToQueuePhoto(resaon: TelegramBotExtended.TelegramError, chatData: PhotoData.PhotoDataStrcture, fileLink: string) {
+        if (resaon.code === "ETELEGRAM" && resaon.response.body.error_code >= 400 && resaon.response.body.error_code < 500) {
+            chatData.pruneQueue(fileLink);
+            return;
+        }
         const retry = chatData.getRetryQueue(fileLink);
         if (retry.retryTimes >= CONSTS.PHOTO_RETRY_MAX) {
             // remove all file link in queue, history and retryList
@@ -548,11 +552,11 @@ export
                     this.bot.setChatPhoto(chatData.chatId, request(link))
                         .catch(async (reason) => {
                             logger.error(CONSTS.UPDATE_PHOTO_ERROR(chatData.chatId, reason));
-                            await this.retryToQueuePhoto(chatData, fileLink);
+                            await this.retryToQueuePhoto(reason, chatData, fileLink);
                         }),
             )
                 .catch(async (reason) => {
-                    await this.retryToQueuePhoto(chatData, fileLink);
+                    await this.retryToQueuePhoto(reason, chatData, fileLink);
                 });
             chatData.last = +moment();
         }
