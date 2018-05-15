@@ -183,6 +183,122 @@ export
     }
 
     /**
+     * Commands of SET_PAUSED method
+     * @param msg Message Object
+     */
+    private async _COMMANDS_SET_PAUSED(
+        msg: TelegramBot.Message,
+    ) {
+        const chatId = msg.chat.id;
+        const chatData = this.getData(chatId);
+
+        chatData.paused = true;
+        logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
+        return this.bot.sendMessage(chatId, CONSTS.PAUSE_RESUME_MESSAGE(msg.chat, chatData));
+    }
+
+    /**
+     * Commands of SET_RESUMED method
+     * @param msg Message Object
+     */
+    private async _COMMANDS_SET_RESUMED(
+        msg: TelegramBot.Message,
+    ) {
+        const chatId = msg.chat.id;
+        const chatData = this.getData(chatId);
+
+        chatData.paused = false;
+        logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
+        return this.bot.sendMessage(chatId, CONSTS.PAUSE_RESUME_MESSAGE(msg.chat, chatData));
+    }
+
+    /**
+     * Commands of SET_INTERVAL method
+     * @param msg Message Object
+     */
+    private async _COMMANDS_SET_INTERVAL(
+        msg: TelegramBot.Message,
+        commandArgs: string[],
+    ) {
+        const chatId = msg.chat.id;
+        const chatData = this.getData(chatId);
+
+        if (msg.text) {
+            const args = commandArgs.join(" ");
+            if (args.length === 0) {
+                return this.bot.sendMessage(chatId, CONSTS.NOW_INTERVAL(chatData.interval.toString()));
+            }
+            if (args.length > 0 && Number(args) >= this.config.minBotInterval) {
+                chatData.interval = Number(args);
+                return this.bot.sendMessage(chatId, CONSTS.SET_INTERVAL(chatData.interval.toString()));
+            } else {
+                return this.bot.sendMessage(chatId, CONSTS.INVALID_VALUE);
+            }
+        }
+    }
+
+    /**
+     * Commands of NEXT_PHOTO method
+     * @param msg Message Object
+     */
+    private async _COMMANDS_NEXT_PHOTO(
+        msg: TelegramBot.Message,
+    ) {
+        const chatId = msg.chat.id;
+        const chatData = this.getData(chatId);
+
+        return this.nextPhoto(chatData);
+    }
+
+    /**
+     * Commands of BAN method
+     * @param msg Message Object
+     */
+    private async _COMMANDS_BAN(
+        msg: TelegramBot.Message,
+    ) {
+        return this.delPhoto(msg, true);
+    }
+
+    /**
+     * Commands of UNBAN method
+     * @param msg Message Object
+     */
+    private async _COMMANDS_UNBAN(
+        msg: TelegramBot.Message,
+    ) {
+        if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
+            return this.unbanPhoto(msg);
+        }
+    }
+
+    /**
+     * Commands of DELETE method
+     * @param msg Message Object
+     */
+    private async _COMMANDS_DELETE(
+        msg: TelegramBot.Message,
+    ) {
+        return this.delPhoto(msg);
+    }
+
+    /**
+     * Commands of QUEUE_STATUS method
+     * @param msg Message Object
+     */
+    private async _COMMANDS_QUEUE_STATUS(
+        msg: TelegramBot.Message,
+    ) {
+        const chatId = msg.chat.id;
+        const chatData = this.getData(chatId);
+
+        const nextTime = moment(chatData.last)
+                             .add(chatData.interval, "h")
+                             .format("LLL");
+        return this.bot.sendMessage(chatId, CONSTS.WAITING_PHOTOS(chatData, nextTime));
+    }
+
+    /**
      * Parse Text Command from chat
      * @param members Telegram Chat Members
      * @param msg Message Object
@@ -212,43 +328,25 @@ export
 
         switch (command) {
             case CONSTS.COMMANDS.SET_PAUSED:
-                chatData.paused = true;
-                logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
-                await this.bot.sendMessage(chatId, CONSTS.PAUSE_RESUME_MESSAGE(msg.chat, chatData));
+                await this._COMMANDS_SET_PAUSED(msg);
                 break;
             case CONSTS.COMMANDS.SET_RESUMED:
-                chatData.paused = false;
-                logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
-                await this.bot.sendMessage(chatId, CONSTS.PAUSE_RESUME_MESSAGE(msg.chat, chatData));
+                await this._COMMANDS_SET_RESUMED(msg);
                 break;
             case CONSTS.COMMANDS.SET_INTERVAL:
-                if (msg.text) {
-                    const args = commandArgs.join(" ");
-                    if (args.length === 0) {
-                        await this.bot.sendMessage(chatId, CONSTS.NOW_INTERVAL(chatData.interval.toString()));
-                        break;
-                    }
-                    if (args.length > 0 && Number(args) >= this.config.minBotInterval) {
-                        chatData.interval = Number(args);
-                        await this.bot.sendMessage(chatId, CONSTS.SET_INTERVAL(chatData.interval.toString()));
-                    } else {
-                        await this.bot.sendMessage(chatId, CONSTS.INVALID_VALUE);
-                    }
-                }
+                await this._COMMANDS_SET_INTERVAL(msg, commandArgs);
                 break;
             case CONSTS.COMMANDS.NEXT_PHOTO:
-                await this.nextPhoto(chatData);
+                await this._COMMANDS_NEXT_PHOTO(msg);
                 break;
             case CONSTS.COMMANDS.BAN:
-                await this.delPhoto(msg, true);
+                await this._COMMANDS_BAN(msg);
                 break;
             case CONSTS.COMMANDS.UNBAN:
-                if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
-                    await this.unbanPhoto(msg);
-                }
+                await this._COMMANDS_UNBAN(msg);
                 break;
             case CONSTS.COMMANDS.DELETE:
-                await this.delPhoto(msg);
+                await this._COMMANDS_DELETE(msg);
                 break;
             // TODO
             // case 'setloop':
@@ -257,10 +355,7 @@ export
             // case 'block':
             //     if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
             case CONSTS.COMMANDS.QUEUE_STATUS:
-                const nextTime = moment(chatData.last)
-                    .add(chatData.interval, "h")
-                    .format("LLL");
-                await this.bot.sendMessage(chatId, CONSTS.WAITING_PHOTOS(chatData, nextTime));
+                await this._COMMANDS_QUEUE_STATUS(msg);
                 break;
             // TODO
             // case 'votenext':
