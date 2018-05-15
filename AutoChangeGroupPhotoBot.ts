@@ -141,8 +141,12 @@ export
                     const pid = Number(inlineQuery.query);
                     await this.getPixivIllustDetail(pid).then((illustObj) => {
                         const result: TelegramBot.InlineQueryResultPhoto[] = illustObj.originalUrl.map((url, i) => {
+                            var caption = CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illustObj);
+                            caption = (caption.length > CONSTS.PHOTO_CAPTION_MAX_LENGTH)
+                                    ? caption.substr(0, CONSTS.PHOTO_CAPTION_MAX_LENGTH)
+                                    : caption;
                             const r: TelegramBot.InlineQueryResultPhoto = {
-                                caption: CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illustObj),
+                                caption: caption,
                                 id: `${inlineQuery.id}_${i}`,
                                 photo_url: url,
                                 thumb_url: url,
