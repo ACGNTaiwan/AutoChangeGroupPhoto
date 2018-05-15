@@ -2,6 +2,12 @@ const convert = require("convert-units");
 import * as TelegramBot from "node-telegram-bot-api";
 import * as PhotoData from "./PhotoData";
 
+const toMB = (byte) => {
+    return convert(byte).from("B")
+                        .to("MB")
+                        .toFixed(2);
+}
+
 export const ADDED_INTO_QUEUE = "已加入序列";
 export const ALREADY_IN_QUEUE = "已在序列中";
 export const BANNED_PHOTO = "圖片已被封鎖";
@@ -99,7 +105,7 @@ export const UPDATE_PHOTO_IGNORE = (chat: TelegramBot.Chat) =>
 export const UPDATED_PHOTO = (chat: TelegramBot.Chat, fileLink: string) =>
     `Group/Peer ${chat.title || chat.username}(${chat.id}) updated photo to \`${fileLink}\`.`;
 export const UPLOADING_PHOTO = (chatId: string | number, image: Buffer, url: string) =>
-    `Uploading the Photo from \`${url}\` (size: ${convert(image.byteLength).from("B").to("MB").toFixed(2)}MB) to Chat: ${chatId}.`;
+    `Uploading the Photo from \`${url}\` (size: ${toMB(image.byteLength)}MB) to Chat: ${chatId}.`;
 export const URL_CONTENT_TYPE_NOT_ACCEPTED = (url: string, mime: string) =>
     `The request of \`${url}\` is not accept for the MIME type which is \`${mime}\`, is only allowed image or html`;
 export const URL_HTML_IGNORE = (url: string) => `Request of \`${url}\` ignore to check size.`;
@@ -113,10 +119,10 @@ export const URL_REQUESTED_IS_NOT_A_IMAGE = (url: string) => `要求的網址 \`
 export const URL_REQUESTED_IS_NOT_OK = (url: string) => `要求的網址 \`${url}\` 回傳不是成功要求，請檢查網址`;
 export const URL_SIZE_CHECK = (url: string) => `Checking file size for \`${url}\`.`;
 export const URL_SIZE_RESULT = (url: string, size: number) =>
-    `The file size for \`${url}\` is passed for ${convert(size).from("B").to("MB").toFixed(2)}MB.`;
+    `The file size for \`${url}\` is passed for ${toMB(size)}MB.`;
 export const URL_SIZE_OUT_OF_BOUND = (url: string, size: number, limitation: number) =>
-    `The request of \`${url}\` is ${convert(size).from("B").to("MB").toFixed(2)}MB, ` +
-    `that is exceed the limitation of ${convert(limitation).from("B").to("MB").toFixed(2)}MB.`;
+    `The request of \`${url}\` is ${toMB(size)}MB, ` +
+    `that is exceed the limitation of ${toMB(limitation)}MB.`;
 export const WAITING_PHOTOS = (chatData: PhotoData.PhotoDataStrcture, nextTime: string) =>
     `等待的圖片數：${chatData.queue.length}
 封鎖的圖片數量：${chatData.banList.length}

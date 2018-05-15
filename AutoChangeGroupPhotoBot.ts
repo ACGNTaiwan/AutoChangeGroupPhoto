@@ -59,7 +59,9 @@ export
 
             this.downloader = TelegramDownload.getInstance(this.bot, logger);
 
-            this.registerEvent().then(() => { /* no-op */ }).catch(() => { /* no-op */ });
+            this.registerEvent()
+                .then(() => { /* no-op */ })
+                .catch(() => { /* no-op */ });
             if (this.config.pixiv.account && this.config.pixiv.password) {
                 this.pixiv = new pixivApi();
                 const pixivLogged = (userInfo: any) => {
@@ -130,7 +132,8 @@ export
             }
         });
 
-        await this.bot.getMe().then((me) => {
+        await this.bot.getMe()
+                      .then((me) => {
             if (me instanceof Error) {
                 return;
             }
@@ -139,14 +142,15 @@ export
                 logger.info(inlineQuery);
                 if (inlineQuery.query.match(/^\d+$/)) {
                     const pid = Number(inlineQuery.query);
-                    await this.getPixivIllustDetail(pid).then((illustObj) => {
+                    await this.getPixivIllustDetail(pid)
+                              .then((illustObj) => {
                         const result: TelegramBot.InlineQueryResultPhoto[] = illustObj.originalUrl.map((url, i) => {
-                            var caption = CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illustObj);
+                            let caption = CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illustObj);
                             caption = (caption.length > CONSTS.PHOTO_CAPTION_MAX_LENGTH)
                                     ? caption.substr(0, CONSTS.PHOTO_CAPTION_MAX_LENGTH)
                                     : caption;
                             const r: TelegramBot.InlineQueryResultPhoto = {
-                                caption: caption,
+                                caption,
                                 id: `${inlineQuery.id}_${i}`,
                                 photo_url: url,
                                 thumb_url: url,
@@ -154,7 +158,8 @@ export
                             };
                             return r;
                         });
-                        this.bot.answerInlineQuery(inlineQuery.id, result, { cache_time: 1 }).catch(() => { /* no-op */ });
+                        this.bot.answerInlineQuery(inlineQuery.id, result, { cache_time: 1 })
+                                .catch(() => { /* no-op */ });
                     });
                 }
             });
@@ -166,7 +171,9 @@ export
                     }
 
                     const command = regex[1].toLowerCase();
-                    const commandArgs = msg.text!.replace(regex[0], "").trim().split(" ");
+                    const commandArgs = msg.text!.replace(regex[0], "")
+                                                 .trim()
+                                                 .split(" ");
 
                     await this.bot.getChatAdministrators(msg.chat.id)
                         .then(async (members) => this.parseCommand(members, msg, command as CONSTS.COMMANDS, commandArgs));
@@ -196,7 +203,8 @@ export
         }
         if (CONSTS.COMMANDS_ADMINS_ONLY.indexOf(command) !== -1) {
             if (msg.from) {
-                if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) {
+                if (members.map((member) => member.user.id)
+                           .indexOf(msg.from.id) === -1) {
                     return;
                 }
             }
@@ -284,8 +292,10 @@ export
         let _data;
         try {
             _data = (fs.existsSync(CONSTS.DATA_FILE_PATH)) ?
-                yaml.load(fs.readFileSync(CONSTS.DATA_FILE_PATH).toString()) :
-                JSON.parse(fs.readFileSync(CONSTS.DATA_FILE_JSON_PATH).toString());
+                yaml.load(fs.readFileSync(CONSTS.DATA_FILE_PATH)
+                            .toString()) :
+                JSON.parse(fs.readFileSync(CONSTS.DATA_FILE_JSON_PATH)
+                             .toString());
         } catch (e) {
             logger.warn(e);
             _data = [];
@@ -318,7 +328,8 @@ export
      * @param chatId Telegram Chat ID aka. Group ID
      */
     private getData(chatId: number): PhotoData.PhotoDataStrcture {
-        const chatData = this.data.filter((d) => d.chatId === chatId).shift();
+        const chatData = this.data.filter((d) => d.chatId === chatId)
+                                  .shift();
         if (chatData instanceof PhotoData.PhotoDataStrcture) {
             return chatData;
         } else {
@@ -504,7 +515,9 @@ export
             if (chatData.disabled) {
                 return;
             }
-            if (!chatData.paused && (!chatData.last || moment(chatData.last).add(chatData.interval, "h").isBefore(moment()))) {
+            const isMomentBefore = moment(chatData.last).add(chatData.interval, "h")
+                                         .isBefore(moment());
+            if (!chatData.paused && (!chatData.last || isMomentBefore)) {
                 const fileLink = await this.nextPhoto(chatData);
                 await this.bot.getChat(chatData.chatId)
                     .then((chat) => {
@@ -660,7 +673,8 @@ export
             } else {
                 return request(stickerURL, this.requestOptions, async (error, response, body) => {
                     const stickerSharp = sharp(body);
-                    const stickerPng = await stickerSharp.png().toBuffer();
+                    const stickerPng = await stickerSharp.png()
+                                                         .toBuffer();
                     await this.sendPhotoPromise(msg, stickerPng, { caption: CONSTS.GROUP_PHOTO_CAPTION });
                 });
             }
@@ -707,7 +721,9 @@ export
                     reject();
                 }
             });
-        }).then(() => true).catch(() => false);
+        })
+        .then(() => true)
+        .catch(() => false);
     }
 
     /**
@@ -762,10 +778,12 @@ export
             const checkSizeOk = await this.sizeLimitationCheck(url);
             if (checkSizeOk) {
                 if (url.match(CONSTS.REGEXP_MATCH_PIXIV_DOMAIN) !== null) {
-                    const pixivInfo = Array.from(url.match(CONSTS.REGEXP_MATCH_PIXIV_ILLUST_ID)!).filter((m) => m);
+                    const pixivInfo = Array.from(url.match(CONSTS.REGEXP_MATCH_PIXIV_ILLUST_ID)!)
+                                           .filter((m) => m);
                     if (this.pixiv !== null && pixivInfo.length > 0) {
                         const iid = Number(pixivInfo.pop());
-                        await this.getPixivIllustDetail(iid).then((illustObj) => { resolve(illustObj); return illustObj; });
+                        await this.getPixivIllustDetail(iid)
+                                  .then((illustObj) => { resolve(illustObj); return illustObj; });
                     } else {
                         reject(url);
                     }
@@ -848,7 +866,8 @@ export
                     return request.get(imgUrl as string, this.requestOptions, downloadImage);
                 }
             }),
-        ).catch(() => { /* no-op */ });
+        )
+        .catch(() => { /* no-op */ });
         return this.uploadQueue;
     }
 
