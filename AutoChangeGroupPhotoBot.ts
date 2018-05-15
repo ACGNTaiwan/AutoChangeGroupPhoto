@@ -515,8 +515,9 @@ export
             if (chatData.disabled) {
                 return;
             }
-            const isMomentBefore = moment(chatData.last).add(chatData.interval, "h")
-                                         .isBefore(moment());
+            const isMomentBefore = moment(chatData.last)
+                                       .add(chatData.interval, "h")
+                                       .isBefore(moment());
             if (!chatData.paused && (!chatData.last || isMomentBefore)) {
                 const fileLink = await this.nextPhoto(chatData);
                 await this.bot.getChat(chatData.chatId)
