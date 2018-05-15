@@ -1,6 +1,8 @@
 let _saverHandler: () => void | undefined;
 let saverTimer: NodeJS.Timer;
 
+_saverHandler = _saverHandler;
+
 const save = () => {
     if (_saverHandler !== undefined) {
         clearTimeout(saverTimer);
@@ -31,7 +33,7 @@ const autoSaver = {
 
 export {
     _saverHandler,
-    saverTimer,
-    save,
     autoSaver,
+    save,
+    saverTimer,
 };

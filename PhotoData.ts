@@ -1,10 +1,10 @@
+import * as moment from "moment";
 import {
     _saverHandler,
-    saverTimer,
-    save,
     autoSaver,
+    save,
+    saverTimer,
 } from "./AutoSaver";
-import * as moment from "moment";
 
 export class PixivIllustStructure {
     public illustId = -1;
@@ -84,7 +84,8 @@ export class PhotoDataStrcture {
     }
 
     public getRetryQueue(fileLink: string) {
-        let retry = this.retryList.filter((r) => r.fileName === fileLink).pop();
+        let retry = this.retryList.filter((r) => r.fileName === fileLink)
+                                  .pop();
         if (retry === undefined) {
             retry = new RetryDataStructure(fileLink);
             this.retryList.push(new Proxy(retry, autoSaver));

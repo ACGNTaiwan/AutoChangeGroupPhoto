@@ -1,8 +1,8 @@
 import {
     _saverHandler,
-    saverTimer,
-    save,
     autoSaver,
+    save,
+    saverTimer,
 } from "./AutoSaver";
 
 const convert = require("convert-units");
@@ -18,7 +18,9 @@ export class PixivConfig {
 export class BotConfig {
     public token = "";
     public minBotInterval = 0.5;
-    public downloadMaxSize = convert(5).from("MB").to("B");
+    public downloadMaxSize = convert(5)
+                                 .from("MB")
+                                 .to("B");
     public pixiv = new Proxy(new PixivConfig(), autoSaver);
 }
 
@@ -57,7 +59,8 @@ export const BotConfigGenerator = {
 
 export const InitialConfig = (_config: BotConfig, saverHandler: () => void | undefined) => {
     const p = new Proxy(_config, autoSaver);
-    Object.keys(p).map((k) => {
+    Object.keys(p)
+          .map((k) => {
         const val = (p as any)[k];
         if (typeof val === "object") {
             (p as any)[k] = new Proxy(val, autoSaver);
