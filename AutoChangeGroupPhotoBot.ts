@@ -96,7 +96,7 @@ export
      * Register Bot events and cronjob
      */
     private async registerEvent() {
-        schedule.scheduleJob("*/6 * * * * *", () => { this.doUpdate(); });
+        schedule.scheduleJob("0 * * * * *", () => { this.doUpdate(); });
 
         // queue the phpto
         this.bot.onText(CONSTS.REGEXP_MATCH_TAG_COMMAND, async (msg) => {
