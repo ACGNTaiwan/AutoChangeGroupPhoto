@@ -311,9 +311,6 @@ export
         command: CONSTS.COMMANDS,
         commandArgs: string[],
     ) {
-        const chatId = msg.chat.id;
-        const chatData = this.getData(chatId);
-
         if (members instanceof Error) {
             return;
         }
