@@ -16,8 +16,8 @@ class AutoSaver {
             },                           100);
         }
     }
-    public AutoSaver() {
-        const Save = this.Save;
+    public constructor() {
+        const Save = () => this.Save();
         this.Saver = {
             get(target: any, propName: PropertyKey) {
                 const val = target[propName];
