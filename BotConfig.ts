@@ -1,9 +1,6 @@
-import {
-    _saverHandler,
-    autoSaver,
-    save,
-    saverTimer,
-} from "./AutoSaver";
+import { AutoSaver } from "./AutoSaver";
+
+const autoSaver = new AutoSaver();
 
 const convert = require("convert-units");
 const prompt = require("prompt");
@@ -21,7 +18,7 @@ export class BotConfig {
     public downloadMaxSize = convert(5)
                                  .from("MB")
                                  .to("B");
-    public pixiv = new Proxy(new PixivConfig(), autoSaver);
+    public pixiv = new Proxy(new PixivConfig(), autoSaver.Saver);
 }
 
 export const BotConfigGenerator = {
@@ -58,15 +55,15 @@ export const BotConfigGenerator = {
 };
 
 export const InitialConfig = (_config: BotConfig, saverHandler: () => void | undefined) => {
-    const p = new Proxy(_config, autoSaver);
+    const p = new Proxy(_config, autoSaver.Saver);
     Object.keys(p)
           .map((k) => {
-        const val = (p as any)[k];
+        const val = p[k];
         if (typeof val === "object") {
-            (p as any)[k] = new Proxy(val, autoSaver);
+            p[k] = new Proxy(val, autoSaver.Saver);
         }
     });
-    _saverHandler = saverHandler;
-    save();
+    autoSaver._saverHandler = saverHandler;
+    autoSaver.Save();
     return p;
 };

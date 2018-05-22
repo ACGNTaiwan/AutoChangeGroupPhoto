@@ -1,10 +1,7 @@
 import * as moment from "moment";
-import {
-    _saverHandler,
-    autoSaver,
-    save,
-    saverTimer,
-} from "./AutoSaver";
+import { AutoSaver } from "./AutoSaver";
+
+const autoSaver = new AutoSaver();
 
 export class PixivIllustStructure {
     public illustId = -1;
@@ -74,10 +71,10 @@ export class PhotoDataStrcture {
             this.disabled = disabled;
             this.interval = interval ? interval : 1;
             this.last = last ? last : +moment();
-            this.queue = new Proxy((queue !== null && queue !== undefined) ? queue : [], autoSaver);
-            this.history = new Proxy((history !== null && history !== undefined) ? history : [], autoSaver);
-            this.banList = new Proxy((banList !== null && banList !== undefined) ? banList : [], autoSaver);
-            this.retryList = new Proxy((retryList !== null && retryList !== undefined) ? retryList : [], autoSaver);
+            this.queue = new Proxy((queue !== null && queue !== undefined) ? queue : [], autoSaver.Saver);
+            this.history = new Proxy((history !== null && history !== undefined) ? history : [], autoSaver.Saver);
+            this.banList = new Proxy((banList !== null && banList !== undefined) ? banList : [], autoSaver.Saver);
+            this.retryList = new Proxy((retryList !== null && retryList !== undefined) ? retryList : [], autoSaver.Saver);
         } else {
             this.from(chatId as PhotoDataStrcture);
         }
@@ -88,7 +85,7 @@ export class PhotoDataStrcture {
                                   .pop();
         if (retry === undefined) {
             retry = new RetryDataStructure(fileLink);
-            this.retryList.push(new Proxy(retry, autoSaver));
+            this.retryList.push(new Proxy(retry, autoSaver.Saver));
         } else {
             retry.retryTimes++;
         }
@@ -108,20 +105,22 @@ export class PhotoDataStrcture {
         this.disabled = pds.disabled;
         this.interval = pds.interval ? pds.interval : 1;
         this.last = pds.last ? pds.last : +moment();
-        this.queue = new Proxy((pds.queue !== null && pds.queue !== undefined) ? pds.queue : [], autoSaver);
-        this.history = new Proxy((pds.history !== null && pds.history !== undefined) ? pds.history : [], autoSaver);
-        this.banList = new Proxy((pds.banList !== null && pds.banList !== undefined) ? pds.banList : [], autoSaver);
-        this.retryList = new Proxy((pds.retryList !== null && pds.retryList !== undefined) ? pds.retryList.map((r) => new Proxy(r, autoSaver)) : [], autoSaver);
+        this.queue = new Proxy((pds.queue !== null && pds.queue !== undefined) ? pds.queue : [], autoSaver.Saver);
+        this.history = new Proxy((pds.history !== null && pds.history !== undefined) ? pds.history : [], autoSaver.Saver);
+        this.banList = new Proxy((pds.banList !== null && pds.banList !== undefined) ? pds.banList : [], autoSaver.Saver);
+        this.retryList = new Proxy((pds.retryList !== null && pds.retryList !== undefined)
+            ? pds.retryList.map((r) => new Proxy(r, autoSaver.Saver))
+            : [],                  autoSaver.Saver);
     }
 }
 
 export const PhotoDataStore = (initStore: PhotoDataStrcture[] = [], saverHandler: () => void | undefined): PhotoDataStrcture[] => {
     const _photoDataStoreData: PhotoDataStrcture[] = [];
-    const p = new Proxy(_photoDataStoreData, autoSaver);
+    const p = new Proxy(_photoDataStoreData, autoSaver.Saver);
     if (initStore.length !== 0) {
-        initStore.map((s: PhotoDataStrcture) => p.push(new Proxy(new PhotoDataStrcture(s), autoSaver)));
+        initStore.map((s: PhotoDataStrcture) => p.push(new Proxy(new PhotoDataStrcture(s), autoSaver.Saver)));
     }
-    _saverHandler = saverHandler;
-    save();
+    autoSaver._saverHandler = saverHandler;
+    autoSaver.Save();
     return p;
 };
