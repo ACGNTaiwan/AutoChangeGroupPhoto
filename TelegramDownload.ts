@@ -9,15 +9,17 @@ let logger: any;
 
 export class TelegramDownload {
     private static _instance?: TelegramDownload;
-    private bot: TelegramBot;
-    private store: string;
+    private readonly bot: TelegramBot;
+    private readonly store: string;
 
     public static getInstance(bot: TelegramBot, _logger: any, defaultStore: string = path.resolve(path.join(".", CONSTS.CACHE_FILE_FOLDER))) {
         return (this._instance) ? this._instance : (this._instance = new this(bot, _logger, defaultStore));
     }
 
     public checkGroup(photoData: PhotoData.PhotoDataStrcture) {
-        const files = [...new Set(([] as string[]).concat(photoData.queue).concat(photoData.history).concat(photoData.history))];
+        const files = [...new Set(([] as string[]).concat(photoData.queue)
+                                                  .concat(photoData.history)
+                                                  .concat(photoData.history))];
         this.checkGroupCacheFolder(photoData.chatId);
         files.forEach(async (f) => this.checkFile(photoData.chatId, f)
             .catch((fileId: string) => {
@@ -33,7 +35,8 @@ export class TelegramDownload {
         fs.writeFileSync(path.join(this.store, photoData.chatId.toString(), CONSTS.CACHE_DATA_FILENAME), yaml.safeDump(_data));
 
         const rootFile = path.join(this.store, CONSTS.CACHE_DATA_FILENAME);
-        const groups: number[] = (!fs.existsSync(rootFile)) ? [] : yaml.load(fs.readFileSync(rootFile).toString());
+        const groups: number[] = (!fs.existsSync(rootFile)) ? [] : yaml.load(fs.readFileSync(rootFile)
+                                                                               .toString());
         if (groups.indexOf(photoData.chatId) === -1) {
             groups.push(photoData.chatId);
             const _groups = JSON.parse(JSON.stringify(groups)); // to prevent Proxy dump undefined
@@ -63,7 +66,9 @@ export class TelegramDownload {
             logger.info(CONSTS.CACHE_CREATED_FOLDER(folder));
             return [];
         } else {
-            const files = fs.readdirSync(folder).filter((file) => fs.lstatSync(path.join(folder, file)).isFile());
+            const files = fs.readdirSync(folder)
+                            .filter((file) => fs.lstatSync(path.join(folder, file))
+                                                                .isFile());
             logger.debug(CONSTS.CACHE_FOLDER_CHECKED(folder, files));
             return files;
         }

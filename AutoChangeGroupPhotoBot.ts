@@ -27,13 +27,13 @@ export
      */
     class AutoChangeGroupPhotoBot {
     private static _instance?: AutoChangeGroupPhotoBot;
-    private downloader: TelegramDownload;
-    private config: BotConfig;
-    private bot: TelegramBot;
-    private data: PhotoData.PhotoDataStrcture[];
+    private readonly downloader: TelegramDownload;
+    private readonly config: BotConfig;
+    private readonly bot: TelegramBot;
+    private readonly data: PhotoData.PhotoDataStrcture[];
     private uploadQueue: Promise<any> = Promise.resolve();
-    private pixiv?: any;
-    private requestOptions = {
+    private readonly pixiv?: any;
+    private readonly requestOptions = {
         encoding: null,
         followRedirect: false,
     };
@@ -96,7 +96,7 @@ export
      * Register Bot events and cronjob
      */
     private async registerEvent() {
-        schedule.scheduleJob("0 * * * * *", () => { this.doUpdate(); });
+        schedule.scheduleJob("*/6 * * * * *", () => { this.doUpdate(); });
 
         // queue the phpto
         this.bot.onText(CONSTS.REGEXP_MATCH_TAG_COMMAND, async (msg) => {
