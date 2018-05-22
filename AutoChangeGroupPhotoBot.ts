@@ -159,7 +159,7 @@ export
                             return r;
                         });
                         this.bot.answerInlineQuery(inlineQuery.id, result, { cache_time: 1 })
-                                .catch(() => { /* no-op */ });
+                                .catch((e) => logger.error(e));
                     });
                 }
             });
