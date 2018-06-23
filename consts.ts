@@ -94,7 +94,7 @@ export const REGEXP_MATCH_HENTAI_DOMAIN = /e[x\-]?hentai.org/i;
 export const REGEXP_MATCH_PIXIV_DOMAIN = /\.pixiv\./i;
 export const REGEXP_MATCH_PIXIV_ILLUST_ID = /illust_id=(\d+)|www.pixiv.net\/i\/(\d+)/i;
 export const REGEXP_MATCH_PIXIV_IMAGE_DOMAIN = /^(https:\/\/)i.pximg.net(\/.+)$/i;
-export const REGEXP_MATCH_TAG_COMMAND = /(#|＃)(群組圖|群组图)(片)?/ig;
+export const REGEXP_MATCH_TAG_COMMAND = /(#|＃)(群組圖|群组图)片/ig;
 export const SET_INTERVAL = (interval: string) => `已設定變更間隔為${interval}小時`;
 export const UNBANNED_TEXT = (charId: number, fileId: string) => `Receive UnBan Queue for ${charId} to ${fileId}.`;
 export const UNSUPPORTED_FILE_EXTENSIONS = (fileName: string) => `不支援檔案 \`${fileName}\`，因此無法設定群圖`;
