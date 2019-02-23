@@ -30,11 +30,10 @@
   version "3.11.1"
   resolved "https://registry.yarnpkg.com/@types/js-yaml/-/js-yaml-3.11.1.tgz#ac5bab26be5f9c6f74b6b23420f2cfa5a7a6ba40"
 
-"@types/node-schedule@^1.2.1":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@types/node-schedule/-/node-schedule-1.2.2.tgz#bb5beae99b7327b4f2ddc1834f1fdae4378891b0"
+"@types/node-schedule@^1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@types/node-schedule/-/node-schedule-1.2.3.tgz#614ba775c4c9b200e5f939a4eeef6727eb0ed6b7"
   dependencies:
-    "@types/events" "*"
     "@types/node" "*"
 
 "@types/node-telegram-bot-api@^0.28.2":
