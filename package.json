@@ -48,7 +48,7 @@
     "@types/html-to-text": "^1.4.31",
     "@types/jimp": "^0.2.1",
     "@types/js-yaml": "^3.10.0",
-    "@types/node": "^8.0.53",
+    "@types/node": "^11.11.6",
     "@types/node-schedule": "^1.2.1",
     "@types/node-telegram-bot-api": "^0.28.2",
     "@types/pad": "^1.0.1",
