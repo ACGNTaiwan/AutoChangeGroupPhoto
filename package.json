@@ -29,7 +29,7 @@
   "homepage": "https://github.com/ACGNTaiwan/AutoChangeGroupPhoto#readme",
   "dependencies": {
     "convert-units": "^2.3.1",
-    "html-to-text": "^3.3.0",
+    "html-to-text": "^5.0.0",
     "jimp": "^0.2.28",
     "js-yaml": "^3.10.0",
     "moment": "^2.19.2",
