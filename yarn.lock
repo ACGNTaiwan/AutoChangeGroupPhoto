@@ -1917,9 +1917,9 @@ pixelmatch@^4.0.0:
   dependencies:
     pngjs "^3.0.0"
 
-pixiv-api-client@^0.16.0:
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/pixiv-api-client/-/pixiv-api-client-0.16.0.tgz#903465283aa2f31b78e3971e931561ae1590e55a"
+pixiv-api-client@^0.18.0:
+  version "0.18.0"
+  resolved "https://registry.yarnpkg.com/pixiv-api-client/-/pixiv-api-client-0.18.0.tgz#427dd54e2057bc816841df2eb4b777f91c7b1872"
   dependencies:
     axios "^0.14.0"
     qs "^6.2.1"
