@@ -1,4 +1,5 @@
 import * as moment from "moment";
+
 import { AutoSaver } from "./AutoSaver";
 
 const autoSaver = new AutoSaver();
@@ -42,16 +43,16 @@ export class RetryDataStructure {
 }
 
 export class PhotoDataStrcture {
-    public chatId: number;
-    public chatName: string;
+    public chatId!: number;
+    public chatName!: string;
     public paused = false;
     public disabled = false;
-    public interval: number;
-    public last: number;
-    public queue: string[];
-    public history: string[];
-    public banList: string[];
-    public retryList: RetryDataStructure[];
+    public interval!: number;
+    public last!: number;
+    public queue!: string[];
+    public history!: string[];
+    public banList!: string[];
+    public retryList!: RetryDataStructure[];
     public constructor(
         chatId: number | object | PhotoDataStrcture,
         chatName: string = "",
@@ -87,7 +88,7 @@ export class PhotoDataStrcture {
             retry = new RetryDataStructure(fileLink);
             this.retryList.push(new Proxy(retry, autoSaver.Saver));
         } else {
-            retry.retryTimes++;
+            retry.retryTimes += 1;
         }
         return retry;
     }

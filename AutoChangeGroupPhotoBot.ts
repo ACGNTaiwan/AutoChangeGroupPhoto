@@ -6,17 +6,18 @@ import * as yaml from "js-yaml";
 import * as moment from "moment";
 import * as schedule from "node-schedule";
 import * as TelegramBot from "node-telegram-bot-api";
-const ogs = require("open-graph-scraper");
-const pixivApi = require("pixiv-api-client");
 import * as request from "request";
 import * as sharp from "sharp";
-const tracer = require("tracer");
-const logger = tracer.colorConsole({ level: process.env.DEBUG !== undefined ? process.env.DEBUG : "info" });
+
 import { BotConfig, InitialConfig } from "./BotConfig";
 import * as CONSTS from "./consts";
 import * as PhotoData from "./PhotoData";
 import { TelegramDownload } from "./TelegramDownload";
 import { TelegramBotExtended } from "./typings";
+const ogs = require("open-graph-scraper");
+const pixivApi = require("pixiv-api-client");
+const tracer = require("tracer");
+const logger = tracer.colorConsole({ level: process.env.DEBUG !== undefined ? process.env.DEBUG : "info" });
 
 moment.locale("zh-tw");
 
@@ -43,7 +44,7 @@ export
      * @param _config Telegram Bot config object
      */
     public static getInstance(_config: any = {}) {
-        return (this._instance) ? this._instance : (this._instance = new this(_config));
+        return (AutoChangeGroupPhotoBot._instance) ? AutoChangeGroupPhotoBot._instance : (AutoChangeGroupPhotoBot._instance = new AutoChangeGroupPhotoBot(_config));
     }
 
     /**
@@ -553,8 +554,8 @@ export
      */
     private async unbanPhoto(msg: TelegramBot.Message) {
         const chatId = msg.chat.id;
-        const fileIdIist = (msg.reply_to_message!.photo ? msg.reply_to_message!.photo!.map<string>((p) => p.file_id) : [])
-            .concat(msg.reply_to_message!.document ? [msg.reply_to_message!.document!.file_id] : []);
+        const fileIdIist = (msg.reply_to_message!.photo ? msg.reply_to_message!.photo.map<string>((p) => p.file_id) : [])
+            .concat(msg.reply_to_message!.document ? [msg.reply_to_message!.document.file_id] : []);
         const chatData = this.getData(chatId);
         chatData.banList = chatData.banList
             .map<string>((b) => fileIdIist.indexOf(b) !== -1 ? "" : b)
@@ -790,7 +791,7 @@ export
                     length = Number(headers["content-length"]);
                 }
                 if (headers["content-type"]) {
-                    mime = headers["content-type"]!;
+                    mime = headers["content-type"];
                 }
                 const isHTML = mime.match(/html/i) !== null;
                 const isAcceptedMime = mime.match(/^image/i) !== null || isHTML;

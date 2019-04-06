@@ -2,6 +2,7 @@ import * as fs from "fs";
 import * as yaml from "js-yaml";
 import * as TelegramBot from "node-telegram-bot-api";
 import * as path from "path";
+
 import * as CONSTS from "./consts";
 import * as PhotoData from "./PhotoData";
 
@@ -13,7 +14,7 @@ export class TelegramDownload {
     private readonly store: string;
 
     public static getInstance(bot: TelegramBot, _logger: any, defaultStore: string = path.resolve(path.join(".", CONSTS.CACHE_FILE_FOLDER))) {
-        return (this._instance) ? this._instance : (this._instance = new this(bot, _logger, defaultStore));
+        return (TelegramDownload._instance) ? TelegramDownload._instance : (TelegramDownload._instance = new TelegramDownload(bot, _logger, defaultStore));
     }
 
     public checkGroup(photoData: PhotoData.PhotoDataStrcture) {

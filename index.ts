@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as yaml from "js-yaml";
+
 import { AutoChangeGroupPhotoBot } from "./AutoChangeGroupPhotoBot";
 import { BotConfigGenerator } from "./BotConfig";
 import * as CONSTS from "./consts";

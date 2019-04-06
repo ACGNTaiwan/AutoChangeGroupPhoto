@@ -1,6 +1,6 @@
 class AutoSaver {
-    public _saverHandler: () => void | undefined;
-    public saverTimer: NodeJS.Timer;
+    public _saverHandler!: () => void | undefined;
+    public saverTimer!: NodeJS.Timer;
 
     public Saver: ProxyHandler<any> = {};
     public Save() {
