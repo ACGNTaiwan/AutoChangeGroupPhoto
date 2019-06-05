@@ -1,6 +1,6 @@
 import * as moment from "moment";
 
-import { AutoSaver } from "./AutoSaver";
+import { AutoSaver } from "./autoSaver";
 
 const autoSaver = new AutoSaver();
 

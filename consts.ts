@@ -1,12 +1,12 @@
 const convert = require("convert-units");
 import * as TelegramBot from "node-telegram-bot-api";
 
-import * as PhotoData from "./PhotoData";
+import * as PhotoData from "./photoData";
 
-const toMB = (byte) => convert(byte)
-                           .from("B")
-                           .to("MB")
-                           .toFixed(2);
+const toMB = (byte: number) => convert(byte)
+                                .from("B")
+                                .to("MB")
+                                .toFixed(2);
 
 export const ADDED_INTO_QUEUE = "已加入序列";
 export const ALREADY_IN_QUEUE = "已在序列中";

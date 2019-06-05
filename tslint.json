@@ -50,6 +50,7 @@
     "file-header": [false],
     "max-classes-per-file": false,
     "max-line-length": [true, 160],
+    "max-file-line-count": false,
     "member-ordering": [
       true,
       "public-before-private",

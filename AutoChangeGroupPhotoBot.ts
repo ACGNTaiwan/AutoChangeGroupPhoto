@@ -9,10 +9,10 @@ import * as TelegramBot from "node-telegram-bot-api";
 import * as request from "request";
 import * as sharp from "sharp";
 
-import { BotConfig, InitialConfig } from "./BotConfig";
+import { BotConfig, InitialConfig } from "./botConfig";
 import * as CONSTS from "./consts";
-import * as PhotoData from "./PhotoData";
-import { TelegramDownload } from "./TelegramDownload";
+import * as PhotoData from "./photoData";
+import { TelegramDownload } from "./telegramDownload";
 import { TelegramBotExtended } from "./typings";
 const ogs = require("open-graph-scraper");
 const pixivApi = require("pixiv-api-client");
@@ -44,7 +44,9 @@ export
      * @param _config Telegram Bot config object
      */
     public static getInstance(_config: any = {}) {
-        return (AutoChangeGroupPhotoBot._instance) ? AutoChangeGroupPhotoBot._instance : (AutoChangeGroupPhotoBot._instance = new AutoChangeGroupPhotoBot(_config));
+        return (AutoChangeGroupPhotoBot._instance) ?
+            AutoChangeGroupPhotoBot._instance :
+            (AutoChangeGroupPhotoBot._instance = new AutoChangeGroupPhotoBot(_config));
     }
 
     /**
@@ -232,6 +234,7 @@ export
             if (args.length > 0 && Number(args) >= this.config.minBotInterval) {
                 chatData.interval = Number(args);
                 return this.bot.sendMessage(chatId, CONSTS.SET_INTERVAL(chatData.interval.toString()));
+            // tslint:disable-next-line:unnecessary-else
             } else {
                 return this.bot.sendMessage(chatId, CONSTS.INVALID_VALUE);
             }
@@ -425,6 +428,7 @@ export
                                   .shift();
         if (chatData instanceof PhotoData.PhotoDataStrcture) {
             return chatData;
+        // tslint:disable-next-line:unnecessary-else
         } else {
             const d = new PhotoData.PhotoDataStrcture(chatId);
             this.data.push(d);
@@ -473,6 +477,7 @@ export
         if (msg.chat.type === "private") {
             await this.bot.sendMessage(chatId, CONSTS.CAN_NOT_CHANGE_PHOTO);
             return CONSTS.CAN_NOT_CHANGE_PHOTO;
+        // tslint:disable-next-line:unnecessary-else
         } else if (msg.chat.type === "group" && msg.chat.all_members_are_administrators) {
             await this.bot.sendMessage(chatId, CONSTS.CAN_NOT_CHANGE_ALL_ADMINS_PHOTO);
             return CONSTS.CAN_NOT_CHANGE_ALL_ADMINS_PHOTO;
@@ -659,7 +664,7 @@ export
         }
         if (fileLink.length > 0) {
             await this.bot.getFileLink(fileLink)
-                .then(async (link) => link instanceof Error ? null :
+                .then(async (link: any) => link instanceof Error ? null :
                     this.bot.setChatPhoto(chatData.chatId, request(link))
                         .catch(async (reason) => {
                             logger.error(CONSTS.UPDATE_PHOTO_ERROR(chatData.chatId, reason));
@@ -711,7 +716,7 @@ export
     }
 
     private async sendPhotoPromise(msg: TelegramBot.Message, buffer: Buffer, options?: TelegramBot.SendPhotoOptions) {
-        const opt = Object.apply({ reply_to_message_id: msg.message_id, disable_notification: true }, options) as TelegramBot.SendPhotoOptions;
+        const opt = Object.apply({ reply_to_message_id: msg.message_id, disable_notification: true }, options as [any]) as TelegramBot.SendPhotoOptions;
         return this.bot.sendPhoto(msg.chat.id, buffer, opt)
             .then(async (m) => {
                 let ret;
@@ -761,9 +766,10 @@ export
 
     private async doAddSticker(msg: TelegramBot.Message) {
         if (msg.reply_to_message && msg.reply_to_message.sticker) {
-            const stickerURL = await this.bot.getFileLink(msg.reply_to_message.sticker.file_id);
+            const stickerURL: any = await this.bot.getFileLink(msg.reply_to_message.sticker.file_id);
             if (stickerURL instanceof Error) {
                 return Promise.reject(stickerURL);
+            // tslint:disable-next-line:unnecessary-else
             } else {
                 return request(stickerURL, this.requestOptions, async (error, response, body) => {
                     const stickerSharp = sharp(body);
@@ -953,9 +959,11 @@ export
                     await this.parsePhoto(msg, imgUrl as Buffer, ent, url);
                     resolve();
                     return;
+                // tslint:disable-next-line:unnecessary-else
                 } else if (isPixiv) {
                     const illust = imgUrl as PhotoData.PixivIllustStructure;
                     return request.get(illust.originalUrl[0], this.requestOptions, downloadImage);
+                // tslint:disable-next-line:unnecessary-else
                 } else {
                     return request.get(imgUrl as string, this.requestOptions, downloadImage);
                 }

@@ -4,7 +4,7 @@ import * as TelegramBot from "node-telegram-bot-api";
 import * as path from "path";
 
 import * as CONSTS from "./consts";
-import * as PhotoData from "./PhotoData";
+import * as PhotoData from "./photoData";
 
 let logger: any;
 
@@ -66,6 +66,7 @@ export class TelegramDownload {
             fs.mkdirSync(folder);
             logger.info(CONSTS.CACHE_CREATED_FOLDER(folder));
             return [];
+        // tslint:disable-next-line:unnecessary-else
         } else {
             const files = fs.readdirSync(folder)
                             .filter((file) => fs.lstatSync(path.join(folder, file))
@@ -87,6 +88,7 @@ export class TelegramDownload {
             if (filepath instanceof Error) {
                 logger.error(CONSTS.CACHE_DOWNLOAD_ERROR(gFile, filepath.message));
                 return Promise.reject(fileId);
+            // tslint:disable-next-line:unnecessary-else
             } else {
                 const filename = path.basename(filepath);
                 const downloadedFile = path.join(gFolder, filename);
