@@ -2261,10 +2261,10 @@ pixelmatch@^4.0.2:
   dependencies:
     pngjs "^3.0.0"
 
-pixiv-api-client@^0.18.0:
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/pixiv-api-client/-/pixiv-api-client-0.18.0.tgz#427dd54e2057bc816841df2eb4b777f91c7b1872"
-  integrity sha512-UqfkwYfsFjonc5AHq2Ve+POT3ebC+Ms3TxqwCYsMIGFBB7u+94rx2MgIxgcw+w9hGQU10V/eyhwhrdFnEmBB4w==
+pixiv-api-client@^0.19.0:
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/pixiv-api-client/-/pixiv-api-client-0.19.0.tgz#42c013beff8334ea7d3650883215769c8aded4b8"
+  integrity sha512-nO/FM4Jhj9WkBrbFbm2nMnIOV8iDlVv8Y151J3e0ROcj4PLT/HVf2BnM0BnVm4cwnKDP8AJmu180hMCB5+iHHg==
   dependencies:
     axios "^0.14.0"
     qs "^6.2.1"
