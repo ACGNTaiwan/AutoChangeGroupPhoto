@@ -3449,10 +3449,10 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
-tracer@^0.9.9:
-  version "0.9.9"
-  resolved "https://registry.yarnpkg.com/tracer/-/tracer-0.9.9.tgz#bea35463b1dff24e071e09081712da1135160263"
-  integrity sha512-soLSJMy76cfD0tAwAWSMfpFfJXaqmg+gw1fBD6yXrbWEI8AvbqNPPA+RyH79Z7akvF5PQ3q9nxeYe0Ob3BeKSg==
+tracer@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/tracer/-/tracer-1.0.1.tgz#f201bf2d96bb1382269b977d2059f661d41a6a2a"
+  integrity sha512-/kxtMu2KWtdjQSzFzLnA8bYpDKHlcK2BGX4e6r7n0dbD7BGTQjGmwZKNHwFPQaHjzBHtNtWva0frymfYtAWZyw==
   dependencies:
     colors "1.3.3"
     dateformat "3.0.3"
