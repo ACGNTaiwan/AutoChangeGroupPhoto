@@ -46,9 +46,9 @@
   "devDependencies": {
     "@types/html-to-text": "^1.4.31",
     "@types/js-yaml": "^3.12.1",
-    "@types/node": "^12.7.9",
+    "@types/node": "^12.7.12",
     "@types/node-schedule": "^1.2.4",
-    "@types/node-telegram-bot-api": "^0.31.0",
+    "@types/node-telegram-bot-api": "^0.31.1",
     "@types/pad": "^1.0.2",
     "@types/sharp": "^0.22.3",
     "@types/tmp": "^0.1.0",
@@ -56,7 +56,7 @@
     "ts-loader": "^6.2.0",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.6.4"
   },
   "husky": {
     "hooks": {
