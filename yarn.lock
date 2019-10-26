@@ -2708,13 +2708,14 @@ pixelmatch@^4.0.2:
   dependencies:
     pngjs "^3.0.0"
 
-pixiv-api-client@^0.20.0:
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/pixiv-api-client/-/pixiv-api-client-0.20.0.tgz#525d81e39e332f7665a42513632bc8fdddb49e59"
-  integrity sha512-DhtpYZsC8OAhCVHMcZ52gRKjxBiU7rgoR4OWfScUazn7jL4G8opOlWC/TqOs6ouS9/JuT7rRKaEGczL1GJnDNA==
+pixiv-api-client@^0.22.0:
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/pixiv-api-client/-/pixiv-api-client-0.22.0.tgz#6893903293b0426041fa986658a2e10458e7ed2b"
+  integrity sha512-GU9tMpgecjdx/RiqJVZxVvLk4Ze1a3q01NuwsY3tmgQ5XI3ue6BVU6me/1xPQVh/iTCkrGrpO6J53+4ceYntgQ==
   dependencies:
     axios ">=0.19.0"
     blueimp-md5 "^2.12.0"
+    moment "^2.24.0"
     qs "^6.2.1"
 
 pkg-dir@^3.0.0:
