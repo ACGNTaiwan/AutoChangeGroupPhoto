@@ -135,8 +135,7 @@ export
             }
         });
 
-        await this.bot.getMe()
-                      .then((me) => {
+        await this.bot.getMe().then((me) => {
             if (me instanceof Error) {
                 return;
             }
@@ -168,19 +167,18 @@ export
             });
 
             this.bot.onText(/^\/(\w+)@?(\w*)/i, async (msg, regex) => {
-                if (regex) {
-                    if (regex[2] && regex[2] !== me.username) {
-                        return;
-                    }
-
-                    const command = regex[1].toLowerCase();
-                    const commandArgs = msg.text!.replace(regex[0], "")
-                                                 .trim()
-                                                 .split(" ");
-
-                    await this.bot.getChatAdministrators(msg.chat.id)
-                        .then(async (members) => this.parseCommand(members, msg, command as CONSTS.COMMANDS, commandArgs));
+                if (!regex || regex[2] && regex[2] !== me.username) {
+                    return;
                 }
+                if (msg.chat.type !== 'private' && regex[2] !== me.username) {
+                    return;
+                }
+
+                const command = regex[1].toLowerCase();
+                const commandArgs = msg.text!.replace(regex[0], "").trim().split(" ");
+
+                await this.bot.getChatAdministrators(msg.chat.id)
+                    .then(async (members) => this.parseCommand(members, msg, command as CONSTS.COMMANDS, commandArgs));
             });
         });
     }
