@@ -54,7 +54,7 @@ export const BotConfigGenerator = {
     },
 };
 
-export const InitialConfig = (_config: BotConfig, saverHandler: () => void | undefined) => {
+export const InitialConfig = (_config: BotConfig, saverHandler: () => void) => {
     const p = new Proxy(_config, autoSaver.Saver);
     Object.keys(p)
           .map((k) => {

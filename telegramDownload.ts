@@ -17,7 +17,7 @@ export class TelegramDownload {
         return (TelegramDownload._instance) ? TelegramDownload._instance : (TelegramDownload._instance = new TelegramDownload(bot, _logger, defaultStore));
     }
 
-    public checkGroup(photoData: PhotoData.PhotoDataStrcture) {
+    public checkGroup(photoData: PhotoData.PhotoDataStructure) {
         const files = [...new Set(([] as string[]).concat(photoData.queue)
                                                   .concat(photoData.history)
                                                   .concat(photoData.history))];
