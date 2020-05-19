@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "tslint": "tslint --project .",
+    "tslint": "tslint --fix --project .",
     "build": "tsc --pretty",
     "serve": "ts-node index.ts",
     "debug": "yarn build && node --trace-deprecation dist/index.js",
