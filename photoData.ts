@@ -83,7 +83,7 @@ export class PhotoDataStructure {
 
     public getRetryQueue(fileLink: string) {
         let retry = this.retryList.filter((r) => r.fileName === fileLink)
-                                  .pop();
+            .pop();
         if (retry === undefined) {
             retry = new RetryDataStructure(fileLink);
             this.retryList.push(new Proxy(retry, autoSaver.Saver));
@@ -115,7 +115,7 @@ export class PhotoDataStructure {
     }
 }
 
-export const PhotoDataStore = (initStore: PhotoDataStructure[] = [], saverHandler: () => void): PhotoDataStructure[] => {
+export const PhotoDataStore = (initStore: PhotoDataStructure[] = [], saverHandler: (() => void) | undefined): PhotoDataStructure[] => {
     const _photoDataStoreData: PhotoDataStructure[] = [];
     const p = new Proxy(_photoDataStoreData, autoSaver.Saver);
     if (initStore.length !== 0) {

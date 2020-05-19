@@ -1,5 +1,5 @@
 class AutoSaver {
-    public _saverHandler!: () => void;
+    public _saverHandler!: (() => void) | undefined;
     public saverTimer!: NodeJS.Timer;
 
     public Saver: ProxyHandler<any> = {};
@@ -9,7 +9,7 @@ class AutoSaver {
             // let object sync back
             this.saverTimer = setTimeout(() => {
                 try {
-                    this._saverHandler();
+                    this._saverHandler!();
                 } catch (e) {
                     console.error(e);
                 }
