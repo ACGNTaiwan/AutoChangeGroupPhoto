@@ -49,7 +49,7 @@ export const CHAT_DISABLED_BY_SYSTEM = (chatId: number, reason: string) => `Chat
 export const CONFIG_FILE_PATH = "./config.yaml";
 export const DATA_FILE_JSON_PATH = "./data.json";
 export const DATA_FILE_PATH = "./data.yaml";
-export const DISABLED_PIXIV_ACCOUNT = "There not configurated for pixiv API account";
+export const DISABLED_PIXIV_ACCOUNT = "There not configured for pixiv API account";
 export const ENABLED_PIXIV_ACCOUNT = (account: string, refreshToken: string) =>
     `Pixiv API Account Enabled => \`${account}\` with refresh token => \`${refreshToken}\`.`;
 export const ENABLING_REFRESHED_PIXIV_ACCOUNT = (account: string, refreshToken: string) =>
@@ -73,9 +73,9 @@ export const NEED_TELEGRAM_BOT_TOKEN = "Need a valid Telegram Bot Token.";
 export const NOT_SUPPORT_FOR_HENTAI = (url: string) => `Not support for hentai: ${url}`;
 export const NOT_SUPPORT_FOR_HENTAI_MSG = (url: string) => `目前這個網址不提供紳士支援: ${url}`;
 export const NOW_INTERVAL = (interval: string) => `目前設定值為${interval}小時`;
-export const PAUSE_RESUME_MESSAGE = (chat: TelegramBot.Chat, chatData: PhotoData.PhotoDataStrcture) =>
+export const PAUSE_RESUME_MESSAGE = (chat: TelegramBot.Chat, chatData: PhotoData.PhotoDataStructure) =>
     `暫停更換群組圖狀態已設為: ${chatData.paused ? "暫停中" : "正常中"}`;
-export const PAUSE_RESUME_LOG_MESSAGE = (chat: TelegramBot.Chat, chatData: PhotoData.PhotoDataStrcture) =>
+export const PAUSE_RESUME_LOG_MESSAGE = (chat: TelegramBot.Chat, chatData: PhotoData.PhotoDataStructure) =>
     `Group/Peer ${chat.title || chat.username}(${chat.id}) set paused state to => ${chatData.paused}.`;
 export const PHOTO_CAPTION_MAX_LENGTH = 100;
 export const PHOTO_RETRY_MAX = process.env.PHOTO_RETRY_MAX !== undefined ? Number(process.env.PHOTO_RETRY_MAX) : 3;
@@ -86,7 +86,7 @@ export const PHOTO_RETRY_REQUEUE = (charId: number, fileId: string) => `Retry th
 export const PIXIV_ILLUST_IID_URL = (iid: number) => `https://www.pixiv.net/i/${iid}`;
 export const PIXIV_ILLUST_DETAIL = (illust: PhotoData.PixivIllustStructure) =>
     `Got Illust \`${illust.title} : ${illust.caption} - ${illust.userName}\` (${illust.tags.join(", ")}) ` +
-    `with URL \`${illust.originalUrl}\` and square image URL \`${illust.squareMediumUrl}\``;
+    `with URL \`${String(illust.originalUrl)}\` and square image URL \`${String(illust.squareMediumUrl)}\``;
 export const PIXIV_URL_REVERSED_PROXY = (oUrl: string, pUrl: string) => `Convert Pixiv URL \`${oUrl}\` => \`${pUrl}\``;
 export const QUEUE_REQUEST_TEXT = (type: string, name: string) => `Receive ${type} Queue Request from ${name}.`;
 export const QUEUE_TEXT = (type: string, chat: TelegramBot.Chat) => `Receive ${type} Queue from Group/Peer ${chat.title || chat.username}(${chat.id}).`;
@@ -123,7 +123,7 @@ export const URL_SIZE_RESULT = (url: string, size: number) =>
 export const URL_SIZE_OUT_OF_BOUND = (url: string, size: number, limitation: number) =>
     `The request of \`${url}\` is ${toMB(size)}MB, ` +
     `that is exceed the limitation of ${toMB(limitation)}MB.`;
-export const WAITING_PHOTOS = (chatData: PhotoData.PhotoDataStrcture, nextTime: string) =>
+export const WAITING_PHOTOS = (chatData: PhotoData.PhotoDataStructure, nextTime: string) =>
     `等待的圖片數：${chatData.queue.length}
 封鎖的圖片數量：${chatData.banList.length}
 歷史記錄數量：${chatData.history.length}

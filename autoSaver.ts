@@ -1,20 +1,20 @@
 class AutoSaver {
-    public _saverHandler!: () => void | undefined;
+    public _saverHandler!: (() => void) | undefined;
     public saverTimer!: NodeJS.Timer;
 
     public Saver: ProxyHandler<any> = {};
     public Save() {
-        if (this._saverHandler !== undefined) {
-            clearTimeout(this.saverTimer);
-            // let object sync back
-            this.saverTimer = setTimeout(() => {
+        clearTimeout(this.saverTimer);
+        // let object sync back
+        this.saverTimer = setTimeout(() => {
+            if (this._saverHandler !== undefined) {
                 try {
                     this._saverHandler();
                 } catch (e) {
                     console.error(e);
                 }
-            },                           100);
-        }
+            }
+        },                           100);
     }
     public constructor() {
         const Save = () => this.Save();

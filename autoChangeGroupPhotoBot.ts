@@ -31,7 +31,7 @@ export
     private readonly downloader: TelegramDownload;
     private readonly config: BotConfig;
     private readonly bot: TelegramBot;
-    private readonly data: PhotoData.PhotoDataStrcture[];
+    private readonly data: PhotoData.PhotoDataStructure[];
     private uploadQueue: Promise<any> = Promise.resolve();
     private readonly pixiv?: any;
     private readonly requestOptions = {
@@ -71,19 +71,19 @@ export
                     this.config.pixiv.refreshToken = userInfo.refresh_token;
                     logger.info(CONSTS.ENABLED_PIXIV_ACCOUNT(this.config.pixiv.account, this.config.pixiv.refreshToken));
                 };
-                const pixivLogginError = (e: any) => {
+                const pixivLoginError = (e: any) => {
                     logger.error(e);
                 };
                 if (this.config.pixiv.refreshToken === "") {
                     logger.info(CONSTS.ENABLING_PIXIV_ACCOUNT(this.config.pixiv.account));
                     this.pixiv.login(this.config.pixiv.account, this.config.pixiv.password)
                         .then(pixivLogged)
-                        .catch(pixivLogginError);
+                        .catch(pixivLoginError);
                 } else {
                     logger.info(CONSTS.ENABLING_REFRESHED_PIXIV_ACCOUNT(this.config.pixiv.account, this.config.pixiv.refreshToken));
                     this.pixiv.refreshAccessToken(this.config.pixiv.refreshToken)
                         .then(pixivLogged)
-                        .catch(pixivLogginError);
+                        .catch(pixivLoginError);
                 }
                 setInterval(() => this.pixiv.refreshAccessToken(), 60 * 1000 * 60);
             } else {
@@ -101,7 +101,7 @@ export
     private async registerEvent() {
         schedule.scheduleJob("0 * * * * *", () => { this.doUpdate(); });
 
-        // queue the phpto
+        // queue the photo
         this.bot.onText(CONSTS.REGEXP_MATCH_TAG_COMMAND, async (msg) => {
             if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
                 logger.info(CONSTS.QUEUE_TEXT("Text", msg.chat));
@@ -135,52 +135,55 @@ export
             }
         });
 
-        await this.bot.getMe().then((me) => {
-            if (me instanceof Error) {
-                return;
-            }
-
-            this.bot.on("inline_query", async (inlineQuery: TelegramBot.InlineQuery) => {
-                logger.info(inlineQuery);
-                if (inlineQuery.query.match(/^\d+$/)) {
-                    const pid = Number(inlineQuery.query);
-                    await this.getPixivIllustDetail(pid)
-                              .then((illustObj) => {
-                        const result: TelegramBot.InlineQueryResultPhoto[] = illustObj.originalUrl.map((url, i) => {
-                            let caption = CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illustObj);
-                            caption = (caption.length > CONSTS.PHOTO_CAPTION_MAX_LENGTH)
-                                    ? caption.substr(0, CONSTS.PHOTO_CAPTION_MAX_LENGTH)
-                                    : caption;
-                            const r: TelegramBot.InlineQueryResultPhoto = {
-                                caption,
-                                id: `${inlineQuery.id}_${i}`,
-                                photo_url: url,
-                                thumb_url: url,
-                                type: "photo",
-                            };
-                            return r;
-                        });
-                        this.bot.answerInlineQuery(inlineQuery.id, result, { cache_time: 1 })
-                                .catch((e) => logger.error(e));
-                    });
-                }
-            });
-
-            this.bot.onText(/^\/(\w+)@?(\w*)/i, async (msg, regex) => {
-                if (!regex || regex[2] && regex[2] !== me.username) {
-                    return;
-                }
-                if (msg.chat.type !== 'private' && regex[2] !== me.username) {
+        await this.bot.getMe()
+            .then((me) => {
+                if (me instanceof Error) {
                     return;
                 }
 
-                const command = regex[1].toLowerCase();
-                const commandArgs = msg.text!.replace(regex[0], "").trim().split(" ");
+                this.bot.on("inline_query", async (inlineQuery: TelegramBot.InlineQuery) => {
+                    logger.info(inlineQuery);
+                    if (inlineQuery.query.match(/^\d+$/)) {
+                        const pid = Number(inlineQuery.query);
+                        await this.getPixivIllustDetail(pid)
+                            .then((illustObj) => {
+                                const result: TelegramBot.InlineQueryResultPhoto[] = illustObj.originalUrl.map((url, i) => {
+                                    let caption = CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illustObj);
+                                    caption = (caption.length > CONSTS.PHOTO_CAPTION_MAX_LENGTH)
+                                        ? caption.substr(0, CONSTS.PHOTO_CAPTION_MAX_LENGTH)
+                                        : caption;
+                                    const r: TelegramBot.InlineQueryResultPhoto = {
+                                        caption,
+                                        id: `${inlineQuery.id}_${i}`,
+                                        photo_url: url,
+                                        thumb_url: url,
+                                        type: "photo",
+                                    };
+                                    return r;
+                                });
+                                this.bot.answerInlineQuery(inlineQuery.id, result, { cache_time: 1 })
+                                    .catch((e) => logger.error(e));
+                            });
+                    }
+                });
 
-                await this.bot.getChatAdministrators(msg.chat.id)
-                    .then(async (members) => this.parseCommand(members, msg, command as CONSTS.COMMANDS, commandArgs));
+                this.bot.onText(/^\/(\w+)@?(\w*)/i, async (msg, regex) => {
+                    if (!regex || regex[2] && regex[2] !== me.username) {
+                        return;
+                    }
+                    if (msg.chat.type !== "private" && regex[2] !== me.username) {
+                        return;
+                    }
+
+                    const command = regex[1].toLowerCase();
+                    const commandArgs = msg.text!.replace(regex[0], "")
+                        .trim()
+                        .split(" ");
+
+                    await this.bot.getChatAdministrators(msg.chat.id)
+                        .then(async (members) => this.parseCommand(members, msg, command as CONSTS.COMMANDS, commandArgs));
+                });
             });
-        });
     }
 
     /**
@@ -232,7 +235,7 @@ export
             if (args.length > 0 && Number(args) >= this.config.minBotInterval) {
                 chatData.interval = Number(args);
                 return this.bot.sendMessage(chatId, CONSTS.SET_INTERVAL(chatData.interval.toString()));
-            // tslint:disable-next-line:unnecessary-else
+                // tslint:disable-next-line:unnecessary-else
             } else {
                 return this.bot.sendMessage(chatId, CONSTS.INVALID_VALUE);
             }
@@ -295,8 +298,8 @@ export
         const chatData = this.getData(chatId);
 
         const nextTime = moment(chatData.last)
-                             .add(chatData.interval, "h")
-                             .format("LLL");
+            .add(chatData.interval, "h")
+            .format("LLL");
         return this.bot.sendMessage(chatId, CONSTS.WAITING_PHOTOS(chatData, nextTime));
     }
 
@@ -319,7 +322,7 @@ export
         if (CONSTS.COMMANDS_ADMINS_ONLY.indexOf(command) !== -1) {
             if (msg.from) {
                 if (members.map((member) => member.user.id)
-                           .indexOf(msg.from.id) === -1) {
+                    .indexOf(msg.from.id) === -1) {
                     return;
                 }
             }
@@ -366,30 +369,30 @@ export
 
     /**
      * Convert Data from old structure
-     * @param d PhotoDataStrcture Data Array
+     * @param d PhotoDataStructure Data Array
      */
-    private doCompatibleConvert(d: object): PhotoData.PhotoDataStrcture[] {
+    private doCompatibleConvert(d: object): PhotoData.PhotoDataStructure[] {
         return Object.keys(d)
-            .map<PhotoData.PhotoDataStrcture>(
-            (chatId: string) => {
-                const pds = (d as any)[chatId] as PhotoData.PhotoDataStrcture;
-                pds.chatId = Number(chatId);
-                return new PhotoData.PhotoDataStrcture(pds);
-            },
-        );
+            .map<PhotoData.PhotoDataStructure>(
+                (chatId: string) => {
+                    const pds = (d as any)[chatId] as PhotoData.PhotoDataStructure;
+                    pds.chatId = Number(chatId);
+                    return new PhotoData.PhotoDataStructure(pds);
+                },
+            );
     }
 
     /**
-     * Read PhotoDataStrcture Datas into PhotoDataStore which contains Chat's data stores
+     * Read PhotoDataStructure Datas into PhotoDataStore which contains Chat's data stores
      */
     private readData() {
         let _data;
         try {
             _data = (fs.existsSync(CONSTS.DATA_FILE_PATH)) ?
                 yaml.load(fs.readFileSync(CONSTS.DATA_FILE_PATH)
-                            .toString()) :
+                    .toString()) :
                 JSON.parse(fs.readFileSync(CONSTS.DATA_FILE_JSON_PATH)
-                             .toString());
+                    .toString());
         } catch (e) {
             logger.warn(e);
             _data = [];
@@ -421,14 +424,14 @@ export
      * Get Chat Data Store by Chat ID
      * @param chatId Telegram Chat ID aka. Group ID
      */
-    private getData(chatId: number): PhotoData.PhotoDataStrcture {
+    private getData(chatId: number): PhotoData.PhotoDataStructure {
         const chatData = this.data.filter((d) => d.chatId === chatId)
-                                  .shift();
-        if (chatData instanceof PhotoData.PhotoDataStrcture) {
+            .shift();
+        if (chatData instanceof PhotoData.PhotoDataStructure) {
             return chatData;
-        // tslint:disable-next-line:unnecessary-else
+            // tslint:disable-next-line:unnecessary-else
         } else {
-            const d = new PhotoData.PhotoDataStrcture(chatId);
+            const d = new PhotoData.PhotoDataStructure(chatId);
             this.data.push(d);
             return d;
         }
@@ -438,7 +441,7 @@ export
      * Send Queue Result back to Chat
      * @param msg Message Object
      * @param result Queue result string
-     * @param entitiy Message Entity
+     * @param entity Message Entity
      * @param url Requested URL queue
      */
     private async sendQueueResult(
@@ -475,7 +478,7 @@ export
         if (msg.chat.type === "private") {
             await this.bot.sendMessage(chatId, CONSTS.CAN_NOT_CHANGE_PHOTO);
             return CONSTS.CAN_NOT_CHANGE_PHOTO;
-        // tslint:disable-next-line:unnecessary-else
+            // tslint:disable-next-line:unnecessary-else deprecation
         } else if (msg.chat.type === "group" && msg.chat.all_members_are_administrators) {
             await this.bot.sendMessage(chatId, CONSTS.CAN_NOT_CHANGE_ALL_ADMINS_PHOTO);
             return CONSTS.CAN_NOT_CHANGE_ALL_ADMINS_PHOTO;
@@ -557,13 +560,13 @@ export
      */
     private async unbanPhoto(msg: TelegramBot.Message) {
         const chatId = msg.chat.id;
-        const fileIdIist = (msg.reply_to_message!.photo ? msg.reply_to_message!.photo.map<string>((p) => p.file_id) : [])
+        const fileIdList = (msg.reply_to_message!.photo ? msg.reply_to_message!.photo.map<string>((p) => p.file_id) : [])
             .concat(msg.reply_to_message!.document ? [msg.reply_to_message!.document.file_id] : []);
         const chatData = this.getData(chatId);
         chatData.banList = chatData.banList
-            .map<string>((b) => fileIdIist.indexOf(b) !== -1 ? "" : b)
+            .map<string>((b) => fileIdList.indexOf(b) !== -1 ? "" : b)
             .filter((b) => b);
-        logger.info(CONSTS.UNBANNED_TEXT(chatId, fileIdIist.join(", ")));
+        logger.info(CONSTS.UNBANNED_TEXT(chatId, fileIdList.join(", ")));
     }
 
     /**
@@ -580,11 +583,11 @@ export
 
     /**
      * Retry to Queue failed photo change
-     * @param chatData PhotoDataStrcture
+     * @param chatData PhotoDataStructure
      * @param fileLink File ID
      */
-    private async retryToQueuePhoto(resaon: TelegramBotExtended.TelegramError, chatData: PhotoData.PhotoDataStrcture, fileLink: string) {
-        if (resaon.code === "ETELEGRAM" && resaon.response.body.error_code >= 400 && resaon.response.body.error_code < 500) {
+    private async retryToQueuePhoto(reason: TelegramBotExtended.TelegramError, chatData: PhotoData.PhotoDataStructure, fileLink: string) {
+        if (reason.code === "ETELEGRAM" && reason.response.body.error_code >= 400 && reason.response.body.error_code < 500) {
             chatData.pruneQueue(fileLink);
             return;
         }
@@ -612,8 +615,8 @@ export
                 return;
             }
             const isMomentBefore = moment(chatData.last)
-                                       .add(chatData.interval, "h")
-                                       .isBefore(moment());
+                .add(chatData.interval, "h")
+                .isBefore(moment());
             if (!chatData.paused && (!chatData.last || isMomentBefore)) {
                 const fileLink = await this.nextPhoto(chatData);
                 await this.bot.getChat(chatData.chatId)
@@ -646,9 +649,9 @@ export
 
     /**
      * To send update action for group photo
-     * @param chatData PhotoDataStrcture
+     * @param chatData PhotoDataStructure
      */
-    private async nextPhoto(chatData: PhotoData.PhotoDataStrcture) {
+    private async nextPhoto(chatData: PhotoData.PhotoDataStructure) {
         let fileLink: string;
         if (chatData.queue.length > 0) {
             fileLink = chatData.queue.shift()!;
@@ -668,7 +671,7 @@ export
                             logger.error(CONSTS.UPDATE_PHOTO_ERROR(chatData.chatId, reason));
                             await this.retryToQueuePhoto(reason, chatData, fileLink);
                         }),
-            )
+                )
                 .catch(async (reason) => {
                     await this.retryToQueuePhoto(reason, chatData, fileLink);
                 });
@@ -679,9 +682,9 @@ export
 
     /**
      * For random output a file id and push the result to last
-     * @param chatData PhotoDataStrcture
+     * @param chatData PhotoDataStructure
      */
-    private randomHistory(chatData: PhotoData.PhotoDataStrcture) {
+    private randomHistory(chatData: PhotoData.PhotoDataStructure) {
         // prevent last photo out of random queue
         const idx = Math.floor(Math.random() * (chatData.history.length - 1));
         const fileLink = chatData.history[idx];
@@ -748,7 +751,7 @@ export
             .then(async (image) => {
                 if (image !== undefined) {
                     logger.info(CONSTS.IMAGE_FROM_URL_DIMENSION(image.getMIME(), image.bitmap.width, image.bitmap.height));
-                    // send image which downloaded back to the chat for placehold a file_id
+                    // send image which downloaded back to the chat for placeholder a file_id
                     await this.uploadPhoto(msg, imageBuffer, ent, url, imgUrl);
                 } else {
                     // jimp can not decode as an image, we must send a message to notify the URL is not an image
@@ -767,12 +770,12 @@ export
             const stickerURL: any = await this.bot.getFileLink(msg.reply_to_message.sticker.file_id);
             if (stickerURL instanceof Error) {
                 return Promise.reject(stickerURL);
-            // tslint:disable-next-line:unnecessary-else
+                // tslint:disable-next-line:unnecessary-else
             } else {
                 return request(stickerURL, this.requestOptions, async (error, response, body) => {
                     const stickerSharp = sharp(body);
                     const stickerPng = await stickerSharp.png()
-                                                         .toBuffer();
+                        .toBuffer();
                     await this.sendPhotoPromise(msg, stickerPng, { caption: CONSTS.GROUP_PHOTO_CAPTION });
                 });
             }
@@ -820,8 +823,8 @@ export
                 }
             });
         })
-        .then(() => true)
-        .catch(() => false);
+            .then(() => true)
+            .catch(() => false);
     }
 
     /**
@@ -835,7 +838,7 @@ export
     }
 
     /**
-     * Get Pixiv Illust Detail infomations
+     * Get Pixiv Illust Detail informations
      * @param illustId Pixiv Illust ID
      * @param options Pixiv API Options
      */
@@ -877,11 +880,11 @@ export
             if (checkSizeOk) {
                 if (url.match(CONSTS.REGEXP_MATCH_PIXIV_DOMAIN) !== null) {
                     const pixivInfo = Array.from(url.match(CONSTS.REGEXP_MATCH_PIXIV_ILLUST_ID)!)
-                                           .filter((m) => m);
+                        .filter((m) => m);
                     if (this.pixiv !== null && pixivInfo.length > 0) {
                         const iid = Number(pixivInfo.pop());
                         await this.getPixivIllustDetail(iid)
-                                  .then((illustObj) => { resolve(illustObj); return illustObj; });
+                            .then((illustObj) => { resolve(illustObj); return illustObj; });
                     } else {
                         reject(url);
                     }
@@ -946,7 +949,7 @@ export
                         await this.parsePhoto(msg, Buffer.from(response.body), ent, url, imgUrl instanceof Buffer ? undefined : imgUrl);
                         resolve();
                     } else {
-                        // notify the URL not responsed correctly
+                        // notify the URL not responded correctly
                         await this.bot.sendMessage(msg.chat.id,
                                                    CONSTS.URL_REQUESTED_IS_NOT_OK(url),
                                                    { reply_to_message_id: msg.message_id });
@@ -957,17 +960,17 @@ export
                     await this.parsePhoto(msg, imgUrl as Buffer, ent, url);
                     resolve();
                     return;
-                // tslint:disable-next-line:unnecessary-else
+                    // tslint:disable-next-line:unnecessary-else
                 } else if (isPixiv) {
                     const illust = imgUrl as PhotoData.PixivIllustStructure;
                     return request.get(illust.originalUrl[0], this.requestOptions, downloadImage);
-                // tslint:disable-next-line:unnecessary-else
+                    // tslint:disable-next-line:unnecessary-else
                 } else {
                     return request.get(imgUrl as string, this.requestOptions, downloadImage);
                 }
             }),
         )
-        .catch(() => { /* no-op */ });
+            .catch(() => { /* no-op */ });
         return this.uploadQueue;
     }
 

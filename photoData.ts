@@ -42,7 +42,7 @@ export class RetryDataStructure {
     }
 }
 
-export class PhotoDataStrcture {
+export class PhotoDataStructure {
     public chatId!: number;
     public chatName!: string;
     public paused = false;
@@ -54,7 +54,7 @@ export class PhotoDataStrcture {
     public banList!: string[];
     public retryList!: RetryDataStructure[];
     public constructor(
-        chatId: number | object | PhotoDataStrcture,
+        chatId: number | object | PhotoDataStructure,
         chatName: string = "",
         paused = false,
         disabled = false,
@@ -77,13 +77,13 @@ export class PhotoDataStrcture {
             this.banList = new Proxy((banList !== null && banList !== undefined) ? banList : [], autoSaver.Saver);
             this.retryList = new Proxy((retryList !== null && retryList !== undefined) ? retryList : [], autoSaver.Saver);
         } else {
-            this.from(chatId as PhotoDataStrcture);
+            this.from(chatId as PhotoDataStructure);
         }
     }
 
     public getRetryQueue(fileLink: string) {
         let retry = this.retryList.filter((r) => r.fileName === fileLink)
-                                  .pop();
+            .pop();
         if (retry === undefined) {
             retry = new RetryDataStructure(fileLink);
             this.retryList.push(new Proxy(retry, autoSaver.Saver));
@@ -99,7 +99,7 @@ export class PhotoDataStrcture {
         this.retryList = this.retryList.filter((r) => r.fileName !== fileLink);
     }
 
-    private from(pds: PhotoDataStrcture) {
+    private from(pds: PhotoDataStructure) {
         this.chatId = pds.chatId;
         this.chatName = pds.chatName;
         this.paused = pds.paused;
@@ -115,11 +115,11 @@ export class PhotoDataStrcture {
     }
 }
 
-export const PhotoDataStore = (initStore: PhotoDataStrcture[] = [], saverHandler: () => void | undefined): PhotoDataStrcture[] => {
-    const _photoDataStoreData: PhotoDataStrcture[] = [];
+export const PhotoDataStore = (initStore: PhotoDataStructure[] = [], saverHandler: (() => void) | undefined): PhotoDataStructure[] => {
+    const _photoDataStoreData: PhotoDataStructure[] = [];
     const p = new Proxy(_photoDataStoreData, autoSaver.Saver);
     if (initStore.length !== 0) {
-        initStore.map((s: PhotoDataStrcture) => p.push(new Proxy(new PhotoDataStrcture(s), autoSaver.Saver)));
+        initStore.map((s: PhotoDataStructure) => p.push(new Proxy(new PhotoDataStructure(s), autoSaver.Saver)));
     }
     autoSaver._saverHandler = saverHandler;
     autoSaver.Save();

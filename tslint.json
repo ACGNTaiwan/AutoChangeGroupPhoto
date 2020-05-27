@@ -9,7 +9,8 @@
     "newline-before-return": false,
     "no-parameter-properties": false,
     "no-parameter-reassignment": false,
-    "no-unused-variable": true,
+    "no-async-without-await": false,
+    // "no-unused-variable": true,
     // TODO: Enable stricter options for these
     "comment-format": [
       true,
@@ -32,7 +33,7 @@
     "no-require-imports": false,
     "no-unbound-method": false,
     "no-unnecessary-qualifier": false,
-    "no-use-before-declare": true,
+    // "no-use-before-declare": true,
     "no-var-requires": false,
     "no-void-expression": false,
     "prefer-function-over-method": false,
@@ -53,9 +54,71 @@
     "max-file-line-count": false,
     "member-ordering": [
       true,
-      "public-before-private",
-      "static-before-instance",
-      "variables-before-functions"
+      {
+        "order":[
+          {
+            "name": "public static field",
+            "kinds": [
+              "public-static-field",
+              "protected-static-field"
+            ]
+          },
+          {
+            "name": "private static field",
+            "kinds": [
+              "private-static-field"
+            ]
+          },
+          {
+            "name": "public instance field",
+            "kinds": [
+              "public-instance-field",
+              "protected-instance-field"
+            ]
+          },
+          {
+            "name": "private instance field",
+            "kinds": [
+              "private-instance-field"
+            ]
+          },
+          {
+            "name": "public static method",
+            "kinds": [
+              "public-static-method",
+              "protected-static-method",
+              "public-static-accessor",
+              "protected-static-accessor"
+            ]
+          },
+          {
+            "name": "private static method",
+            "kinds": [
+              "private-static-method",
+              "private-static-accessor"
+            ]
+          },
+          {
+            "name": "public instance method",
+            "kinds": [
+              "public-constructor",
+              "protected-constructor",
+              "public-instance-method",
+              "protected-instance-method",
+              "public-instance-accessor",
+              "protected-instance-accessor"
+            ]
+          },
+          {
+            "name": "private instance method",
+            "kinds": [
+              "private-constructor",
+              "private-instance-method",
+              "private-instance-accessor"
+            ]
+          }
+        ]
+      }
     ],
     "no-console": {
       "options": ["log"]
