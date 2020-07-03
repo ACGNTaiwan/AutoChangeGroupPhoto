@@ -381,10 +381,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/node-telegram-bot-api@^0.40.3":
-  version "0.40.3"
-  resolved "https://registry.yarnpkg.com/@types/node-telegram-bot-api/-/node-telegram-bot-api-0.40.3.tgz#6fc1fbd8728445426a8646a69cb62020675e9092"
-  integrity sha512-YJVoP4cMz5m/PG9VLKHTc0pvK6wGmIC5AYScOdlIhe5+vOzcLKuBYgrIIjRujcwCGs99fToE6jW80njXdMoU+A==
+"@types/node-telegram-bot-api@^0.50.0":
+  version "0.50.0"
+  resolved "https://registry.yarnpkg.com/@types/node-telegram-bot-api/-/node-telegram-bot-api-0.50.0.tgz#6cd0e316c4ce5645186d8078ee921176634a960f"
+  integrity sha512-mvea8X84PrajsboCQL2ts2vgaYWAs9DavLYwB14Q9RCB6gE8nXTQVxFYMZy2Q2KgvlPkC7PGW/S/T3W1a4fC4A==
   dependencies:
     "@types/node" "*"
     "@types/request" "*"
@@ -868,7 +868,7 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
 
-convert-units@^2.3.1:
+convert-units@^2.3.4:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/convert-units/-/convert-units-2.3.4.tgz#a279f4b3cb9b5d5094beba61abc742dcb46a180d"
   integrity sha512-ERHfdA0UhHJp1IpwE6PnFJx8LqG7B1ZjJ20UvVCmopEnVCfER68Tbe3kvN63dLbYXDA2xFWRE6zd4Wsf0w7POg==
@@ -3122,10 +3122,10 @@ type-check@~0.3.2:
   dependencies:
     prelude-ls "~1.1.2"
 
-typescript@^3.9.5:
-  version "3.9.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.5.tgz#586f0dba300cde8be52dd1ac4f7e1009c1b13f36"
-  integrity sha512-hSAifV3k+i6lEoCJ2k6R2Z/rp/H3+8sdmcn5NrS3/3kE7+RyZXm9aqvxWqjEXHAd8b0pShatpcdMTvEdvAJltQ==
+typescript@^3.9.6:
+  version "3.9.6"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.6.tgz#8f3e0198a34c3ae17091b35571d3afd31999365a"
+  integrity sha512-Pspx3oKAPJtjNwE92YS05HQoY7z2SFyOpHo9MqJor3BXAGNaPUs83CuVp9VISFkSjyRfiTpmKuAYGJB7S7hOxw==
 
 uri-js@^4.2.2:
   version "4.2.2"
