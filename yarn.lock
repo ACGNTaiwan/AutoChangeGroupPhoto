@@ -320,10 +320,10 @@
     "@babel/runtime" "^7.7.2"
     regenerator-runtime "^0.13.3"
 
-"@sindresorhus/is@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-2.1.1.tgz#ceff6a28a5b4867c2dd4a1ba513de278ccbe8bb1"
-  integrity sha512-/aPsuoj/1Dw/kzhkgz+ES6TxG0zfTMGLwuK2ZG00k/iJzYHTLCE8mVU8EPqEOp/lmxPoq1C1C9RYToRKb2KEfg==
+"@sindresorhus/is@^3.1.1":
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-3.1.2.tgz#548650de521b344e3781fbdb0ece4aa6f729afb8"
+  integrity sha512-JiX9vxoKMmu8Y3Zr2RVathBL1Cdu4Nt4MuNWemt1Nc06A0RAin9c5FArkhGsyMBWfCu4zj+9b+GxtjAnE4qqLQ==
 
 "@szmarczak/http-timer@^4.0.5":
   version "4.0.5"
@@ -742,10 +742,10 @@ chalk@^4.0.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chardet@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/chardet/-/chardet-1.1.0.tgz#c653dfc04731e8bfa90da4fd4968d69129d72b12"
-  integrity sha512-K6BWWdt9ncg6TDTX42J57s9zZWVI1DXVYQ6zUM8dZUB2TDeV5ia4kDei19r/pMxNzSGYYf6LqHsyvEybvTPHuA==
+chardet@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/chardet/-/chardet-1.2.1.tgz#8e0b4441c96f1ad747431989db1ff590739c6931"
+  integrity sha512-bnDt+69nS8Hi7Xmt0uDiQ32/hRpMK/0pc4lc32Y87voBgdsz26VZXOyo5VNQWQfe7rUsevZIfWB82C5QSpCXcQ==
 
 cheerio@^1.0.0-rc.3:
   version "1.0.0-rc.3"
@@ -1402,20 +1402,19 @@ global@~4.3.0:
     min-document "^2.19.0"
     process "~0.5.1"
 
-got@^11.3.0:
-  version "11.3.0"
-  resolved "https://registry.yarnpkg.com/got/-/got-11.3.0.tgz#25e8da8b0125b3b984613a6b719e678dd2e20406"
-  integrity sha512-yi/kiZY2tNMtt5IfbfX8UL3hAZWb2gZruxYZ72AY28pU5p0TZjZdl0uRsuaFbnC0JopdUi3I+Mh1F3dPQ9Dh0Q==
+got@^11.6.2:
+  version "11.6.2"
+  resolved "https://registry.yarnpkg.com/got/-/got-11.6.2.tgz#79d7bb8c11df212b97f25565407a1f4ae73210ec"
+  integrity sha512-/21qgUePCeus29Jk7MEti8cgQUNXFSWfIevNIk4H7u1wmXNDrGPKPY6YsPY+o9CIT/a2DjCjRz0x1nM9FtS2/A==
   dependencies:
-    "@sindresorhus/is" "^2.1.1"
+    "@sindresorhus/is" "^3.1.1"
     "@szmarczak/http-timer" "^4.0.5"
     "@types/cacheable-request" "^6.0.1"
     "@types/responselike" "^1.0.0"
     cacheable-lookup "^5.0.3"
     cacheable-request "^7.0.1"
     decompress-response "^6.0.0"
-    get-stream "^5.1.0"
-    http2-wrapper "^1.0.0-beta.4.5"
+    http2-wrapper "^1.0.0-beta.5.2"
     lowercase-keys "^2.0.0"
     p-cancelable "^2.0.0"
     responselike "^2.0.0"
@@ -1513,12 +1512,12 @@ http-signature@~1.2.0:
     jsprim "^1.2.2"
     sshpk "^1.7.0"
 
-http2-wrapper@^1.0.0-beta.4.5:
-  version "1.0.0-beta.4.6"
-  resolved "https://registry.yarnpkg.com/http2-wrapper/-/http2-wrapper-1.0.0-beta.4.6.tgz#9438f0fceb946c8cbd365076c228a4d3bd4d0143"
-  integrity sha512-9oB4BiGDTI1FmIBlOF9OJ5hwJvcBEmPCqk/hy314Uhy2uq5TjekUZM8w8SPLLlUEM+mxNhXdPAXfrJN2Zbb/GQ==
+http2-wrapper@^1.0.0-beta.5.2:
+  version "1.0.0-beta.5.2"
+  resolved "https://registry.yarnpkg.com/http2-wrapper/-/http2-wrapper-1.0.0-beta.5.2.tgz#8b923deb90144aea65cf834b016a340fc98556f3"
+  integrity sha512-xYz9goEyBnC8XwXDTuC/MZ6t+MrKVQZOk4s7+PaDkwIsQd8IwqvM+0M6bA/2lvG8GHXcPdf+MejTUeO2LCPCeQ==
   dependencies:
-    quick-lru "^5.0.0"
+    quick-lru "^5.1.1"
     resolve-alpn "^1.0.0"
 
 husky@^4.2.5:
@@ -1549,10 +1548,10 @@ iconv-lite@0.4.24:
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
 
-iconv-lite@^0.6.0:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.6.1.tgz#dcff79a060333879dd83ebc3eb6a217f5f0facc5"
-  integrity sha512-Gjcihg3Bi6PI+5V7JlqWmXyVDyX5UQuwulJcbb3btuSoXIoGUy8zwJpRIOpRSzHz0IVnsT2FkceLlM8mm72d3w==
+iconv-lite@^0.6.2:
+  version "0.6.2"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.6.2.tgz#ce13d1875b0c3a674bd6a04b7f76b01b1b6ded01"
+  integrity sha512-2y91h5OpQlolefMPmUlivelittSWy0rP+oYVpn6A7GwVHNE8AWzoYOBNmlwks3LobaJxgHCYZAnyNo2GgpNRNQ==
   dependencies:
     safer-buffer ">= 2.1.2 < 3.0.0"
 
@@ -2259,15 +2258,15 @@ once@^1.3.0, once@^1.3.1, once@^1.4.0:
   dependencies:
     wrappy "1"
 
-open-graph-scraper@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/open-graph-scraper/-/open-graph-scraper-4.3.0.tgz#3c86d230996fe3b8ad651507ec2c750fcd31d891"
-  integrity sha512-e+10tz+uNFABQFD0tsMXH0oymRmxsrbXrAUo00lZo3pRSzDdmssDXkNzGivuZOmNr6BMwY16kKYf/Mk4zslToQ==
+open-graph-scraper@^4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/open-graph-scraper/-/open-graph-scraper-4.6.0.tgz#0de63d6a0992e5119042ec4f2170cbbf178e8ddd"
+  integrity sha512-uh/Z5XlU6kfW+jzTFhW9ZTVy3Fyla5PYY5lXbY/Em/3tq8E2p25ZWsfX8/hWYjsdnvERLkopUOaniXe24V7hug==
   dependencies:
-    chardet "^1.1.0"
+    chardet "^1.2.1"
     cheerio "^1.0.0-rc.3"
-    got "^11.3.0"
-    iconv-lite "^0.6.0"
+    got "^11.6.2"
+    iconv-lite "^0.6.2"
     validator "^13.0.0"
 
 opencollective-postinstall@^2.0.2:
@@ -2563,7 +2562,7 @@ qs@~6.5.2:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
 
-quick-lru@^5.0.0:
+quick-lru@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/quick-lru/-/quick-lru-5.1.1.tgz#366493e6b3e42a3a6885e2e99d18f80fb7a8c932"
   integrity sha512-WuyALRjWPDGtt/wzJiadO5AXY+8hZ80hVpe6MyivgraREW751X3SbhRvG3eLKOYN+8VEvqLcf3wdnt44Z4S4SA==
