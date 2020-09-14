@@ -14,12 +14,13 @@ class Commands {
      * @param msg Message Object
      */
     public static async _COMMANDS_SET_PAUSED(
-        getData: (chatId: number) => PhotoData.PhotoDataStructure,
+        getData: (data: PhotoData.PhotoDataStructure[], chatId: number) => PhotoData.PhotoDataStructure,
+        data: PhotoData.PhotoDataStructure[],
         bot: TelegramBot,
         msg: TelegramBot.Message,
     ) {
         const chatId = msg.chat.id;
-        const chatData = getData(chatId);
+        const chatData = getData(data, chatId);
 
         chatData.paused = true;
         logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
@@ -31,12 +32,13 @@ class Commands {
      * @param msg Message Object
      */
     public static async _COMMANDS_SET_RESUMED(
-        getData: (chatId: number) => PhotoData.PhotoDataStructure,
+        getData: (data: PhotoData.PhotoDataStructure[], chatId: number) => PhotoData.PhotoDataStructure,
+        data: PhotoData.PhotoDataStructure[],
         bot: TelegramBot,
         msg: TelegramBot.Message,
     ) {
         const chatId = msg.chat.id;
-        const chatData = getData(chatId);
+        const chatData = getData(data, chatId);
 
         chatData.paused = false;
         logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
@@ -48,14 +50,15 @@ class Commands {
      * @param msg Message Object
      */
     public static async _COMMANDS_SET_INTERVAL(
-        getData: (chatId: number) => PhotoData.PhotoDataStructure,
+        getData: (data: PhotoData.PhotoDataStructure[], chatId: number) => PhotoData.PhotoDataStructure,
+        data: PhotoData.PhotoDataStructure[],
         bot: TelegramBot,
         config: BotConfig,
         msg: TelegramBot.Message,
         commandArgs: string[],
     ) {
         const chatId = msg.chat.id;
-        const chatData = getData(chatId);
+        const chatData = getData(data, chatId);
 
         if (msg.text) {
             const args = commandArgs.join(" ");
@@ -77,14 +80,15 @@ class Commands {
      * @param msg Message Object
      */
     public static async _COMMANDS_NEXT_PHOTO(
-        getData: (chatId: number) => PhotoData.PhotoDataStructure,
-        nextPhoto: (chatData: PhotoData.PhotoDataStructure) => void,
+        getData: (data: PhotoData.PhotoDataStructure[], chatId: number) => PhotoData.PhotoDataStructure,
+        data: PhotoData.PhotoDataStructure[],
+        bot: TelegramBot,
         msg: TelegramBot.Message,
     ) {
         const chatId = msg.chat.id;
-        const chatData = getData(chatId);
+        const chatData = getData(data, chatId);
 
-        return nextPhoto(chatData);
+        return chatData.nextPhoto(bot);
     }
 
     /**
@@ -92,10 +96,12 @@ class Commands {
      * @param msg Message Object
      */
     public static async _COMMANDS_BAN(
-        delPhoto: (msg: TelegramBot.Message, ban?: boolean | undefined) => void,
+        delPhoto: (data: PhotoData.PhotoDataStructure[], bot: TelegramBot, msg: TelegramBot.Message, ban?: boolean | undefined) => void,
+        data: PhotoData.PhotoDataStructure[],
+        bot: TelegramBot,
         msg: TelegramBot.Message,
     ) {
-        return delPhoto(msg, true);
+        return delPhoto(data, bot, msg, true);
     }
 
     /**
@@ -103,11 +109,12 @@ class Commands {
      * @param msg Message Object
      */
     public static async _COMMANDS_UNBAN(
-        unbanPhoto: (msg: TelegramBot.Message) => void,
+        unbanPhoto: (data: PhotoData.PhotoDataStructure[], msg: TelegramBot.Message) => void,
+        data: PhotoData.PhotoDataStructure[],
         msg: TelegramBot.Message,
     ) {
         if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
-            return unbanPhoto(msg);
+            return unbanPhoto(data, msg);
         }
     }
 
@@ -116,10 +123,12 @@ class Commands {
      * @param msg Message Object
      */
     public static async _COMMANDS_DELETE(
-        delPhoto: (msg: TelegramBot.Message, ban?: boolean | undefined) => void,
+        delPhoto: (data: PhotoData.PhotoDataStructure[], bot: TelegramBot, msg: TelegramBot.Message, ban?: boolean | undefined) => void,
+        data: PhotoData.PhotoDataStructure[],
+        bot: TelegramBot,
         msg: TelegramBot.Message,
     ) {
-        return delPhoto(msg);
+        return delPhoto(data, bot, msg);
     }
 
     /**
@@ -127,12 +136,13 @@ class Commands {
      * @param msg Message Object
      */
     public static async _COMMANDS_QUEUE_STATUS(
-        getData: (chatId: number) => PhotoData.PhotoDataStructure,
+        getData: (data: PhotoData.PhotoDataStructure[], chatId: number) => PhotoData.PhotoDataStructure,
+        data: PhotoData.PhotoDataStructure[],
         bot: TelegramBot,
         msg: TelegramBot.Message,
     ) {
         const chatId = msg.chat.id;
-        const chatData = getData(chatId);
+        const chatData = getData(data, chatId);
 
         const nextTime = moment(chatData.last)
             .add(chatData.interval, "h")

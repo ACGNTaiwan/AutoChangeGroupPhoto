@@ -1,6 +1,10 @@
 import * as fs from "fs";
 import * as yaml from "js-yaml";
 import * as moment from "moment";
+import * as TelegramBot from "node-telegram-bot-api";
+import * as request from "request";
+
+import { TelegramBotExtended } from "../typings";
 
 import { AutoSaver } from "./autoSaver";
 import * as CONSTS from "./consts";
@@ -91,6 +95,24 @@ export class PhotoDataStructure {
     }
 
     /**
+     * Get Chat Data Store by Chat ID
+     * @param data array of self
+     * @param chatId Telegram Chat ID aka. Group ID
+     */
+    public static getData(data: PhotoDataStructure[], chatId: number): PhotoDataStructure {
+        const chatData = data.filter((d) => d.chatId === chatId)
+            .shift();
+        if (chatData instanceof PhotoDataStructure) {
+            return chatData;
+            // tslint:disable-next-line:unnecessary-else
+        } else {
+            const d = new PhotoDataStructure(chatId);
+            data.push(d);
+            return d;
+        }
+    }
+
+    /**
      * Convert Data from old structure
      * @param d PhotoDataStructure Data Array
      */
@@ -103,6 +125,35 @@ export class PhotoDataStructure {
                     return new PhotoDataStructure(pds);
                 },
             );
+    }
+
+    /**
+     * Retry to Queue failed photo change
+     * @param bot Telegram Bot Instance
+     * @param chatData PhotoDataStructure
+     * @param fileLink File ID
+     */
+    private static async retryToQueuePhoto(bot: TelegramBot, reason: TelegramBotExtended.TelegramError, chatData: PhotoDataStructure, fileLink: string) {
+        if (reason.code === "ETELEGRAM" && reason.response.body.error_code >= 400 && reason.response.body.error_code < 500) {
+            chatData.pruneQueue(fileLink);
+            return;
+        }
+        const retry = chatData.getRetryQueue(fileLink);
+        if (reason.code === "EFATAL" || (reason.code === "ETELEGRAM" && reason.response.body.error_code >= 500)) {
+            retry.retryTimes = 0; // Infinity retry network or server error
+        }
+        if (retry.retryTimes >= CONSTS.PHOTO_RETRY_MAX) {
+            // remove all file link in queue, history and retryList
+            chatData.pruneQueue(fileLink);
+            logger.info(CONSTS.PHOTO_RETRY_DELETE_FROM_QUEUE(chatData.chatId, fileLink));
+            await bot.sendMessage(chatData.chatId, CONSTS.PHOTO_RETRY_DELETE_MESSAGE(fileLink));
+        } else {
+            // re-add to queue to retry again
+            chatData.queue.push(fileLink);
+            logger.info(CONSTS.PHOTO_RETRY_REQUEUE(chatData.chatId, fileLink));
+        }
+        // then auto update to next photo
+        await chatData.nextPhoto(bot);
     }
 
     public constructor(
@@ -153,7 +204,6 @@ export class PhotoDataStructure {
 
     /**
      * For random output a file id and push the result to last
-     * @param chatData PhotoDataStructure
      */
     public randomHistory() {
         // prevent last photo out of random queue
@@ -163,6 +213,39 @@ export class PhotoDataStructure {
         this.history = this.history.map<string>((h) => h !== fileLink ? h : "")
             .filter((h) => h)
             .concat([fileLink]);
+        return fileLink;
+    }
+
+    /**
+     * To send update action for group photo
+     * @param bot Telegram Bot Instance
+     */
+    public async nextPhoto(bot: TelegramBot) {
+        let fileLink: string;
+        if (this.queue.length > 0) {
+            fileLink = this.queue.shift()!;
+            if (!this.history.includes(fileLink)) {
+                this.history.push(fileLink);
+            }
+        } else if (this.queue.length === 0 && this.history.length > 1) {
+            fileLink = this.randomHistory();
+        } else {
+            fileLink = "";
+        }
+        if (fileLink.length > 0) {
+            await bot.getFileLink(fileLink)
+                .then(async (link: any) => link instanceof Error ? null :
+                    bot.setChatPhoto(this.chatId, request(link))
+                        .catch(async (reason) => {
+                            logger.error(CONSTS.UPDATE_PHOTO_ERROR(this.chatId, reason));
+                            await PhotoDataStructure.retryToQueuePhoto(bot, reason, this, fileLink);
+                        }),
+                )
+                .catch(async (reason) => {
+                    await PhotoDataStructure.retryToQueuePhoto(bot, reason, this, fileLink);
+                });
+            this.last = +moment();
+        }
         return fileLink;
     }
 
