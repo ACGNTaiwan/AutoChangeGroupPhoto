@@ -61,3 +61,11 @@ config.yaml
 data.yaml
 dist
 .group_cache
+
+# Yarn
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
