@@ -57,9 +57,9 @@ export
      * @param _config Telegram Bot config object
      */
     private constructor(_config: any = {}) {
-        this.config = InitialConfig(Object.assign(new BotConfig(), _config), () => { this.saveConfig(); });
+        this.config = InitialConfig(Object.assign(new BotConfig(), _config), () => { BotConfig.saveConfig(this.config); });
         if (this.config.token) {
-            this.data = PhotoData.PhotoDataStore(this.readData(), () => { this.saveData(); });
+            this.data = PhotoData.PhotoDataStore(PhotoData.PhotoDataStructure.readData(), () => { PhotoData.PhotoDataStructure.saveData(this.data); });
             // if has bot token, then start the main program
             this.bot = new TelegramBot(this.config.token, { polling: { interval: 0, params: { timeout: 60 } } });
 
@@ -265,59 +265,6 @@ export
             default:
             // no-op
         }
-    }
-
-    /**
-     * Convert Data from old structure
-     * @param d PhotoDataStructure Data Array
-     */
-    private doCompatibleConvert(d: object): PhotoData.PhotoDataStructure[] {
-        return Object.keys(d)
-            .map<PhotoData.PhotoDataStructure>(
-                (chatId: string) => {
-                    const pds = (d as any)[chatId] as PhotoData.PhotoDataStructure;
-                    pds.chatId = Number(chatId);
-                    return new PhotoData.PhotoDataStructure(pds);
-                },
-            );
-    }
-
-    /**
-     * Read PhotoDataStructure Datas into PhotoDataStore which contains Chat's data stores
-     */
-    private readData() {
-        let _data;
-        try {
-            _data = (fs.existsSync(CONSTS.DATA_FILE_PATH)) ?
-                yaml.load(fs.readFileSync(CONSTS.DATA_FILE_PATH)
-                    .toString()) :
-                JSON.parse(fs.readFileSync(CONSTS.DATA_FILE_JSON_PATH)
-                    .toString());
-        } catch (e) {
-            logger.warn(e);
-            _data = [];
-        } finally {
-            if (_data instanceof Object && !(_data instanceof Array) && _data !== undefined) {
-                _data = this.doCompatibleConvert(_data);
-            }
-        }
-        return _data;
-    }
-
-    /**
-     * Save PhotoDataStore to data file
-     */
-    private saveData() {
-        const _data = JSON.parse(JSON.stringify(this.data)); // to prevent Proxy dump undefined
-        fs.writeFile(CONSTS.DATA_FILE_PATH, yaml.safeDump(_data), () => void (0));
-    }
-
-    /**
-     * Save Config to file
-     */
-    private saveConfig() {
-        const _config = JSON.parse(JSON.stringify(this.config)); // to prevent Proxy dump undefined
-        fs.writeFile(CONSTS.CONFIG_FILE_PATH, yaml.safeDump(_config), () => void (0));
     }
 
     /**
@@ -562,7 +509,7 @@ export
                 chatData.history.push(fileLink);
             }
         } else if (chatData.queue.length === 0 && chatData.history.length > 1) {
-            fileLink = this.randomHistory(chatData);
+            fileLink = chatData.randomHistory();
         } else {
             fileLink = "";
         }
@@ -580,21 +527,6 @@ export
                 });
             chatData.last = +moment();
         }
-        return fileLink;
-    }
-
-    /**
-     * For random output a file id and push the result to last
-     * @param chatData PhotoDataStructure
-     */
-    private randomHistory(chatData: PhotoData.PhotoDataStructure) {
-        // prevent last photo out of random queue
-        const idx = Math.floor(Math.random() * (chatData.history.length - 1));
-        const fileLink = chatData.history[idx];
-        // make next photo to last
-        chatData.history = chatData.history.map<string>((h) => h !== fileLink ? h : "")
-            .filter((h) => h)
-            .concat([fileLink]);
         return fileLink;
     }
 

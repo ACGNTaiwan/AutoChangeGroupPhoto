@@ -1,6 +1,12 @@
+import * as fs from "fs";
+import * as yaml from "js-yaml";
 import * as moment from "moment";
 
 import { AutoSaver } from "./autoSaver";
+import * as CONSTS from "./consts";
+
+const tracer = require("tracer");
+const logger = tracer.colorConsole({ level: process.env.DEBUG !== undefined ? process.env.DEBUG : "info" });
 
 const autoSaver = new AutoSaver();
 
@@ -53,6 +59,52 @@ export class PhotoDataStructure {
     public history!: string[];
     public banList!: string[];
     public retryList!: RetryDataStructure[];
+
+    /**
+     * Read PhotoDataStructure Datas into PhotoDataStore which contains Chat's data stores
+     */
+    public static readData(): any {
+        let _data;
+        try {
+            _data = (fs.existsSync(CONSTS.DATA_FILE_PATH)) ?
+                yaml.load(fs.readFileSync(CONSTS.DATA_FILE_PATH)
+                    .toString()) :
+                JSON.parse(fs.readFileSync(CONSTS.DATA_FILE_JSON_PATH)
+                    .toString());
+        } catch (e) {
+            logger.warn(e);
+            _data = [];
+        } finally {
+            if (_data instanceof Object && !(_data instanceof Array) && _data !== undefined) {
+                _data = PhotoDataStructure.doCompatibleConvert(_data);
+            }
+        }
+        return _data;
+    }
+
+    /**
+     * Save PhotoDataStore to data file
+     */
+    public static saveData(data: PhotoDataStructure[]) {
+        const _data = JSON.parse(JSON.stringify(data)); // to prevent Proxy dump undefined
+        fs.writeFile(CONSTS.DATA_FILE_PATH, yaml.safeDump(_data), () => void (0));
+    }
+
+    /**
+     * Convert Data from old structure
+     * @param d PhotoDataStructure Data Array
+     */
+    private static doCompatibleConvert(d: object): PhotoDataStructure[] {
+        return Object.keys(d)
+            .map<PhotoDataStructure>(
+                (chatId: string) => {
+                    const pds = (d as any)[chatId] as PhotoDataStructure;
+                    pds.chatId = Number(chatId);
+                    return new PhotoDataStructure(pds);
+                },
+            );
+    }
+
     public constructor(
         chatId: number | object | PhotoDataStructure,
         chatName: string = "",
@@ -97,6 +149,21 @@ export class PhotoDataStructure {
         this.queue = this.queue.filter((q) => q !== fileLink);
         this.history = this.history.filter((h) => h !== fileLink);
         this.retryList = this.retryList.filter((r) => r.fileName !== fileLink);
+    }
+
+    /**
+     * For random output a file id and push the result to last
+     * @param chatData PhotoDataStructure
+     */
+    public randomHistory() {
+        // prevent last photo out of random queue
+        const idx = Math.floor(Math.random() * (this.history.length - 1));
+        const fileLink = this.history[idx];
+        // make next photo to last
+        this.history = this.history.map<string>((h) => h !== fileLink ? h : "")
+            .filter((h) => h)
+            .concat([fileLink]);
+        return fileLink;
     }
 
     private from(pds: PhotoDataStructure) {

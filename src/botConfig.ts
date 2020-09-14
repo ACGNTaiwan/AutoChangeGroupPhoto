@@ -1,4 +1,8 @@
+import * as fs from "fs";
+import * as yaml from "js-yaml";
+
 import { AutoSaver } from "./autoSaver";
+import * as CONSTS from "./consts";
 
 const autoSaver = new AutoSaver();
 
@@ -19,6 +23,14 @@ export class BotConfig {
         .from("MB")
         .to("B");
     public pixiv = new Proxy(new PixivConfig(), autoSaver.Saver);
+
+    /**
+     * Save Config to file
+     */
+    public static saveConfig(config: BotConfig) {
+        const _config = JSON.parse(JSON.stringify(config)); // to prevent Proxy dump undefined
+        fs.writeFile(CONSTS.CONFIG_FILE_PATH, yaml.safeDump(_config), () => void (0));
+    }
 }
 
 export const BotConfigGenerator = {
