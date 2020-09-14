@@ -12,6 +12,7 @@ import * as sharp from "sharp";
 import { TelegramBotExtended } from "../typings";
 
 import { BotConfig, InitialConfig } from "./botConfig";
+import { Commands } from "./commands";
 import * as CONSTS from "./consts";
 import * as PhotoData from "./photoData";
 import { TelegramDownload } from "./telegramDownload";
@@ -69,31 +70,40 @@ export
                 .catch(() => { /* no-op */ });
             if (this.config.pixiv.account && this.config.pixiv.password) {
                 this.pixiv = new pixivApi();
-                const pixivLogged = (userInfo: any) => {
-                    this.config.pixiv.refreshToken = userInfo.refresh_token;
-                    logger.info(CONSTS.ENABLED_PIXIV_ACCOUNT(this.config.pixiv.account, this.config.pixiv.refreshToken));
-                };
-                const pixivLoginError = (e: any) => {
-                    logger.error(e);
-                };
-                if (this.config.pixiv.refreshToken === "") {
-                    logger.info(CONSTS.ENABLING_PIXIV_ACCOUNT(this.config.pixiv.account));
-                    this.pixiv.login(this.config.pixiv.account, this.config.pixiv.password)
-                        .then(pixivLogged)
-                        .catch(pixivLoginError);
-                } else {
-                    logger.info(CONSTS.ENABLING_REFRESHED_PIXIV_ACCOUNT(this.config.pixiv.account, this.config.pixiv.refreshToken));
-                    this.pixiv.refreshAccessToken(this.config.pixiv.refreshToken)
-                        .then(pixivLogged)
-                        .catch(pixivLoginError);
-                }
-                setInterval(() => this.pixiv.refreshAccessToken(), 60 * 1000 * 60);
+                this.registerPixiv();
             } else {
                 this.pixiv = null;
                 logger.info(CONSTS.DISABLED_PIXIV_ACCOUNT);
             }
         } else {
             throw Error(CONSTS.NEED_TELEGRAM_BOT_TOKEN);
+        }
+    }
+
+    /**
+     * Register for Pixiv API instance
+     */
+    private registerPixiv() {
+        if (this.pixiv !== null) {
+            const pixivLogged = (userInfo: any) => {
+                this.config.pixiv.refreshToken = userInfo.refresh_token;
+                logger.info(CONSTS.ENABLED_PIXIV_ACCOUNT(this.config.pixiv.account, this.config.pixiv.refreshToken));
+            };
+            const pixivLoginError = (e: any) => {
+                logger.error(e);
+            };
+            if (this.config.pixiv.refreshToken === "") {
+                logger.info(CONSTS.ENABLING_PIXIV_ACCOUNT(this.config.pixiv.account));
+                this.pixiv.login(this.config.pixiv.account, this.config.pixiv.password)
+                    .then(pixivLogged)
+                    .catch(pixivLoginError);
+            } else {
+                logger.info(CONSTS.ENABLING_REFRESHED_PIXIV_ACCOUNT(this.config.pixiv.account, this.config.pixiv.refreshToken));
+                this.pixiv.refreshAccessToken(this.config.pixiv.refreshToken)
+                    .then(pixivLogged)
+                    .catch(pixivLoginError);
+            }
+            setInterval(() => this.pixiv.refreshAccessToken(), 60 * 1000 * 60);
         }
     }
 
@@ -138,171 +148,59 @@ export
         });
 
         await this.bot.getMe()
-            .then((me) => {
-                if (me instanceof Error) {
-                    return;
-                }
-
-                this.bot.on("inline_query", async (inlineQuery: TelegramBot.InlineQuery) => {
-                    logger.info(inlineQuery);
-                    if (inlineQuery.query.match(/^\d+$/)) {
-                        const pid = Number(inlineQuery.query);
-                        await this.getPixivIllustDetail(pid)
-                            .then((illustObj) => {
-                                const result: TelegramBot.InlineQueryResultPhoto[] = illustObj.originalUrl.map((url, i) => {
-                                    let caption = CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illustObj);
-                                    caption = (caption.length > CONSTS.PHOTO_CAPTION_MAX_LENGTH)
-                                        ? caption.substr(0, CONSTS.PHOTO_CAPTION_MAX_LENGTH)
-                                        : caption;
-                                    const r: TelegramBot.InlineQueryResultPhoto = {
-                                        caption,
-                                        id: `${inlineQuery.id}_${i}`,
-                                        photo_url: url,
-                                        thumb_url: url,
-                                        type: "photo",
-                                    };
-                                    return r;
-                                });
-                                this.bot.answerInlineQuery(inlineQuery.id, result, { cache_time: 1 })
-                                    .catch((e) => logger.error(e));
-                            });
-                    }
-                });
-
-                this.bot.onText(/^\/(\w+)@?(\w*)/i, async (msg, regex) => {
-                    if (!regex || regex[2] && regex[2] !== me.username) {
-                        return;
-                    }
-                    if (msg.chat.type !== "private" && regex[2] !== me.username) {
-                        return;
-                    }
-
-                    const command = regex[1].toLowerCase();
-                    const commandArgs = msg.text!.replace(regex[0], "")
-                        .trim()
-                        .split(" ");
-
-                    await this.bot.getChatAdministrators(msg.chat.id)
-                        .then(async (members) => this.parseCommand(members, msg, command as CONSTS.COMMANDS, commandArgs));
-                });
-            });
+            .then(this.getMeEvent);
     }
 
     /**
-     * Commands of SET_PAUSED method
-     * @param msg Message Object
+     * process get me events
      */
-    private async _COMMANDS_SET_PAUSED(
-        msg: TelegramBot.Message,
-    ) {
-        const chatId = msg.chat.id;
-        const chatData = this.getData(chatId);
-
-        chatData.paused = true;
-        logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
-        return this.bot.sendMessage(chatId, CONSTS.PAUSE_RESUME_MESSAGE(msg.chat, chatData));
-    }
-
-    /**
-     * Commands of SET_RESUMED method
-     * @param msg Message Object
-     */
-    private async _COMMANDS_SET_RESUMED(
-        msg: TelegramBot.Message,
-    ) {
-        const chatId = msg.chat.id;
-        const chatData = this.getData(chatId);
-
-        chatData.paused = false;
-        logger.info(CONSTS.PAUSE_RESUME_LOG_MESSAGE(msg.chat, chatData));
-        return this.bot.sendMessage(chatId, CONSTS.PAUSE_RESUME_MESSAGE(msg.chat, chatData));
-    }
-
-    /**
-     * Commands of SET_INTERVAL method
-     * @param msg Message Object
-     */
-    private async _COMMANDS_SET_INTERVAL(
-        msg: TelegramBot.Message,
-        commandArgs: string[],
-    ) {
-        const chatId = msg.chat.id;
-        const chatData = this.getData(chatId);
-
-        if (msg.text) {
-            const args = commandArgs.join(" ");
-            if (args.length === 0) {
-                return this.bot.sendMessage(chatId, CONSTS.NOW_INTERVAL(chatData.interval.toString()));
-            }
-            if (args.length > 0 && Number(args) >= this.config.minBotInterval) {
-                chatData.interval = Number(args);
-                return this.bot.sendMessage(chatId, CONSTS.SET_INTERVAL(chatData.interval.toString()));
-                // tslint:disable-next-line:unnecessary-else
-            } else {
-                return this.bot.sendMessage(chatId, CONSTS.INVALID_VALUE);
-            }
+    private async getMeEvent(me: TelegramBot.User) {
+        if (me instanceof Error) {
+            return;
         }
-    }
 
-    /**
-     * Commands of NEXT_PHOTO method
-     * @param msg Message Object
-     */
-    private async _COMMANDS_NEXT_PHOTO(
-        msg: TelegramBot.Message,
-    ) {
-        const chatId = msg.chat.id;
-        const chatData = this.getData(chatId);
+        this.bot.on("inline_query", async (inlineQuery: TelegramBot.InlineQuery) => {
+            logger.info(inlineQuery);
+            if (inlineQuery.query.match(/^\d+$/)) {
+                const pid = Number(inlineQuery.query);
+                await this.getPixivIllustDetail(pid)
+                    .then((illustObj) => {
+                        const result: TelegramBot.InlineQueryResultPhoto[] = illustObj.originalUrl.map((url, i) => {
+                            let caption = CONSTS.GROUP_PHOTO_PIXIV_CAPTION(illustObj);
+                            caption = (caption.length > CONSTS.PHOTO_CAPTION_MAX_LENGTH)
+                                ? caption.substr(0, CONSTS.PHOTO_CAPTION_MAX_LENGTH)
+                                : caption;
+                            const r: TelegramBot.InlineQueryResultPhoto = {
+                                caption,
+                                id: `${inlineQuery.id}_${i}`,
+                                photo_url: url,
+                                thumb_url: url,
+                                type: "photo",
+                            };
+                            return r;
+                        });
+                        this.bot.answerInlineQuery(inlineQuery.id, result, { cache_time: 1 })
+                            .catch((e) => logger.error(e));
+                    });
+            }
+        });
 
-        return this.nextPhoto(chatData);
-    }
+        this.bot.onText(/^\/(\w+)@?(\w*)/i, async (msg, regex) => {
+            if (!regex || regex[2] && regex[2] !== me.username) {
+                return;
+            }
+            if (msg.chat.type !== "private" && regex[2] !== me.username) {
+                return;
+            }
 
-    /**
-     * Commands of BAN method
-     * @param msg Message Object
-     */
-    private async _COMMANDS_BAN(
-        msg: TelegramBot.Message,
-    ) {
-        return this.delPhoto(msg, true);
-    }
+            const command = regex[1].toLowerCase();
+            const commandArgs = msg.text!.replace(regex[0], "")
+                .trim()
+                .split(" ");
 
-    /**
-     * Commands of UNBAN method
-     * @param msg Message Object
-     */
-    private async _COMMANDS_UNBAN(
-        msg: TelegramBot.Message,
-    ) {
-        if (msg.reply_to_message && (msg.reply_to_message.photo || msg.reply_to_message.document)) {
-            return this.unbanPhoto(msg);
-        }
-    }
-
-    /**
-     * Commands of DELETE method
-     * @param msg Message Object
-     */
-    private async _COMMANDS_DELETE(
-        msg: TelegramBot.Message,
-    ) {
-        return this.delPhoto(msg);
-    }
-
-    /**
-     * Commands of QUEUE_STATUS method
-     * @param msg Message Object
-     */
-    private async _COMMANDS_QUEUE_STATUS(
-        msg: TelegramBot.Message,
-    ) {
-        const chatId = msg.chat.id;
-        const chatData = this.getData(chatId);
-
-        const nextTime = moment(chatData.last)
-            .add(chatData.interval, "h")
-            .format("LLL");
-        return this.bot.sendMessage(chatId, CONSTS.WAITING_PHOTOS(chatData, nextTime));
+            await this.bot.getChatAdministrators(msg.chat.id)
+                .then(async (members) => this.parseCommand(members, msg, command as CONSTS.COMMANDS, commandArgs));
+        });
     }
 
     /**
@@ -332,25 +230,25 @@ export
 
         switch (command) {
             case CONSTS.COMMANDS.SET_PAUSED:
-                await this._COMMANDS_SET_PAUSED(msg);
+                await Commands._COMMANDS_SET_PAUSED(this.getData, this.bot, msg);
                 break;
             case CONSTS.COMMANDS.SET_RESUMED:
-                await this._COMMANDS_SET_RESUMED(msg);
+                await Commands._COMMANDS_SET_RESUMED(this.getData, this.bot, msg);
                 break;
             case CONSTS.COMMANDS.SET_INTERVAL:
-                await this._COMMANDS_SET_INTERVAL(msg, commandArgs);
+                await Commands._COMMANDS_SET_INTERVAL(this.getData, this.bot, this.config, msg, commandArgs);
                 break;
             case CONSTS.COMMANDS.NEXT_PHOTO:
-                await this._COMMANDS_NEXT_PHOTO(msg);
+                await Commands._COMMANDS_NEXT_PHOTO(this.getData, this.nextPhoto, msg);
                 break;
             case CONSTS.COMMANDS.BAN:
-                await this._COMMANDS_BAN(msg);
+                await Commands._COMMANDS_BAN(this.delPhoto, msg);
                 break;
             case CONSTS.COMMANDS.UNBAN:
-                await this._COMMANDS_UNBAN(msg);
+                await Commands._COMMANDS_UNBAN(this.unbanPhoto, msg);
                 break;
             case CONSTS.COMMANDS.DELETE:
-                await this._COMMANDS_DELETE(msg);
+                await Commands._COMMANDS_DELETE(this.delPhoto, msg);
                 break;
             // TODO
             // case 'setloop':
@@ -359,7 +257,7 @@ export
             // case 'block':
             //     if (members.map((member) => member.user.id).indexOf(msg.from.id) === -1) break;
             case CONSTS.COMMANDS.QUEUE_STATUS:
-                await this._COMMANDS_QUEUE_STATUS(msg);
+                await Commands._COMMANDS_QUEUE_STATUS(this.getData, this.bot, msg);
                 break;
             // TODO
             // case 'votenext':
