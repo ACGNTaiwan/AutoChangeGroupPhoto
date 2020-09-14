@@ -9,11 +9,13 @@ import * as TelegramBot from "node-telegram-bot-api";
 import * as request from "request";
 import * as sharp from "sharp";
 
+import { TelegramBotExtended } from "../typings";
+
 import { BotConfig, InitialConfig } from "./botConfig";
 import * as CONSTS from "./consts";
 import * as PhotoData from "./photoData";
 import { TelegramDownload } from "./telegramDownload";
-import { TelegramBotExtended } from "./typings";
+
 const ogs = require("open-graph-scraper");
 const pixivApi = require("pixiv-api-client");
 const tracer = require("tracer");

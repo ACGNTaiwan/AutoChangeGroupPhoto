@@ -1,9 +1,9 @@
 import * as fs from "fs";
 import * as yaml from "js-yaml";
 
-import { AutoChangeGroupPhotoBot } from "./autoChangeGroupPhotoBot";
-import { BotConfigGenerator } from "./botConfig";
-import * as CONSTS from "./consts";
+import { AutoChangeGroupPhotoBot } from "./src/autoChangeGroupPhotoBot";
+import { BotConfigGenerator } from "./src/botConfig";
+import * as CONSTS from "./src/consts";
 
 // read and initial the config file
 fs.readFile(CONSTS.CONFIG_FILE_PATH, null, async (err, d) => {

@@ -25,4 +25,4 @@ jobs:
     - run: yarn install
     - run: yarn run tslint
     - run: yarn run build
-    
+
