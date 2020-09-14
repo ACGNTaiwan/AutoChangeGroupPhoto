@@ -592,6 +592,9 @@ export
             return;
         }
         const retry = chatData.getRetryQueue(fileLink);
+        if (reason.code === "EFATAL" || (reason.code === "ETELEGRAM" && reason.response.body.error_code >= 500)) {
+            retry.retryTimes = 0; // Infinity retry network or server error
+        }
         if (retry.retryTimes >= CONSTS.PHOTO_RETRY_MAX) {
             // remove all file link in queue, history and retryList
             chatData.pruneQueue(fileLink);
