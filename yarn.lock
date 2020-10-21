@@ -2433,10 +2433,10 @@ pixelmatch@^4.0.2:
   dependencies:
     pngjs "^3.0.0"
 
-pixiv-api-client@^0.22.0:
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/pixiv-api-client/-/pixiv-api-client-0.22.0.tgz#6893903293b0426041fa986658a2e10458e7ed2b"
-  integrity sha512-GU9tMpgecjdx/RiqJVZxVvLk4Ze1a3q01NuwsY3tmgQ5XI3ue6BVU6me/1xPQVh/iTCkrGrpO6J53+4ceYntgQ==
+pixiv-api-client@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/pixiv-api-client/-/pixiv-api-client-0.23.0.tgz#49d5d196eb3750c0c87d3f1b29966f4dc3601f8c"
+  integrity sha512-vM5AQyg7yjOGtc/5XL8TFSRdAm0UhUjl14S4MSKZBvmshZt6RRX6rQNW8woB+C0/G8JPK3GUhnzZ72YpjjzICg==
   dependencies:
     axios ">=0.19.0"
     blueimp-md5 "^2.12.0"
