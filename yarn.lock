@@ -588,10 +588,10 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.10.1.tgz#e1e82e4f3e999e2cfd61b161280d16a111f86428"
   integrity sha512-zg7Hz2k5lI8kb7U32998pRRFin7zJlkfezGJjUc2heaD4Pw2wObakCDVzkKztTm/Ln7eiVvYsjqak0Ed4LkMDA==
 
-axios@>=0.19.0:
-  version "0.20.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.20.0.tgz#057ba30f04884694993a8cd07fa394cff11c50bd"
-  integrity sha512-ANA4rr2BDcmmAQLOKft2fufrtuvlqR+cXNNinUmvfeSNCOF98PZL+7M/v1zIdGo7OLjEA9J2gXJL+j4zGsl0bA==
+axios@^0.21.1:
+  version "0.21.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
+  integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
   dependencies:
     follow-redirects "^1.10.0"
 
@@ -2433,12 +2433,12 @@ pixelmatch@^4.0.2:
   dependencies:
     pngjs "^3.0.0"
 
-pixiv-api-client@^0.22.0:
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/pixiv-api-client/-/pixiv-api-client-0.22.0.tgz#6893903293b0426041fa986658a2e10458e7ed2b"
-  integrity sha512-GU9tMpgecjdx/RiqJVZxVvLk4Ze1a3q01NuwsY3tmgQ5XI3ue6BVU6me/1xPQVh/iTCkrGrpO6J53+4ceYntgQ==
+pixiv-api-client@^0.25.0:
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/pixiv-api-client/-/pixiv-api-client-0.25.0.tgz#26edee36262bfd8477bfb804a1e2e66c89cfc3b0"
+  integrity sha512-IWo0HwnxUEH9OtQ3qEZsKUbpdStRSomS18Gx4UV5JT1fj/E/opYGZMgpcdzC1+3ouBJECV1evzt0778S2RJ+/Q==
   dependencies:
-    axios ">=0.19.0"
+    axios "^0.21.1"
     blueimp-md5 "^2.12.0"
     moment "^2.24.0"
     qs "^6.2.1"
