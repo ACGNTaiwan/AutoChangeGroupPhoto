@@ -48,27 +48,35 @@ export class Utils {
                     reject(Buffer.from([]));
                 } else {
                     request.get(url, Utils.requestOptions, async (error, response, body) => {
-                        ogs({ url }, async (err: boolean, results: any) => {
-                            if (!err && results.success === true &&
-                                results.data && results.data.ogImage && results.data.ogImage.url
-                            ) {
-                                const ogUrl = results.data.ogImage.url;
-                                logger.info(CONSTS.URL_FOUND_OG_IMAGE_URL(msg, url, ogUrl));
-                                const ogCheckSizeOk = await Utils.sizeLimitationCheck(config, ogUrl);
-                                if (ogCheckSizeOk) {
-                                    resolve(ogUrl);
+                        ogs(
+                            {
+                                headers: {
+                                    "user-agent": "AutoChangeGroupPhotoBot/0.1",
+                                },
+                                url,
+                            },
+                            async (err: boolean, results: any) => {
+                                if (!err && results.success === true &&
+                                    results.ogImage && results.ogImage.url
+                                ) {
+                                    const ogUrl = results.ogImage.url;
+                                    logger.info(CONSTS.URL_FOUND_OG_IMAGE_URL(msg, url, ogUrl));
+                                    const ogCheckSizeOk = await Utils.sizeLimitationCheck(config, ogUrl);
+                                    if (ogCheckSizeOk) {
+                                        resolve(ogUrl);
+                                    } else {
+                                        reject(Buffer.from([]));
+                                    }
                                 } else {
-                                    reject(Buffer.from([]));
+                                    logger.info(CONSTS.URL_NOT_FOUND_OG_IMAGE_URL(msg, url));
+                                    if (response.body.length > 0) {
+                                        resolve(Buffer.from(response.body));
+                                    } else {
+                                        reject(Buffer.from([]));
+                                    }
                                 }
-                            } else {
-                                logger.info(CONSTS.URL_NOT_FOUND_OG_IMAGE_URL(msg, url));
-                                if (response.body.length > 0) {
-                                    resolve(Buffer.from(response.body));
-                                } else {
-                                    reject(Buffer.from([]));
-                                }
-                            }
-                        });
+                            },
+                        );
                     });
                 }
             } else {
