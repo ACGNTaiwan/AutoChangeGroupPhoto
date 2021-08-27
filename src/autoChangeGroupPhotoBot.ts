@@ -180,30 +180,7 @@ export
                 .add(chatData.interval, "h")
                 .isBefore(moment());
             if (!chatData.paused && (!chatData.last || isMomentBefore)) {
-                const fileLink = await chatData.nextPhoto(this.bot);
-                await this.bot.getChat(chatData.chatId)
-                    .then((chat) => {
-                        if (chat instanceof Error) {
-                            logger.error(CONSTS.GET_CHAT_ERROR(chatData.chatId, chat));
-                        } else {
-                            chatData.chatName = `${chat.title || chat.username}`;
-                            if (fileLink.length > 0) {
-                                logger.info(CONSTS.UPDATED_PHOTO(chat, fileLink));
-                            }
-                        }
-                    })
-                    .catch((reason: Error) => {
-                        logger.error(CONSTS.GET_CHAT_ERROR(chatData.chatId, reason.message));
-                        const e = reason as TelegramBotExtended.TelegramError;
-                        if (e.code === "ETELEGRAM") {
-                            if (e.response.body.error_code >= 400 && e.response.body.error_code < 500) {
-                                if (e.response.body.description.match(/chat not found/i) !== null) {
-                                    chatData.disabled = true;
-                                    logger.warn(CONSTS.CHAT_DISABLED_BY_SYSTEM(chatData.chatId, reason.message));
-                                }
-                            }
-                        }
-                    });
+                await chatData.nextPhoto(this.bot);
             }
             this.downloader.checkGroup(chatData);
         });
