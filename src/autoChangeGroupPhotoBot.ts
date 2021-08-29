@@ -272,16 +272,21 @@ export
                     }
                 };
                 if (isBuffer) {
-                    await Utils.parsePhoto(Operations.uploadPhoto, this.data, this.bot, this.downloader, msg, imgUrl as Buffer, ent, url);
+                    // tslint:disable-next-line:no-unnecessary-type-assertion
+                    const imgBuffer = imgUrl as Buffer;
+                    await Utils.parsePhoto(Operations.uploadPhoto, this.data, this.bot, this.downloader, msg, imgBuffer, ent, url);
                     resolve();
                     return;
                     // tslint:disable-next-line:unnecessary-else
                 } else if (isPixiv) {
+                    // tslint:disable-next-line:no-unnecessary-type-assertion
                     const illust = imgUrl as PhotoData.PixivIllustStructure;
                     return request.get(illust.originalUrl[0], Utils.requestOptions, downloadImage);
                     // tslint:disable-next-line:unnecessary-else
                 } else {
-                    return request.get(imgUrl as string, Utils.requestOptions, downloadImage);
+                    // tslint:disable-next-line:no-unnecessary-type-assertion
+                    const urlString = imgUrl as string;
+                    return request.get(urlString, Utils.requestOptions, downloadImage);
                 }
             }),
         )

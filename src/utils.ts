@@ -109,14 +109,14 @@ export class Utils {
                 if (isAcceptedMime) {
                     if (isHTML) {
                         logger.info(CONSTS.URL_HTML_IGNORE(url));
-                        resolve();
+                        resolve(true);
                     } else {
                         if (isOutOfSizeBound) {
                             logger.warn(CONSTS.URL_SIZE_OUT_OF_BOUND(url, length, config.downloadMaxSize));
                             reject();
                         } else {
                             logger.info(CONSTS.URL_SIZE_RESULT(url, length));
-                            resolve();
+                            resolve(true);
                         }
                     }
                 } else {
