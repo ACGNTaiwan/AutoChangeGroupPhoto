@@ -29,7 +29,7 @@ export class BotConfig {
      */
     public static saveConfig(config: BotConfig) {
         const _config = JSON.parse(JSON.stringify(config)); // to prevent Proxy dump undefined
-        fs.writeFile(CONSTS.CONFIG_FILE_PATH, yaml.safeDump(_config), () => void (0));
+        fs.writeFile(CONSTS.CONFIG_FILE_PATH, yaml.dump(_config), () => void (0));
     }
 }
 

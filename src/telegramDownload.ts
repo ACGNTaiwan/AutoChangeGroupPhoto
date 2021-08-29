@@ -33,7 +33,7 @@ export class TelegramDownload {
         );
 
         const _data = JSON.parse(JSON.stringify(photoData)); // to prevent Proxy dump undefined
-        fs.writeFileSync(path.join(this.store, photoData.chatId.toString(), CONSTS.CACHE_DATA_FILENAME), yaml.safeDump(_data));
+        fs.writeFileSync(path.join(this.store, photoData.chatId.toString(), CONSTS.CACHE_DATA_FILENAME), yaml.dump(_data));
 
         const rootFile = path.join(this.store, CONSTS.CACHE_DATA_FILENAME);
         const groups: number[] = (!fs.existsSync(rootFile)) ? [] : yaml.load(fs.readFileSync(rootFile)
@@ -41,7 +41,7 @@ export class TelegramDownload {
         if (groups.indexOf(photoData.chatId) === -1) {
             groups.push(photoData.chatId);
             const _groups = JSON.parse(JSON.stringify(groups)); // to prevent Proxy dump undefined
-            fs.writeFileSync(rootFile, yaml.safeDump(_groups));
+            fs.writeFileSync(rootFile, yaml.dump(_groups));
         }
 
     }

@@ -91,7 +91,7 @@ export class PhotoDataStructure {
      */
     public static saveData(data: PhotoDataStructure[]) {
         const _data = JSON.parse(JSON.stringify(data)); // to prevent Proxy dump undefined
-        fs.writeFile(CONSTS.DATA_FILE_PATH, yaml.safeDump(_data), () => void (0));
+        fs.writeFile(CONSTS.DATA_FILE_PATH, yaml.dump(_data), () => void (0));
     }
 
     /**
