@@ -37,7 +37,7 @@ export class TelegramDownload {
 
         const rootFile = path.join(this.store, CONSTS.CACHE_DATA_FILENAME);
         const groups: number[] = (!fs.existsSync(rootFile)) ? [] : yaml.load(fs.readFileSync(rootFile)
-                                                                               .toString());
+                                                                        .toString()) as number[];
         if (groups.indexOf(photoData.chatId) === -1) {
             groups.push(photoData.chatId);
             const _groups = JSON.parse(JSON.stringify(groups)); // to prevent Proxy dump undefined
@@ -96,7 +96,7 @@ export class TelegramDownload {
                     fs.renameSync(downloadedFile, gFile);
                     logger.info(CONSTS.CACHE_DOWNLOADED(filename, gFile));
                 } catch (e) {
-                    logger.warn(CONSTS.CACHE_DOWNLOADED_RENAME_ERROR(filename, gFile, e));
+                    logger.warn(CONSTS.CACHE_DOWNLOADED_RENAME_ERROR(filename, gFile, e as Error));
                 }
             }
         } else {
