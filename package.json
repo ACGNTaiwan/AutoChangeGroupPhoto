@@ -37,7 +37,7 @@
     "node-telegram-bot-api": "^0.50.0",
     "open-graph-scraper": "^4.9.1",
     "path": "^0.12.7",
-    "pixiv-api-client": "^0.22.0",
+    "pixiv-api-client": "^0.25.0",
     "prompt": "^1.0.0",
     "request": "^2.88.2",
     "sharp": "^0.26.0",
