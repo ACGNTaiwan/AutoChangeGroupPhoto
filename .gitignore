@@ -57,7 +57,7 @@ typings/
 # dotenv environment variables file
 .env
 
-config.yaml
-data.yaml
+config*.yaml
+data*.yaml
 dist
 .group_cache
