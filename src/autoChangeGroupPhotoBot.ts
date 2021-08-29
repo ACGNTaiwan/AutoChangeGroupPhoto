@@ -113,7 +113,12 @@ export
         });
 
         await this.bot.getMe()
-            .then(this.getMeEvent);
+            .then(async (me: TelegramBot.User) => {
+                await this.getMeEvent(me);
+            })
+            .catch((reason: any) => {
+                logger.warn("Get Me occurred error", reason);
+            });
     }
 
     /**
@@ -121,6 +126,7 @@ export
      */
     private async getMeEvent(me: TelegramBot.User) {
         if (me instanceof Error) {
+            logger.warn("Get Me Event occurred error", me);
             return;
         }
 
@@ -152,9 +158,11 @@ export
 
         this.bot.onText(/^\/(\w+)@?(\w*)/i, async (msg, regex) => {
             if (!regex || regex[2] && regex[2] !== me.username) {
+                logger.info("Received regex", regex, "but not @ me, ignored");
                 return;
             }
             if (msg.chat.type !== "private" && regex[2] !== me.username) {
+                logger.info("Received regex", regex, "but not @ me, ignored");
                 return;
             }
 
@@ -162,7 +170,7 @@ export
             const commandArgs = msg.text!.replace(regex[0], "")
                 .trim()
                 .split(" ");
-
+            logger.info("Received command", command, "and args", commandArgs);
             await this.bot.getChatAdministrators(msg.chat.id)
                 .then(async (members) => Operations.parseCommand(this.data, this.bot, this.config, members, msg, command as CONSTS.COMMANDS, commandArgs));
         });
@@ -181,6 +189,30 @@ export
                 .isBefore(moment());
             if (!chatData.paused && (!chatData.last || isMomentBefore)) {
                 await chatData.nextPhoto(this.bot);
+                // const fileLink = await chatData.nextPhoto(this.bot);
+                // await this.bot.getChat(chatData.chatId)
+                //     .then((chat) => {
+                //         if (chat instanceof Error) {
+                //             logger.error(CONSTS.GET_CHAT_ERROR(chatData.chatId, chat));
+                //         } else {
+                //             chatData.chatName = `${chat.title || chat.username}`;
+                //             if (fileLink.length > 0) {
+                //                 logger.info(CONSTS.UPDATED_PHOTO(chat, fileLink));
+                //             }
+                //         }
+                //     })
+                //     .catch((reason: Error) => {
+                //         logger.error(CONSTS.GET_CHAT_ERROR(chatData.chatId, reason.message));
+                //         const e = reason as TelegramBotExtended.TelegramError;
+                //         if (e.code === "ETELEGRAM") {
+                //             if (e.response.body.error_code >= 400 && e.response.body.error_code < 500) {
+                //                 if (e.response.body.description.match(/chat not found/i) !== null) {
+                //                     chatData.disabled = true;
+                //                     logger.warn(CONSTS.CHAT_DISABLED_BY_SYSTEM(chatData.chatId, reason.message));
+                //                 }
+                //             }
+                //         }
+                //     });
             }
             this.downloader.checkGroup(chatData);
         });
