@@ -723,6 +723,14 @@ cacheable-request@^7.0.1:
     normalize-url "^6.0.1"
     responselike "^2.0.0"
 
+call-bind@^1.0.0:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/call-bind/-/call-bind-1.0.2.tgz#b1d4e89e688119c3c9a903ad30abb2f6a919be3c"
+  integrity sha512-7O+FbCihrB5WGbFYesctwmTKae6rOiIzmz1icreWJ+0aA7LJfuqhEso2T9ncpcFtzMQtzXf2QGGueWJGTYsqrA==
+  dependencies:
+    function-bind "^1.1.1"
+    get-intrinsic "^1.0.2"
+
 callsites@^3.0.0:
   version "3.1.0"
   resolved "https://registry.npmjs.org/callsites/-/callsites-3.1.0.tgz"
@@ -907,13 +915,13 @@ cosmiconfig@^7.0.0:
     path-type "^4.0.0"
     yaml "^1.10.0"
 
-cron-parser@^2.7.3:
-  version "2.16.3"
-  resolved "https://registry.npmjs.org/cron-parser/-/cron-parser-2.16.3.tgz"
-  integrity sha512-XNJBD1QLFeAMUkZtZQuncAAOgJFWNhBdIbwgD22hZxrcWOImBFMKgPC66GzaXpyoJs7UvYLLgPH/8BRk/7gbZg==
+cron-parser@^3.1.0:
+  version "3.5.0"
+  resolved "https://registry.yarnpkg.com/cron-parser/-/cron-parser-3.5.0.tgz#b1a9da9514c0310aa7ef99c2f3f1d0f8c235257c"
+  integrity sha512-wyVZtbRs6qDfFd8ap457w3XVntdvqcwBGxBoTvJQH9KGVKL/fB+h2k3C8AqiVxvUQKN1Ps/Ns46CNViOpVDhfQ==
   dependencies:
-    is-nan "^1.3.0"
-    moment-timezone "^0.5.31"
+    is-nan "^1.3.2"
+    luxon "^1.26.0"
 
 css-select@^4.1.3:
   version "4.1.3"
@@ -1366,6 +1374,15 @@ gauge@~2.7.3:
     strip-ansi "^3.0.1"
     wide-align "^1.1.0"
 
+get-intrinsic@^1.0.2:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/get-intrinsic/-/get-intrinsic-1.1.1.tgz#15f59f376f855c446963948f0d24cd3637b4abc6"
+  integrity sha512-kWZrnVM42QCiEA2Ig1bG8zjoIMOgxWwYCEeNdwY6Tv/cOSeGpcoX4pXHfKUxNKVoArnrEr2e9srnAxxGIraS9Q==
+  dependencies:
+    function-bind "^1.1.1"
+    has "^1.0.3"
+    has-symbols "^1.0.1"
+
 get-stream@^5.1.0:
   version "5.2.0"
   resolved "https://registry.npmjs.org/get-stream/-/get-stream-5.2.0.tgz"
@@ -1639,11 +1656,12 @@ is-function@^1.0.1:
   resolved "https://registry.npmjs.org/is-function/-/is-function-1.0.2.tgz"
   integrity sha512-lw7DUp0aWXYg+CBCN+JKkcE0Q2RayZnSvnZBlwgxHBQhqt5pZNVy4Ri7H9GmmXkdu7LUthszM+Tor1u/2iBcpQ==
 
-is-nan@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/is-nan/-/is-nan-1.3.0.tgz"
-  integrity sha512-z7bbREymOqt2CCaZVly8aC4ML3Xhfi0ekuOnjO2L8vKdl+CttdVoGZQhd4adMFAsxQ5VeRVwORs4tU8RH+HFtQ==
+is-nan@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/is-nan/-/is-nan-1.3.2.tgz#043a54adea31748b55b6cd4e09aadafa69bd9e1d"
+  integrity sha512-E+zBKpQ2t6MEo1VsonYmluk9NxGrbzpeeLC2xIViuO2EjU2xsXsBPwTr3Ykv9l08UYEVEdWeRZNouaZqF6RN0w==
   dependencies:
+    call-bind "^1.0.0"
     define-properties "^1.1.3"
 
 is-negative-zero@^2.0.0:
@@ -2023,6 +2041,11 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
+luxon@^1.26.0:
+  version "1.28.0"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.28.0.tgz#e7f96daad3938c06a62de0fb027115d251251fbf"
+  integrity sha512-TfTiyvZhwBYM/7QdAVDh+7dBTBA29v4ik0Ce9zda3Mnf8on1S5KJI8P2jKFZ8+5C0jhmr0KwJEO/Wdpm0VeWJQ==
+
 make-error@^1.1.1:
   version "1.3.6"
   resolved "https://registry.npmjs.org/make-error/-/make-error-1.3.6.tgz"
@@ -2112,14 +2135,7 @@ mkdirp@^1.0.4:
   resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-1.0.4.tgz"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
-moment-timezone@^0.5.31:
-  version "0.5.31"
-  resolved "https://registry.npmjs.org/moment-timezone/-/moment-timezone-0.5.31.tgz"
-  integrity sha512-+GgHNg8xRhMXfEbv81iDtrVeTcWt0kWmTEY1XQK14dICTXnWJnT0dxdlPspwqF3keKMVPXwayEsk1DI0AA/jdA==
-  dependencies:
-    moment ">= 2.9.0"
-
-"moment@>= 2.9.0", moment@^2.24.0:
+moment@^2.24.0:
   version "2.28.0"
   resolved "https://registry.npmjs.org/moment/-/moment-2.28.0.tgz"
   integrity sha512-Z5KOjYmnHyd/ukynmFd/WwyXHd7L4J9vTI/nn5Ap9AVUgaAE15VvQ9MOGmJJygEUklupqIrFnor/tjTwRU+tQw==
@@ -2193,14 +2209,14 @@ node-europa@^4.0.0:
     mkdirp "^0.5.1"
     nevis "^0.5.0"
 
-node-schedule@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.npmjs.org/node-schedule/-/node-schedule-1.3.2.tgz"
-  integrity sha512-GIND2pHMHiReSZSvS6dpZcDH7pGPGFfWBIEud6S00Q8zEIzAs9ommdyRK1ZbQt8y1LyZsJYZgPnyi7gpU2lcdw==
+node-schedule@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/node-schedule/-/node-schedule-2.0.0.tgz#73ab4957d056c63708409cc1fab676e0e149c191"
+  integrity sha512-cHc9KEcfiuXxYDU+HjsBVo2FkWL1jRAUoczFoMIzRBpOA4p/NRHuuLs85AWOLgKsHtSPjN8csvwIxc2SqMv+CQ==
   dependencies:
-    cron-parser "^2.7.3"
+    cron-parser "^3.1.0"
     long-timeout "0.1.1"
-    sorted-array-functions "^1.0.0"
+    sorted-array-functions "^1.3.0"
 
 node-telegram-bot-api@^0.54.0:
   version "0.54.0"
@@ -2862,9 +2878,9 @@ slash@^3.0.0:
   resolved "https://registry.npmjs.org/slash/-/slash-3.0.0.tgz"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
 
-sorted-array-functions@^1.0.0:
+sorted-array-functions@^1.3.0:
   version "1.3.0"
-  resolved "https://registry.npmjs.org/sorted-array-functions/-/sorted-array-functions-1.3.0.tgz"
+  resolved "https://registry.yarnpkg.com/sorted-array-functions/-/sorted-array-functions-1.3.0.tgz#8605695563294dffb2c9796d602bd8459f7a0dd5"
   integrity sha512-2sqgzeFlid6N4Z2fUQ1cvFmTOLRi/sEDzSQ0OKYchqgoPmQBVyM3959qYx3fpS6Esef80KjmpgPeEr028dP3OA==
 
 source-map-support@^0.5.17:
