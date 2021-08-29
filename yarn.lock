@@ -964,10 +964,10 @@ data-urls@^1.0.0:
     whatwg-mimetype "^2.2.0"
     whatwg-url "^7.0.0"
 
-dateformat@3.0.3:
-  version "3.0.3"
-  resolved "https://registry.npmjs.org/dateformat/-/dateformat-3.0.3.tgz"
-  integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
+dateformat@4.5.1:
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-4.5.1.tgz#c20e7a9ca77d147906b6dc2261a8be0a5bd2173c"
+  integrity sha512-OD0TZ+B7yP7ZgpJf5K2DIbj3FZvFvxgFUuaqA/V5zTjAtAAXZ1E8bktHxmAGs4x5b7PflqA9LeQ84Og7wYtF7Q==
 
 debug@^3.1.0:
   version "3.2.6"
@@ -3064,13 +3064,13 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
-tracer@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.npmjs.org/tracer/-/tracer-1.1.3.tgz"
-  integrity sha512-/h/dbzKRLtaAx07wwEGLg7dPzDKWQX6wcHnQEqlBTO7e/fLHhRcwxEcJd0+VITmn6pCK4CjDjXahCu0+TkKaDA==
+tracer@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/tracer/-/tracer-1.1.5.tgz#f53f761ed53c586a6c1d161581057c86780fa87d"
+  integrity sha512-I7/AwGm/gf3KU7DcltmSmKJbytQj3q4hg+JKadtIKocfvBY4olY4SV8rAoMRvAD60gPlggEJ1QoSlb2dQtWHNw==
   dependencies:
     colors "1.4.0"
-    dateformat "3.0.3"
+    dateformat "4.5.1"
     mkdirp "^1.0.4"
     tinytim "0.1.1"
 
