@@ -785,10 +785,10 @@ chalk@^4.1.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chardet@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/chardet/-/chardet-1.3.0.tgz"
-  integrity sha512-cyTQGGptIjIT+CMGT5J/0l9c6Fb+565GCFjjeUTKxUO7w3oR+FcNCMEKTn5xtVKaLFmladN7QF68IiQsv5Fbdw==
+chardet@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/chardet/-/chardet-1.4.0.tgz#278748f260219990fb2167dbfb1b253ca26b41ea"
+  integrity sha512-NpwMDdSIprbYx1CLnfbxEIarI0Z+s9MssEgggMNheGM+WD68yOhV7IEA/3r6tr0yTRgQD0HuZJDw32s99i6L+A==
 
 cheerio-select@^1.5.0:
   version "1.5.0"
@@ -2205,12 +2205,12 @@ once@^1.3.0, once@^1.3.1, once@^1.4.0:
   dependencies:
     wrappy "1"
 
-open-graph-scraper@^4.9.1:
-  version "4.9.1"
-  resolved "https://registry.npmjs.org/open-graph-scraper/-/open-graph-scraper-4.9.1.tgz"
-  integrity sha512-4JDHH9GBZXTawyRZPZ1HqhqBv1epNL90go1Nqo5cam65ecExjfeo/XDQr1Bu206IveAoBTgGP6TnJRlff/eFJQ==
+open-graph-scraper@^4.10.0:
+  version "4.10.0"
+  resolved "https://registry.yarnpkg.com/open-graph-scraper/-/open-graph-scraper-4.10.0.tgz#7b995aea341ca3ac6874a8f531e6793dbdc648a8"
+  integrity sha512-9i1LuJc3G/vce85+3NOkta+Vp5V0aNGhZHHIu5l4cd9ml0ZPGu+gZcnEHbDxpDUXdvGofLqE6sCbP9fbUI6Rkg==
   dependencies:
-    chardet "^1.3.0"
+    chardet "^1.4.0"
     cheerio "^1.0.0-rc.10"
     got "^11.8.2"
     iconv-lite "^0.6.3"
