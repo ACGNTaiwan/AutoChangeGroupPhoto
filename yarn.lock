@@ -2114,10 +2114,10 @@ node-schedule@^2.0.0:
     long-timeout "0.1.1"
     sorted-array-functions "^1.3.0"
 
-node-telegram-bot-api@^0.54.0:
-  version "0.54.0"
-  resolved "https://registry.yarnpkg.com/node-telegram-bot-api/-/node-telegram-bot-api-0.54.0.tgz#1a857ddeb2f523d81c8e10a1b70169c7cf069ff5"
-  integrity sha512-ckrpY/ABFLwA1DUzEc9iEQtsgQs8WcGC6m7iJ1bbnH+c7EOLnMdCfw+hUesyfuwOfAkkECYFxvoW4lJNy+Oztw==
+node-telegram-bot-api@^0.57.0:
+  version "0.57.0"
+  resolved "https://registry.yarnpkg.com/node-telegram-bot-api/-/node-telegram-bot-api-0.57.0.tgz#eedd1958c629eab2bdf4c823de3205f1c3bf57ba"
+  integrity sha512-joLDEfPBB9BYi9ClB7X1+YGhlu5m/wB4YtM80jzHsFVtmfJn93bwpJsdh7DcA4lEVaxw7TsnIT0tux3ZLmk3vw==
   dependencies:
     array.prototype.findindex "^2.0.2"
     bl "^1.2.3"
