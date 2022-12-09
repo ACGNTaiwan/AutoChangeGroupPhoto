@@ -66,20 +66,20 @@
   version "1.2.1"
   resolved "https://registry.npmjs.org/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz"
 
-"@jimp/bmp@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/bmp/-/bmp-0.16.1.tgz"
+"@jimp/bmp@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/bmp/-/bmp-0.16.2.tgz#3982879b10626fc8cf1b4ab8627158bad142ec9d"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
     bmp-js "^0.1.0"
 
-"@jimp/core@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/core/-/core-0.16.1.tgz"
+"@jimp/core@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/core/-/core-0.16.2.tgz#4f8e83a4af76a60610e794362d1deb5afaa03353"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
     any-base "^1.1.0"
     buffer "^5.2.0"
     exif-parser "^0.1.12"
@@ -90,23 +90,23 @@
     pixelmatch "^4.0.2"
     tinycolor2 "^1.4.1"
 
-"@jimp/custom@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/custom/-/custom-0.16.1.tgz"
+"@jimp/custom@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/custom/-/custom-0.16.2.tgz#e1ba6874551dd4d748825680c3a16bb7cd3595b6"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/core" "^0.16.1"
+    "@jimp/core" "^0.16.2"
 
-"@jimp/gif@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/gif/-/gif-0.16.1.tgz"
+"@jimp/gif@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/gif/-/gif-0.16.2.tgz#c049cf0fc781233aca418f130f8664c4cbab64c1"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
     gifwrap "^0.9.2"
     omggif "^1.0.9"
 
-"@jimp/jpeg@^0.16.1":
+"@jimp/jpeg@^0.16.2":
   version "0.16.2"
   resolved "https://registry.yarnpkg.com/@jimp/jpeg/-/jpeg-0.16.2.tgz#1060cff9700d08802a0932a397cfb61a34b1d058"
   dependencies:
@@ -114,211 +114,211 @@
     "@jimp/utils" "^0.16.2"
     jpeg-js "^0.4.2"
 
-"@jimp/plugin-blit@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-blit/-/plugin-blit-0.16.1.tgz"
+"@jimp/plugin-blit@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-blit/-/plugin-blit-0.16.2.tgz#65e683f3f2860a59999b6af068efde3625f86cf7"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-blur@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-blur/-/plugin-blur-0.16.1.tgz"
+"@jimp/plugin-blur@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-blur/-/plugin-blur-0.16.2.tgz#05533c19973a16feb037d175bb77e4532f144e45"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-circle@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-circle/-/plugin-circle-0.16.1.tgz"
+"@jimp/plugin-circle@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-circle/-/plugin-circle-0.16.2.tgz#f66c7b8562ccced02688612f548b76952b14ab70"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-color@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-color/-/plugin-color-0.16.1.tgz"
+"@jimp/plugin-color@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-color/-/plugin-color-0.16.2.tgz#925d3b2fa41807c7119197bdf9c5694d92efe3be"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
     tinycolor2 "^1.4.1"
 
-"@jimp/plugin-contain@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-contain/-/plugin-contain-0.16.1.tgz"
+"@jimp/plugin-contain@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-contain/-/plugin-contain-0.16.2.tgz#e5cf5ca7cc3eec1306cb1b92dbd2a1fad6146a94"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-cover@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-cover/-/plugin-cover-0.16.1.tgz"
+"@jimp/plugin-cover@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-cover/-/plugin-cover-0.16.2.tgz#c4aadfaad718a14838219889936ad39a18021df4"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-crop@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-crop/-/plugin-crop-0.16.1.tgz"
+"@jimp/plugin-crop@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-crop/-/plugin-crop-0.16.2.tgz#2dd716b93a865b839143016acac53681d85362c3"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-displace@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-displace/-/plugin-displace-0.16.1.tgz"
+"@jimp/plugin-displace@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-displace/-/plugin-displace-0.16.2.tgz#e4852c48f4b2095a4bcc61c8c1a5faa9618773ef"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-dither@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-dither/-/plugin-dither-0.16.1.tgz"
+"@jimp/plugin-dither@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-dither/-/plugin-dither-0.16.2.tgz#e5cf77f5b0b8a4247c171b7e234c99031b6a59f3"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-fisheye@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-fisheye/-/plugin-fisheye-0.16.1.tgz"
+"@jimp/plugin-fisheye@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-fisheye/-/plugin-fisheye-0.16.2.tgz#ec6cab102959fd67a4061e6812db6135731f7731"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-flip@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-flip/-/plugin-flip-0.16.1.tgz"
+"@jimp/plugin-flip@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-flip/-/plugin-flip-0.16.2.tgz#3d6f5eac4a8d7d62251aba55259ecb4f8dfe42cf"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-gaussian@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-gaussian/-/plugin-gaussian-0.16.1.tgz"
+"@jimp/plugin-gaussian@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-gaussian/-/plugin-gaussian-0.16.2.tgz#6546886e8b0acfebf285c5aabc4fea476dc54159"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-invert@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-invert/-/plugin-invert-0.16.1.tgz"
+"@jimp/plugin-invert@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-invert/-/plugin-invert-0.16.2.tgz#6ca4f7b204c5d674d093d9aa4c32bf20a924a0ee"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-mask@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-mask/-/plugin-mask-0.16.1.tgz"
+"@jimp/plugin-mask@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-mask/-/plugin-mask-0.16.2.tgz#b352392bc8773f6b21b34901ed17f2bb90a8047e"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-normalize@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-normalize/-/plugin-normalize-0.16.1.tgz"
+"@jimp/plugin-normalize@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-normalize/-/plugin-normalize-0.16.2.tgz#e36a8ecaea6acb4711c543212863a570fe19901f"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-print@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-print/-/plugin-print-0.16.1.tgz"
+"@jimp/plugin-print@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-print/-/plugin-print-0.16.2.tgz#8873338941498997cb2a0d2820e9d58d7c03ba61"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
     load-bmfont "^1.4.0"
 
-"@jimp/plugin-resize@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-resize/-/plugin-resize-0.16.1.tgz"
+"@jimp/plugin-resize@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-resize/-/plugin-resize-0.16.2.tgz#7bcca41d9959667fb1e6e87bd6073ce0dbc43bc4"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-rotate@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-rotate/-/plugin-rotate-0.16.1.tgz"
+"@jimp/plugin-rotate@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-rotate/-/plugin-rotate-0.16.2.tgz#deba6956eaf1d127e91389c53d5c6f59ef80d17f"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-scale@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-scale/-/plugin-scale-0.16.1.tgz"
+"@jimp/plugin-scale@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-scale/-/plugin-scale-0.16.2.tgz#d297e6a83f860b5e29bc5bd30ec1556561cb71ab"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-shadow@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-shadow/-/plugin-shadow-0.16.1.tgz"
+"@jimp/plugin-shadow@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-shadow/-/plugin-shadow-0.16.2.tgz#2365b0d4ade0f9641cf48b887431fe478a7ace45"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugin-threshold@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugin-threshold/-/plugin-threshold-0.16.1.tgz"
+"@jimp/plugin-threshold@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugin-threshold/-/plugin-threshold-0.16.2.tgz#3b851659ab1db195b2b4e6c9901f19996a086568"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
 
-"@jimp/plugins@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/plugins/-/plugins-0.16.1.tgz"
+"@jimp/plugins@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/plugins/-/plugins-0.16.2.tgz#bba2a7247f926fe7e13e35b24ca9552b0aae4312"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/plugin-blit" "^0.16.1"
-    "@jimp/plugin-blur" "^0.16.1"
-    "@jimp/plugin-circle" "^0.16.1"
-    "@jimp/plugin-color" "^0.16.1"
-    "@jimp/plugin-contain" "^0.16.1"
-    "@jimp/plugin-cover" "^0.16.1"
-    "@jimp/plugin-crop" "^0.16.1"
-    "@jimp/plugin-displace" "^0.16.1"
-    "@jimp/plugin-dither" "^0.16.1"
-    "@jimp/plugin-fisheye" "^0.16.1"
-    "@jimp/plugin-flip" "^0.16.1"
-    "@jimp/plugin-gaussian" "^0.16.1"
-    "@jimp/plugin-invert" "^0.16.1"
-    "@jimp/plugin-mask" "^0.16.1"
-    "@jimp/plugin-normalize" "^0.16.1"
-    "@jimp/plugin-print" "^0.16.1"
-    "@jimp/plugin-resize" "^0.16.1"
-    "@jimp/plugin-rotate" "^0.16.1"
-    "@jimp/plugin-scale" "^0.16.1"
-    "@jimp/plugin-shadow" "^0.16.1"
-    "@jimp/plugin-threshold" "^0.16.1"
+    "@jimp/plugin-blit" "^0.16.2"
+    "@jimp/plugin-blur" "^0.16.2"
+    "@jimp/plugin-circle" "^0.16.2"
+    "@jimp/plugin-color" "^0.16.2"
+    "@jimp/plugin-contain" "^0.16.2"
+    "@jimp/plugin-cover" "^0.16.2"
+    "@jimp/plugin-crop" "^0.16.2"
+    "@jimp/plugin-displace" "^0.16.2"
+    "@jimp/plugin-dither" "^0.16.2"
+    "@jimp/plugin-fisheye" "^0.16.2"
+    "@jimp/plugin-flip" "^0.16.2"
+    "@jimp/plugin-gaussian" "^0.16.2"
+    "@jimp/plugin-invert" "^0.16.2"
+    "@jimp/plugin-mask" "^0.16.2"
+    "@jimp/plugin-normalize" "^0.16.2"
+    "@jimp/plugin-print" "^0.16.2"
+    "@jimp/plugin-resize" "^0.16.2"
+    "@jimp/plugin-rotate" "^0.16.2"
+    "@jimp/plugin-scale" "^0.16.2"
+    "@jimp/plugin-shadow" "^0.16.2"
+    "@jimp/plugin-threshold" "^0.16.2"
     timm "^1.6.1"
 
-"@jimp/png@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/png/-/png-0.16.1.tgz"
+"@jimp/png@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/png/-/png-0.16.2.tgz#45af82656aad2fde0489687a538f2af903867a1b"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/utils" "^0.16.1"
+    "@jimp/utils" "^0.16.2"
     pngjs "^3.3.3"
 
-"@jimp/tiff@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/tiff/-/tiff-0.16.1.tgz"
+"@jimp/tiff@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/tiff/-/tiff-0.16.2.tgz#613870065fe1387f6a09fe9d8230c00c35b7b640"
   dependencies:
     "@babel/runtime" "^7.7.2"
     utif "^2.0.1"
 
-"@jimp/types@^0.16.1":
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/@jimp/types/-/types-0.16.1.tgz"
+"@jimp/types@^0.16.2":
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/@jimp/types/-/types-0.16.2.tgz#e245281495d0c92cd73174f7ac359211882288c7"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/bmp" "^0.16.1"
-    "@jimp/gif" "^0.16.1"
-    "@jimp/jpeg" "^0.16.1"
-    "@jimp/png" "^0.16.1"
-    "@jimp/tiff" "^0.16.1"
+    "@jimp/bmp" "^0.16.2"
+    "@jimp/gif" "^0.16.2"
+    "@jimp/jpeg" "^0.16.2"
+    "@jimp/png" "^0.16.2"
+    "@jimp/tiff" "^0.16.2"
     timm "^1.6.1"
 
-"@jimp/utils@^0.16.1", "@jimp/utils@^0.16.2":
+"@jimp/utils@^0.16.2":
   version "0.16.2"
   resolved "https://registry.yarnpkg.com/@jimp/utils/-/utils-0.16.2.tgz#e78cb82c46f608b72179a31581065bf75b35166c"
   dependencies:
@@ -1721,14 +1721,14 @@ isstream@0.1.x, isstream@~0.1.2:
   version "0.1.2"
   resolved "https://registry.npmjs.org/isstream/-/isstream-0.1.2.tgz"
 
-jimp@^0.16.1:
-  version "0.16.1"
-  resolved "https://registry.npmjs.org/jimp/-/jimp-0.16.1.tgz"
+jimp@^0.16.2:
+  version "0.16.2"
+  resolved "https://registry.yarnpkg.com/jimp/-/jimp-0.16.2.tgz#c03e296381ae37586e27f209d134d4596d112f7b"
   dependencies:
     "@babel/runtime" "^7.7.2"
-    "@jimp/custom" "^0.16.1"
-    "@jimp/plugins" "^0.16.1"
-    "@jimp/types" "^0.16.1"
+    "@jimp/custom" "^0.16.2"
+    "@jimp/plugins" "^0.16.2"
+    "@jimp/types" "^0.16.2"
     regenerator-runtime "^0.13.3"
 
 jpeg-js@^0.4.2:
