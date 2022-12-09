@@ -790,9 +790,9 @@ cacheable-lookup@^5.0.3:
   version "5.0.4"
   resolved "https://registry.npmjs.org/cacheable-lookup/-/cacheable-lookup-5.0.4.tgz"
 
-cacheable-request@^7.0.1:
+cacheable-request@^7.0.2:
   version "7.0.2"
-  resolved "https://registry.npmjs.org/cacheable-request/-/cacheable-request-7.0.2.tgz"
+  resolved "https://registry.yarnpkg.com/cacheable-request/-/cacheable-request-7.0.2.tgz#ea0d0b889364a25854757301ca12b2da77f91d27"
   dependencies:
     clone-response "^1.0.2"
     get-stream "^5.1.0"
@@ -832,31 +832,32 @@ chalk@^4.0.0, chalk@^4.1.0:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chardet@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/chardet/-/chardet-1.3.0.tgz"
-
-cheerio-select@^1.5.0:
+chardet@^1.4.0:
   version "1.5.0"
-  resolved "https://registry.npmjs.org/cheerio-select/-/cheerio-select-1.5.0.tgz"
-  dependencies:
-    css-select "^4.1.3"
-    css-what "^5.0.1"
-    domelementtype "^2.2.0"
-    domhandler "^4.2.0"
-    domutils "^2.7.0"
+  resolved "https://registry.yarnpkg.com/chardet/-/chardet-1.5.0.tgz#c35b3e9a5994f7574688d1607a2ea9c723ebca95"
 
-cheerio@^1.0.0-rc.10:
-  version "1.0.0-rc.10"
-  resolved "https://registry.npmjs.org/cheerio/-/cheerio-1.0.0-rc.10.tgz"
+cheerio-select@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/cheerio-select/-/cheerio-select-2.1.0.tgz#4d8673286b8126ca2a8e42740d5e3c4884ae21b4"
   dependencies:
-    cheerio-select "^1.5.0"
-    dom-serializer "^1.3.2"
-    domhandler "^4.2.0"
-    htmlparser2 "^6.1.0"
-    parse5 "^6.0.1"
-    parse5-htmlparser2-tree-adapter "^6.0.1"
-    tslib "^2.2.0"
+    boolbase "^1.0.0"
+    css-select "^5.1.0"
+    css-what "^6.1.0"
+    domelementtype "^2.3.0"
+    domhandler "^5.0.3"
+    domutils "^3.0.1"
+
+cheerio@^1.0.0-rc.11:
+  version "1.0.0-rc.12"
+  resolved "https://registry.yarnpkg.com/cheerio/-/cheerio-1.0.0-rc.12.tgz#788bf7466506b1c6bf5fae51d24a2c4d62e47683"
+  dependencies:
+    cheerio-select "^2.1.0"
+    dom-serializer "^2.0.0"
+    domhandler "^5.0.3"
+    domutils "^3.0.1"
+    htmlparser2 "^8.0.1"
+    parse5 "^7.0.0"
+    parse5-htmlparser2-tree-adapter "^7.0.0"
 
 chownr@^1.1.1:
   version "1.1.4"
@@ -966,19 +967,19 @@ cross-spawn@^7.0.2:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-css-select@^4.1.3:
-  version "4.1.3"
-  resolved "https://registry.npmjs.org/css-select/-/css-select-4.1.3.tgz"
+css-select@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/css-select/-/css-select-5.1.0.tgz#b8ebd6554c3637ccc76688804ad3f6a6fdaea8a6"
   dependencies:
     boolbase "^1.0.0"
-    css-what "^5.0.0"
-    domhandler "^4.2.0"
-    domutils "^2.6.0"
-    nth-check "^2.0.0"
+    css-what "^6.1.0"
+    domhandler "^5.0.2"
+    domutils "^3.0.1"
+    nth-check "^2.0.1"
 
-css-what@^5.0.0, css-what@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.npmjs.org/css-what/-/css-what-5.0.1.tgz"
+css-what@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/css-what/-/css-what-6.1.0.tgz#fb5effcf76f1ddea2c81bdfaa4de44e79bac70f4"
 
 cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
   version "0.3.8"
@@ -1100,13 +1101,21 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-dom-serializer@^1.0.1, dom-serializer@^1.3.2:
+dom-serializer@^1.0.1:
   version "1.3.2"
   resolved "https://registry.npmjs.org/dom-serializer/-/dom-serializer-1.3.2.tgz"
   dependencies:
     domelementtype "^2.0.1"
     domhandler "^4.2.0"
     entities "^2.0.0"
+
+dom-serializer@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/dom-serializer/-/dom-serializer-2.0.0.tgz#e41b802e1eedf9f6cae183ce5e622d789d7d8e53"
+  dependencies:
+    domelementtype "^2.3.0"
+    domhandler "^5.0.2"
+    entities "^4.2.0"
 
 dom-walk@^0.1.0:
   version "0.1.2"
@@ -1115,6 +1124,10 @@ dom-walk@^0.1.0:
 domelementtype@^2.0.1, domelementtype@^2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/domelementtype/-/domelementtype-2.2.0.tgz"
+
+domelementtype@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/domelementtype/-/domelementtype-2.3.0.tgz#5c45e8e869952626331d7aab326d01daf65d589d"
 
 domexception@^1.0.1:
   version "1.0.1"
@@ -1128,13 +1141,27 @@ domhandler@^4.0.0, domhandler@^4.2.0:
   dependencies:
     domelementtype "^2.2.0"
 
-domutils@^2.5.2, domutils@^2.6.0, domutils@^2.7.0:
+domhandler@^5.0.1, domhandler@^5.0.2, domhandler@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/domhandler/-/domhandler-5.0.3.tgz#cc385f7f751f1d1fc650c21374804254538c7d31"
+  dependencies:
+    domelementtype "^2.3.0"
+
+domutils@^2.5.2:
   version "2.8.0"
   resolved "https://registry.npmjs.org/domutils/-/domutils-2.8.0.tgz"
   dependencies:
     dom-serializer "^1.0.1"
     domelementtype "^2.2.0"
     domhandler "^4.2.0"
+
+domutils@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/domutils/-/domutils-3.0.1.tgz#696b3875238338cb186b6c0612bd4901c89a4f1c"
+  dependencies:
+    dom-serializer "^2.0.0"
+    domelementtype "^2.3.0"
+    domhandler "^5.0.1"
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
@@ -1159,6 +1186,10 @@ enhanced-resolve@^5.0.0:
 entities@^2.0.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/entities/-/entities-2.2.0.tgz"
+
+entities@^4.2.0, entities@^4.3.0, entities@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/entities/-/entities-4.4.0.tgz#97bdaba170339446495e653cfd2db78962900174"
 
 es-abstract@^1.17.4, es-abstract@^1.17.5:
   version "1.17.6"
@@ -1551,16 +1582,16 @@ globby@^11.1.0:
     merge2 "^1.4.1"
     slash "^3.0.0"
 
-got@^11.8.2:
-  version "11.8.2"
-  resolved "https://registry.npmjs.org/got/-/got-11.8.2.tgz"
+got@^11.8.5:
+  version "11.8.6"
+  resolved "https://registry.yarnpkg.com/got/-/got-11.8.6.tgz#276e827ead8772eddbcfc97170590b841823233a"
   dependencies:
     "@sindresorhus/is" "^4.0.0"
     "@szmarczak/http-timer" "^4.0.5"
     "@types/cacheable-request" "^6.0.1"
     "@types/responselike" "^1.0.0"
     cacheable-lookup "^5.0.3"
-    cacheable-request "^7.0.1"
+    cacheable-request "^7.0.2"
     decompress-response "^6.0.0"
     http2-wrapper "^1.0.0-beta.5.2"
     lowercase-keys "^2.0.0"
@@ -1637,6 +1668,15 @@ htmlparser2@^6.1.0:
     domhandler "^4.0.0"
     domutils "^2.5.2"
     entities "^2.0.0"
+
+htmlparser2@^8.0.1:
+  version "8.0.1"
+  resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-8.0.1.tgz#abaa985474fcefe269bc761a779b544d7196d010"
+  dependencies:
+    domelementtype "^2.3.0"
+    domhandler "^5.0.2"
+    domutils "^3.0.1"
+    entities "^4.3.0"
 
 http-cache-semantics@^4.0.0:
   version "4.1.0"
@@ -2258,9 +2298,9 @@ npmlog@^4.0.1:
     gauge "~2.7.3"
     set-blocking "~2.0.0"
 
-nth-check@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/nth-check/-/nth-check-2.0.0.tgz"
+nth-check@^2.0.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/nth-check/-/nth-check-2.1.1.tgz#c9eab428effce36cd6b92c924bdb000ef1f1ed1d"
   dependencies:
     boolbase "^1.0.0"
 
@@ -2307,15 +2347,15 @@ once@^1.3.0, once@^1.3.1, once@^1.4.0:
   dependencies:
     wrappy "1"
 
-open-graph-scraper@^4.9.1:
-  version "4.9.1"
-  resolved "https://registry.npmjs.org/open-graph-scraper/-/open-graph-scraper-4.9.1.tgz"
+open-graph-scraper@^4.11.1:
+  version "4.11.1"
+  resolved "https://registry.yarnpkg.com/open-graph-scraper/-/open-graph-scraper-4.11.1.tgz#cf52bb8f5703840a6723e8a8911ddbf1628752b2"
   dependencies:
-    chardet "^1.3.0"
-    cheerio "^1.0.0-rc.10"
-    got "^11.8.2"
+    chardet "^1.4.0"
+    cheerio "^1.0.0-rc.11"
+    got "^11.8.5"
     iconv-lite "^0.6.3"
-    validator "^13.6.0"
+    validator "^13.7.0"
 
 optionator@^0.8.1:
   version "0.8.3"
@@ -2390,19 +2430,22 @@ parse-headers@^2.0.0:
   version "2.0.3"
   resolved "https://registry.npmjs.org/parse-headers/-/parse-headers-2.0.3.tgz"
 
-parse5-htmlparser2-tree-adapter@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.npmjs.org/parse5-htmlparser2-tree-adapter/-/parse5-htmlparser2-tree-adapter-6.0.1.tgz"
+parse5-htmlparser2-tree-adapter@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/parse5-htmlparser2-tree-adapter/-/parse5-htmlparser2-tree-adapter-7.0.0.tgz#23c2cc233bcf09bb7beba8b8a69d46b08c62c2f1"
   dependencies:
-    parse5 "^6.0.1"
+    domhandler "^5.0.2"
+    parse5 "^7.0.0"
 
 parse5@4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/parse5/-/parse5-4.0.0.tgz"
 
-parse5@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.npmjs.org/parse5/-/parse5-6.0.1.tgz"
+parse5@^7.0.0:
+  version "7.1.2"
+  resolved "https://registry.yarnpkg.com/parse5/-/parse5-7.1.2.tgz#0736bebbfd77793823240a23b7fc5e010b7f8e32"
+  dependencies:
+    entities "^4.4.0"
 
 parseley@^0.7.0:
   version "0.7.0"
@@ -3017,10 +3060,6 @@ tslib@^1.13.0, tslib@^1.8.1:
   version "1.13.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.13.0.tgz"
 
-tslib@^2.2.0:
-  version "2.3.1"
-  resolved "https://registry.npmjs.org/tslib/-/tslib-2.3.1.tgz"
-
 tslint@^6.1.2:
   version "6.1.3"
   resolved "https://registry.npmjs.org/tslint/-/tslint-6.1.3.tgz"
@@ -3111,9 +3150,9 @@ v8-compile-cache-lib@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/v8-compile-cache-lib/-/v8-compile-cache-lib-3.0.1.tgz#6336e8d71965cb3d35a1bbb7868445a7c05264bf"
 
-validator@^13.6.0:
-  version "13.6.0"
-  resolved "https://registry.npmjs.org/validator/-/validator-13.6.0.tgz"
+validator@^13.7.0:
+  version "13.7.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.7.0.tgz#4f9658ba13ba8f3d82ee881d3516489ea85c0857"
 
 verror@1.10.0:
   version "1.10.0"
