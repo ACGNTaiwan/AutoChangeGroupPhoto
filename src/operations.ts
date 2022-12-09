@@ -197,7 +197,7 @@ class Operations {
         options?: TelegramBot.SendPhotoOptions,
     ) {
         const opt = Object.apply({ reply_to_message_id: msg.message_id, disable_notification: true }, options as [any]) as TelegramBot.SendPhotoOptions;
-        return bot.sendPhoto(msg.chat.id, buffer, opt)
+        return bot.sendPhoto(msg.chat.id, buffer, opt, { filename: "queue.jpg", contentType: "image/jpeg" })
             .then(async (m) => {
                 let ret;
                 if (!(m instanceof Error)) {

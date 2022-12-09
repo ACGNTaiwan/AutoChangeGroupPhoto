@@ -5,6 +5,11 @@ import { AutoChangeGroupPhotoBot } from "./src/autoChangeGroupPhotoBot";
 import { BotConfigGenerator } from "./src/botConfig";
 import * as CONSTS from "./src/consts";
 
+process.on('unhandledRejection', error => {
+  console.error('unhandledRejection', error);
+  process.exit(1) // To exit with a 'failure' code
+});
+
 // read and initial the config file
 fs.readFile(CONSTS.CONFIG_FILE_PATH, null, async (err, d) => {
     let _config;

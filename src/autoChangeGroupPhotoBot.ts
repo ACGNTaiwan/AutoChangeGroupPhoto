@@ -53,7 +53,7 @@ export
         if (this.config.token) {
             this.data = PhotoData.PhotoDataStore(PhotoData.PhotoDataStructure.readData(), () => { PhotoData.PhotoDataStructure.saveData(this.data); });
             // if has bot token, then start the main program
-            this.bot = new TelegramBot(this.config.token, { polling: { interval: 0, params: { timeout: 60 } } });
+            this.bot = new TelegramBot(this.config.token, { filepath: false, polling: { interval: 0, params: { timeout: 60 } } });
 
             this.downloader = TelegramDownload.getInstance(this.bot, logger);
 
