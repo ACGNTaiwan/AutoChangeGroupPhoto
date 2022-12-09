@@ -9,7 +9,8 @@
     "build": "tsc --pretty",
     "serve": "ts-node index.ts",
     "debug": "yarn build && node --trace-deprecation dist/index.js",
-    "start": "yarn serve"
+    "start": "yarn serve",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -52,11 +53,32 @@
     "@types/pad": "^2.1.0",
     "@types/sharp": "^0.28.5",
     "@types/tmp": "^0.2.1",
-    "husky": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
+    "eslint": "^8.29.0",
+    "husky": "^8.0.0",
+    "prettier": "2.8.1",
     "ts-loader": "^9.2.5",
     "ts-node": "^10.2.1",
     "tslint": "^6.1.2",
     "typescript": "^4.4.2"
+  },
+  "lint-staged": {
+    "*.{ts,js,vue}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{html,scss,css,vue}": [
+      "stylelint --fix",
+      "prettier --write"
+    ],
+    "*.md": [
+      "markdownlint",
+      "prettier --write"
+    ],
+    "package.json": [
+      "prettier --write"
+    ]
   },
   "husky": {
     "hooks": {

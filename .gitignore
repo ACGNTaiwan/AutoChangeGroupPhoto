@@ -61,3 +61,5 @@ config*.yaml
 data*.yaml
 dist
 .group_cache
+
+.DS_Store
