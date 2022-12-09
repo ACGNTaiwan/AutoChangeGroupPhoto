@@ -561,36 +561,13 @@
     "@typescript-eslint/types" "5.46.0"
     eslint-visitor-keys "^3.3.0"
 
-abab@^2.0.0:
-  version "2.0.5"
-  resolved "https://registry.npmjs.org/abab/-/abab-2.0.5.tgz"
-
-acorn-globals@^4.1.0:
-  version "4.3.4"
-  resolved "https://registry.npmjs.org/acorn-globals/-/acorn-globals-4.3.4.tgz"
-  dependencies:
-    acorn "^6.0.1"
-    acorn-walk "^6.0.1"
-
 acorn-jsx@^5.3.2:
   version "5.3.2"
   resolved "https://registry.npmjs.org/acorn-jsx/-/acorn-jsx-5.3.2.tgz"
 
-acorn-walk@^6.0.1:
-  version "6.2.0"
-  resolved "https://registry.npmjs.org/acorn-walk/-/acorn-walk-6.2.0.tgz"
-
 acorn-walk@^8.1.1:
   version "8.1.1"
   resolved "https://registry.npmjs.org/acorn-walk/-/acorn-walk-8.1.1.tgz"
-
-acorn@^5.5.3:
-  version "5.7.4"
-  resolved "https://registry.npmjs.org/acorn/-/acorn-5.7.4.tgz"
-
-acorn@^6.0.1:
-  version "6.4.1"
-  resolved "https://registry.npmjs.org/acorn/-/acorn-6.4.1.tgz"
 
 acorn@^8.4.1, acorn@^8.8.0:
   version "8.8.1"
@@ -639,10 +616,6 @@ argparse@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/argparse/-/argparse-2.0.1.tgz"
 
-array-equal@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/array-equal/-/array-equal-1.0.0.tgz"
-
 array-union@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/array-union/-/array-union-2.1.0.tgz"
@@ -663,10 +636,6 @@ asn1@~0.2.3:
 assert-plus@1.0.0, assert-plus@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/assert-plus/-/assert-plus-1.0.0.tgz"
-
-async-limiter@~1.0.0:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/async-limiter/-/async-limiter-1.0.1.tgz"
 
 async@3.2.3:
   version "3.2.3"
@@ -752,10 +721,6 @@ braces@^3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
-browser-process-hrtime@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/browser-process-hrtime/-/browser-process-hrtime-1.0.0.tgz"
-
 buffer-equal@0.0.1:
   version "0.0.1"
   resolved "https://registry.npmjs.org/buffer-equal/-/buffer-equal-0.0.1.tgz"
@@ -832,6 +797,19 @@ cheerio-select@^2.1.0:
     domhandler "^5.0.3"
     domutils "^3.0.1"
 
+cheerio@1.0.0-rc.11:
+  version "1.0.0-rc.11"
+  resolved "https://registry.yarnpkg.com/cheerio/-/cheerio-1.0.0-rc.11.tgz#1be84be1a126958366bcc57a11648cd9b30a60c2"
+  dependencies:
+    cheerio-select "^2.1.0"
+    dom-serializer "^2.0.0"
+    domhandler "^5.0.3"
+    domutils "^3.0.1"
+    htmlparser2 "^8.0.1"
+    parse5 "^7.0.0"
+    parse5-htmlparser2-tree-adapter "^7.0.0"
+    tslib "^2.4.0"
+
 cheerio@^1.0.0-rc.11:
   version "1.0.0-rc.12"
   resolved "https://registry.yarnpkg.com/cheerio/-/cheerio-1.0.0-rc.12.tgz#788bf7466506b1c6bf5fae51d24a2c4d62e47683"
@@ -906,7 +884,7 @@ combined-stream@^1.0.6, combined-stream@~1.0.6:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@^2.12.1, commander@^2.19.0, commander@^2.9.0:
+commander@^2.12.1, commander@^2.19.0:
   version "2.20.3"
   resolved "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz"
 
@@ -958,16 +936,6 @@ css-what@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/css-what/-/css-what-6.1.0.tgz#fb5effcf76f1ddea2c81bdfaa4de44e79bac70f4"
 
-cssom@0.3.x, "cssom@>= 0.3.2 < 0.4.0":
-  version "0.3.8"
-  resolved "https://registry.npmjs.org/cssom/-/cssom-0.3.8.tgz"
-
-cssstyle@^1.0.0:
-  version "1.4.0"
-  resolved "https://registry.npmjs.org/cssstyle/-/cssstyle-1.4.0.tgz"
-  dependencies:
-    cssom "0.3.x"
-
 cycle@1.0.x:
   version "1.0.3"
   resolved "https://registry.npmjs.org/cycle/-/cycle-1.0.3.tgz"
@@ -977,14 +945,6 @@ dashdash@^1.12.0:
   resolved "https://registry.npmjs.org/dashdash/-/dashdash-1.14.1.tgz"
   dependencies:
     assert-plus "^1.0.0"
-
-data-urls@^1.0.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/data-urls/-/data-urls-1.1.0.tgz"
-  dependencies:
-    abab "^2.0.0"
-    whatwg-mimetype "^2.2.0"
-    whatwg-url "^7.0.0"
 
 dateformat@4.5.1:
   version "4.5.1"
@@ -1012,7 +972,7 @@ deep-extend@^0.6.0:
   version "0.6.0"
   resolved "https://registry.npmjs.org/deep-extend/-/deep-extend-0.6.0.tgz"
 
-deep-is@^0.1.3, deep-is@~0.1.3:
+deep-is@^0.1.3:
   version "0.1.3"
   resolved "https://registry.npmjs.org/deep-is/-/deep-is-0.1.3.tgz"
 
@@ -1091,12 +1051,6 @@ domelementtype@^2.0.1, domelementtype@^2.2.0:
 domelementtype@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/domelementtype/-/domelementtype-2.3.0.tgz#5c45e8e869952626331d7aab326d01daf65d589d"
-
-domexception@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/domexception/-/domexception-1.0.1.tgz"
-  dependencies:
-    webidl-conversions "^4.0.2"
 
 domhandler@^4.0.0, domhandler@^4.2.0:
   version "4.2.2"
@@ -1203,17 +1157,6 @@ escape-string-regexp@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz"
 
-escodegen@^1.9.1:
-  version "1.14.3"
-  resolved "https://registry.npmjs.org/escodegen/-/escodegen-1.14.3.tgz"
-  dependencies:
-    esprima "^4.0.1"
-    estraverse "^4.2.0"
-    esutils "^2.0.2"
-    optionator "^0.8.1"
-  optionalDependencies:
-    source-map "~0.6.1"
-
 eslint-scope@^5.1.1:
   version "5.1.1"
   resolved "https://registry.npmjs.org/eslint-scope/-/eslint-scope-5.1.1.tgz"
@@ -1294,7 +1237,7 @@ espree@^9.4.0:
     acorn-jsx "^5.3.2"
     eslint-visitor-keys "^3.3.0"
 
-esprima@^4.0.0, esprima@^4.0.1:
+esprima@^4.0.0:
   version "4.0.1"
   resolved "https://registry.npmjs.org/esprima/-/esprima-4.0.1.tgz"
 
@@ -1310,7 +1253,7 @@ esrecurse@^4.3.0:
   dependencies:
     estraverse "^5.2.0"
 
-estraverse@^4.1.1, estraverse@^4.2.0:
+estraverse@^4.1.1:
   version "4.3.0"
   resolved "https://registry.npmjs.org/estraverse/-/estraverse-4.3.0.tgz"
 
@@ -1322,11 +1265,97 @@ esutils@^2.0.2:
   version "2.0.3"
   resolved "https://registry.npmjs.org/esutils/-/esutils-2.0.3.tgz"
 
-europa-core@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.npmjs.org/europa-core/-/europa-core-4.0.0.tgz"
+europa-core@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-core/-/europa-core-6.0.0.tgz#9b70ca7037e03895e396043e3da3fc6a65c68dfc"
+
+europa-dom-cheerio@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-dom-cheerio/-/europa-dom-cheerio-6.0.0.tgz#cc293c5f784c652edc7575cc4ded469e31595598"
   dependencies:
-    nevis "^0.5.0"
+    cheerio "1.0.0-rc.11"
+    lodash "^4.17.21"
+
+europa-environment-node@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-environment-node/-/europa-environment-node-6.0.0.tgz#8bbe012221d2f16a9102ee69dd8ec127cdadddeb"
+  dependencies:
+    europa-dom-cheerio "^6.0.0"
+
+europa-plugin-bold@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-bold/-/europa-plugin-bold-6.0.0.tgz#2e1278302d837a0b2a0fba520efd2531c200d9c8"
+
+europa-plugin-code@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-code/-/europa-plugin-code-6.0.0.tgz#7931f6bb4ff0c7bcb23bbbd6abc4fbace3bb695a"
+
+europa-plugin-description@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-description/-/europa-plugin-description-6.0.0.tgz#d6416bd1925894858d650dd10312c33b8a2b6300"
+
+europa-plugin-details@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-details/-/europa-plugin-details-6.0.0.tgz#2ee6f9698533ca7ad3f0ad6555101cd97fefc6d5"
+
+europa-plugin-header@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-header/-/europa-plugin-header-6.0.0.tgz#7e7e5dd2f78d01343272b76d8820d87f421aecb4"
+
+europa-plugin-horizontal-rule@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-horizontal-rule/-/europa-plugin-horizontal-rule-6.0.0.tgz#225d6af61da56ede3a08d175e42db6b373805c66"
+
+europa-plugin-image@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-image/-/europa-plugin-image-6.0.0.tgz#d9a179eb7d9de9fed3d99cf7d9c3535d5c6b61a4"
+
+europa-plugin-italic@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-italic/-/europa-plugin-italic-6.0.0.tgz#ff3850e145b4127ed5654c6a6a2be0c9b22828d0"
+
+europa-plugin-line-break@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-line-break/-/europa-plugin-line-break-6.0.0.tgz#e9c97d362dee1ab789e7276ea3a7003a6e735227"
+
+europa-plugin-link@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-link/-/europa-plugin-link-6.0.0.tgz#9118216ef20866e33555d2bac95ee181a741e4c2"
+
+europa-plugin-list@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-list/-/europa-plugin-list-6.0.0.tgz#036045d117728bbd759fdf77b20c3a49628f761b"
+
+europa-plugin-paragraph@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-paragraph/-/europa-plugin-paragraph-6.0.0.tgz#ab243fc921d13b0f9bc3f6d357a349e2fe14369a"
+
+europa-plugin-preformatted@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-preformatted/-/europa-plugin-preformatted-6.0.0.tgz#104c87d7935ef6c644458c7dfe5ae12d328484f9"
+
+europa-plugin-quote@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-plugin-quote/-/europa-plugin-quote-6.0.0.tgz#95be9338b4316b8901514e61b4b23e335dbcc0af"
+
+europa-preset-default@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/europa-preset-default/-/europa-preset-default-6.0.0.tgz#5092d96467faf395bf6c82e3e96e49bcf94fc8fe"
+  dependencies:
+    europa-plugin-bold "^6.0.0"
+    europa-plugin-code "^6.0.0"
+    europa-plugin-description "^6.0.0"
+    europa-plugin-details "^6.0.0"
+    europa-plugin-header "^6.0.0"
+    europa-plugin-horizontal-rule "^6.0.0"
+    europa-plugin-image "^6.0.0"
+    europa-plugin-italic "^6.0.0"
+    europa-plugin-line-break "^6.0.0"
+    europa-plugin-link "^6.0.0"
+    europa-plugin-list "^6.0.0"
+    europa-plugin-paragraph "^6.0.0"
+    europa-plugin-preformatted "^6.0.0"
+    europa-plugin-quote "^6.0.0"
 
 eventemitter3@^3.0.0:
   version "3.1.2"
@@ -1370,7 +1399,7 @@ fast-json-stable-stringify@^2.0.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/fast-json-stable-stringify/-/fast-json-stable-stringify-2.1.0.tgz"
 
-fast-levenshtein@^2.0.6, fast-levenshtein@~2.0.6:
+fast-levenshtein@^2.0.6:
   version "2.0.6"
   resolved "https://registry.npmjs.org/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz"
 
@@ -1497,7 +1526,7 @@ glob-parent@^6.0.2:
   dependencies:
     is-glob "^4.0.3"
 
-glob@^7.1.1, glob@^7.1.2, glob@^7.1.3:
+glob@^7.1.1, glob@^7.1.3:
   version "7.1.6"
   resolved "https://registry.npmjs.org/glob/-/glob-7.1.6.tgz"
   dependencies:
@@ -1589,12 +1618,6 @@ he@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/he/-/he-1.2.0.tgz"
 
-html-encoding-sniffer@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/html-encoding-sniffer/-/html-encoding-sniffer-1.0.2.tgz"
-  dependencies:
-    whatwg-encoding "^1.0.1"
-
 html-to-text@^8.2.1:
   version "8.2.1"
   resolved "https://registry.yarnpkg.com/html-to-text/-/html-to-text-8.2.1.tgz#4a75b8a1b646149bd71c50527adb568990bf459b"
@@ -1646,12 +1669,6 @@ http2-wrapper@^1.0.0-beta.5.2:
 husky@^8.0.0:
   version "8.0.2"
   resolved "https://registry.npmjs.org/husky/-/husky-8.0.2.tgz"
-
-iconv-lite@0.4.24:
-  version "0.4.24"
-  resolved "https://registry.npmjs.org/iconv-lite/-/iconv-lite-0.4.24.tgz"
-  dependencies:
-    safer-buffer ">= 2.1.2 < 3"
 
 iconv-lite@^0.6.3:
   version "0.6.3"
@@ -1813,37 +1830,6 @@ jsbn@~0.1.0:
   version "0.1.1"
   resolved "https://registry.npmjs.org/jsbn/-/jsbn-0.1.1.tgz"
 
-jsdom@^11.0.0:
-  version "11.12.0"
-  resolved "https://registry.npmjs.org/jsdom/-/jsdom-11.12.0.tgz"
-  dependencies:
-    abab "^2.0.0"
-    acorn "^5.5.3"
-    acorn-globals "^4.1.0"
-    array-equal "^1.0.0"
-    cssom ">= 0.3.2 < 0.4.0"
-    cssstyle "^1.0.0"
-    data-urls "^1.0.0"
-    domexception "^1.0.1"
-    escodegen "^1.9.1"
-    html-encoding-sniffer "^1.0.2"
-    left-pad "^1.3.0"
-    nwsapi "^2.0.7"
-    parse5 "4.0.0"
-    pn "^1.1.0"
-    request "^2.87.0"
-    request-promise-native "^1.0.5"
-    sax "^1.2.4"
-    symbol-tree "^3.2.2"
-    tough-cookie "^2.3.4"
-    w3c-hr-time "^1.0.1"
-    webidl-conversions "^4.0.2"
-    whatwg-encoding "^1.0.3"
-    whatwg-mimetype "^2.1.0"
-    whatwg-url "^6.4.1"
-    ws "^5.2.0"
-    xml-name-validator "^3.0.0"
-
 json-buffer@3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/json-buffer/-/json-buffer-3.0.1.tgz"
@@ -1879,23 +1865,12 @@ keyv@^4.0.0:
   dependencies:
     json-buffer "3.0.1"
 
-left-pad@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.npmjs.org/left-pad/-/left-pad-1.3.0.tgz"
-
 levn@^0.4.1:
   version "0.4.1"
   resolved "https://registry.npmjs.org/levn/-/levn-0.4.1.tgz"
   dependencies:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
-
-levn@~0.3.0:
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/levn/-/levn-0.3.0.tgz"
-  dependencies:
-    prelude-ls "~1.1.2"
-    type-check "~0.3.2"
 
 load-bmfont@^1.3.1, load-bmfont@^1.4.0:
   version "1.4.1"
@@ -2036,17 +2011,13 @@ lodash.noop@~2.3.0:
   version "2.3.0"
   resolved "https://registry.npmjs.org/lodash.noop/-/lodash.noop-2.3.0.tgz"
 
-lodash.sortby@^4.7.0:
-  version "4.7.0"
-  resolved "https://registry.npmjs.org/lodash.sortby/-/lodash.sortby-4.7.0.tgz"
-
 lodash.support@~2.3.0:
   version "2.3.0"
   resolved "https://registry.npmjs.org/lodash.support/-/lodash.support-2.3.0.tgz"
   dependencies:
     lodash._renative "~2.3.0"
 
-lodash@^4.17.19:
+lodash@^4.17.19, lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
 
@@ -2176,10 +2147,6 @@ nearley@^2.20.1:
     railroad-diagrams "^1.0.0"
     randexp "0.4.6"
 
-nevis@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.npmjs.org/nevis/-/nevis-0.5.0.tgz"
-
 node-abi@^3.3.0:
   version "3.30.0"
   resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-3.30.0.tgz#d84687ad5d24ca81cdfa912a36f2c5c19b137359"
@@ -2190,16 +2157,13 @@ node-addon-api@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-5.0.0.tgz#7d7e6f9ef89043befdb20c1989c905ebde18c501"
 
-node-europa@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.npmjs.org/node-europa/-/node-europa-4.0.0.tgz"
+node-europa@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/node-europa/-/node-europa-6.0.0.tgz#b9a7453e88fad6c4f3c90461f5a8908d3a13e1de"
   dependencies:
-    commander "^2.9.0"
-    europa-core "^4.0.0"
-    glob "^7.1.2"
-    jsdom "^11.0.0"
-    mkdirp "^0.5.1"
-    nevis "^0.5.0"
+    europa-core "^6.0.0"
+    europa-environment-node "^6.0.0"
+    europa-preset-default "^6.0.0"
 
 node-schedule@^2.1.0:
   version "2.1.0"
@@ -2232,10 +2196,6 @@ nth-check@^2.0.1:
   resolved "https://registry.yarnpkg.com/nth-check/-/nth-check-2.1.1.tgz#c9eab428effce36cd6b92c924bdb000ef1f1ed1d"
   dependencies:
     boolbase "^1.0.0"
-
-nwsapi@^2.0.7:
-  version "2.2.0"
-  resolved "https://registry.npmjs.org/nwsapi/-/nwsapi-2.2.0.tgz"
 
 oauth-sign@~0.9.0:
   version "0.9.0"
@@ -2277,17 +2237,6 @@ open-graph-scraper@^4.11.1:
     got "^11.8.5"
     iconv-lite "^0.6.3"
     validator "^13.7.0"
-
-optionator@^0.8.1:
-  version "0.8.3"
-  resolved "https://registry.npmjs.org/optionator/-/optionator-0.8.3.tgz"
-  dependencies:
-    deep-is "~0.1.3"
-    fast-levenshtein "~2.0.6"
-    levn "~0.3.0"
-    prelude-ls "~1.1.2"
-    type-check "~0.3.2"
-    word-wrap "~1.2.3"
 
 optionator@^0.9.1:
   version "0.9.1"
@@ -2358,10 +2307,6 @@ parse5-htmlparser2-tree-adapter@^7.0.0:
     domhandler "^5.0.2"
     parse5 "^7.0.0"
 
-parse5@4.0.0:
-  version "4.0.0"
-  resolved "https://registry.npmjs.org/parse5/-/parse5-4.0.0.tgz"
-
 parse5@^7.0.0:
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-7.1.2.tgz#0736bebbfd77793823240a23b7fc5e010b7f8e32"
@@ -2429,10 +2374,6 @@ pixiv-api-client@^0.25.0:
     moment "^2.24.0"
     qs "^6.2.1"
 
-pn@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/pn/-/pn-1.1.0.tgz"
-
 pngjs@^3.0.0, pngjs@^3.3.3:
   version "3.4.0"
   resolved "https://registry.npmjs.org/pngjs/-/pngjs-3.4.0.tgz"
@@ -2457,10 +2398,6 @@ prebuild-install@^7.1.0:
 prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.2.1.tgz"
-
-prelude-ls@~1.1.2:
-  version "1.1.2"
-  resolved "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.1.2.tgz"
 
 prettier@2.8.1:
   version "2.8.1"
@@ -2582,14 +2519,6 @@ request-promise-core@1.1.4:
   dependencies:
     lodash "^4.17.19"
 
-request-promise-native@^1.0.5:
-  version "1.0.9"
-  resolved "https://registry.npmjs.org/request-promise-native/-/request-promise-native-1.0.9.tgz"
-  dependencies:
-    request-promise-core "1.1.4"
-    stealthy-require "^1.1.1"
-    tough-cookie "^2.3.3"
-
 request-promise@^4.2.2:
   version "4.2.6"
   resolved "https://registry.npmjs.org/request-promise/-/request-promise-4.2.6.tgz"
@@ -2599,7 +2528,7 @@ request-promise@^4.2.2:
     stealthy-require "^1.1.1"
     tough-cookie "^2.3.3"
 
-request@^2.83.0, request@^2.87.0, request@^2.88.2:
+request@^2.83.0, request@^2.88.2:
   version "2.88.2"
   resolved "https://registry.npmjs.org/request/-/request-2.88.2.tgz"
   dependencies:
@@ -2676,11 +2605,11 @@ safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz"
 
-"safer-buffer@>= 2.1.2 < 3", "safer-buffer@>= 2.1.2 < 3.0.0", safer-buffer@^2.0.2, safer-buffer@^2.1.0, safer-buffer@~2.1.0:
+"safer-buffer@>= 2.1.2 < 3.0.0", safer-buffer@^2.0.2, safer-buffer@^2.1.0, safer-buffer@~2.1.0:
   version "2.1.2"
   resolved "https://registry.npmjs.org/safer-buffer/-/safer-buffer-2.1.2.tgz"
 
-sax@>=0.6.0, sax@^1.2.4:
+sax@>=0.6.0:
   version "1.2.4"
   resolved "https://registry.npmjs.org/sax/-/sax-1.2.4.tgz"
 
@@ -2748,10 +2677,6 @@ slash@^3.0.0:
 sorted-array-functions@^1.3.0:
   version "1.3.0"
   resolved "https://registry.npmjs.org/sorted-array-functions/-/sorted-array-functions-1.3.0.tgz"
-
-source-map@~0.6.1:
-  version "0.6.1"
-  resolved "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz"
 
 sprintf-js@~1.0.2:
   version "1.0.3"
@@ -2831,10 +2756,6 @@ supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
-symbol-tree@^3.2.2:
-  version "3.2.4"
-  resolved "https://registry.npmjs.org/symbol-tree/-/symbol-tree-3.2.4.tgz"
-
 tapable@^2.2.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/tapable/-/tapable-2.2.0.tgz"
@@ -2880,18 +2801,12 @@ to-regex-range@^5.0.1:
   dependencies:
     is-number "^7.0.0"
 
-tough-cookie@^2.3.3, tough-cookie@^2.3.4, tough-cookie@~2.5.0:
+tough-cookie@^2.3.3, tough-cookie@~2.5.0:
   version "2.5.0"
   resolved "https://registry.npmjs.org/tough-cookie/-/tough-cookie-2.5.0.tgz"
   dependencies:
     psl "^1.1.28"
     punycode "^2.1.1"
-
-tr46@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/tr46/-/tr46-1.0.1.tgz"
-  dependencies:
-    punycode "^2.1.0"
 
 tracer@^1.1.5:
   version "1.1.5"
@@ -2932,6 +2847,10 @@ ts-node@^10.9.1:
 tslib@^1.13.0, tslib@^1.8.1:
   version "1.13.0"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.13.0.tgz"
+
+tslib@^2.4.0:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.1.tgz#0d0bfbaac2880b91e22df0768e55be9753a5b17e"
 
 tslint@^6.1.2:
   version "6.1.3"
@@ -2978,12 +2897,6 @@ type-check@^0.4.0, type-check@~0.4.0:
   resolved "https://registry.npmjs.org/type-check/-/type-check-0.4.0.tgz"
   dependencies:
     prelude-ls "^1.2.1"
-
-type-check@~0.3.2:
-  version "0.3.2"
-  resolved "https://registry.npmjs.org/type-check/-/type-check-0.3.2.tgz"
-  dependencies:
-    prelude-ls "~1.1.2"
 
 type-fest@^0.20.2:
   version "0.20.2"
@@ -3035,47 +2948,11 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-w3c-hr-time@^1.0.1:
-  version "1.0.2"
-  resolved "https://registry.npmjs.org/w3c-hr-time/-/w3c-hr-time-1.0.2.tgz"
-  dependencies:
-    browser-process-hrtime "^1.0.0"
-
 wcwidth@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/wcwidth/-/wcwidth-1.0.1.tgz"
   dependencies:
     defaults "^1.0.3"
-
-webidl-conversions@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-4.0.2.tgz"
-
-whatwg-encoding@^1.0.1, whatwg-encoding@^1.0.3:
-  version "1.0.5"
-  resolved "https://registry.npmjs.org/whatwg-encoding/-/whatwg-encoding-1.0.5.tgz"
-  dependencies:
-    iconv-lite "0.4.24"
-
-whatwg-mimetype@^2.1.0, whatwg-mimetype@^2.2.0:
-  version "2.3.0"
-  resolved "https://registry.npmjs.org/whatwg-mimetype/-/whatwg-mimetype-2.3.0.tgz"
-
-whatwg-url@^6.4.1:
-  version "6.5.0"
-  resolved "https://registry.npmjs.org/whatwg-url/-/whatwg-url-6.5.0.tgz"
-  dependencies:
-    lodash.sortby "^4.7.0"
-    tr46 "^1.0.1"
-    webidl-conversions "^4.0.2"
-
-whatwg-url@^7.0.0:
-  version "7.1.0"
-  resolved "https://registry.npmjs.org/whatwg-url/-/whatwg-url-7.1.0.tgz"
-  dependencies:
-    lodash.sortby "^4.7.0"
-    tr46 "^1.0.1"
-    webidl-conversions "^4.0.2"
 
 which@^2.0.1:
   version "2.0.2"
@@ -3094,19 +2971,13 @@ winston@2.x:
     isstream "0.1.x"
     stack-trace "0.0.x"
 
-word-wrap@^1.2.3, word-wrap@~1.2.3:
+word-wrap@^1.2.3:
   version "1.2.3"
   resolved "https://registry.npmjs.org/word-wrap/-/word-wrap-1.2.3.tgz"
 
 wrappy@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
-
-ws@^5.2.0:
-  version "5.2.3"
-  resolved "https://registry.npmjs.org/ws/-/ws-5.2.3.tgz"
-  dependencies:
-    async-limiter "~1.0.0"
 
 xhr@^2.0.1:
   version "2.5.0"
@@ -3116,10 +2987,6 @@ xhr@^2.0.1:
     is-function "^1.0.1"
     parse-headers "^2.0.0"
     xtend "^4.0.0"
-
-xml-name-validator@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/xml-name-validator/-/xml-name-validator-3.0.0.tgz"
 
 xml-parse-from-string@^1.0.0:
   version "1.0.1"
