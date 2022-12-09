@@ -51,7 +51,7 @@ export class Utils {
                         ogs(
                             {
                                 headers: {
-                                    "user-agent": "AutoChangeGroupPhotoBot/0.1",
+                                    "user-agent": "Mozilla/5.0 (compatible; AutoChangeGroupPhotoBot/0.1; +https://github.com/ACGNTaiwan/AutoChangeGroupPhoto)",
                                 },
                                 url,
                             },
