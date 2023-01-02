@@ -2145,9 +2145,9 @@ once@^1.3.0, once@^1.3.1, once@^1.4.0:
   dependencies:
     wrappy "1"
 
-open-graph-scraper@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/open-graph-scraper/-/open-graph-scraper-5.0.1.tgz#370c6d901f2f17c5c58171ea04df81e014133ddf"
+open-graph-scraper@^5.0.3:
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/open-graph-scraper/-/open-graph-scraper-5.0.3.tgz#05ace6c9af36a92ad62c8aa1412afed7ff1ce67a"
   dependencies:
     chardet "^1.5.0"
     cheerio "^1.0.0-rc.12"
