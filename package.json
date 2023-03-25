@@ -41,7 +41,7 @@
     "pixiv-api-client": "^0.25.0",
     "prompt": "^1.3.0",
     "request": "^2.88.2",
-    "sharp": "^0.31.2",
+    "sharp": "^0.32.0",
     "tracer": "^1.1.6"
   },
   "devDependencies": {
