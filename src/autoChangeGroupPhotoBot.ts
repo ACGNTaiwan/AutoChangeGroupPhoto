@@ -157,11 +157,11 @@ export
         });
 
         this.bot.onText(/^\/(\w+)@?(\w*)/i, async (msg, regex) => {
-            if (!regex || regex[2] && regex[2] !== me.username) {
-                logger.info("Received regex", regex, "but not @ me, ignored");
+            if (msg.chat.type === "private") {
+                logger.info("Received private message: `", msg, "`, ignored");
                 return;
             }
-            if (msg.chat.type !== "private" && regex[2] !== me.username) {
+            if (!regex || regex[2] && regex[2] !== me.username) {
                 logger.info("Received regex", regex, "but not @ me, ignored");
                 return;
             }
