@@ -35,7 +35,7 @@
     "moment": "^2.29.4",
     "node-europa": "^6.0.0",
     "node-schedule": "^2.1.0",
-    "node-telegram-bot-api": "^0.60.0",
+    "node-telegram-bot-api": "^0.65.0",
     "open-graph-scraper": "^5.0.1",
     "path": "^0.12.7",
     "pixiv-api-client": "^0.25.0",
