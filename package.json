@@ -31,7 +31,7 @@
     "convert-units": "^2.3.4",
     "html-to-text": "^9.0.1",
     "jimp": "^0.16.2",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^5.0.0",
     "moment": "^2.29.4",
     "node-europa": "^6.0.0",
     "node-schedule": "^2.1.0",
