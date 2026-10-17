@@ -595,6 +595,10 @@ argparse@^2.0.1:
   version "2.0.1"
   resolved "https://registry.npmjs.org/argparse/-/argparse-2.0.1.tgz"
 
+argparse@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/argparse/-/argparse-3.0.3.tgz#2527ed88cbaac60f7d7af28a5cf620a80f07d90b"
+
 array-union@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/array-union/-/array-union-2.1.0.tgz"
@@ -1755,6 +1759,12 @@ js-yaml@^4.1.0:
   resolved "https://registry.npmjs.org/js-yaml/-/js-yaml-4.1.0.tgz"
   dependencies:
     argparse "^2.0.1"
+
+js-yaml@^5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-5.5.0.tgz#ec843f09ffb2a54b6758a41eee109a1815d16442"
+  dependencies:
+    argparse "^3.0.3"
 
 jsbn@~0.1.0:
   version "0.1.1"
